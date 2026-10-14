@@ -6,13 +6,14 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"slices"
 	"sort"
 	"strings"
 )
 
 func independentDailyRead(r *http.Request) bool {
 	p := r.URL.Path
-	return (r.Method == "GET" && (p == "/api/usability/feedback" || p == "/api/my-work" || p == "/api/integrations/status" || strings.HasSuffix(p, "/blockers") && strings.HasPrefix(p, "/api/cases/") || strings.HasSuffix(p, "/finance-status") && strings.HasPrefix(p, "/api/invoices/") || strings.HasSuffix(p, "/journey") && strings.HasPrefix(p, "/api/students/"))) || (r.Method == "POST" && (p == "/api/usability/feedback" || p == "/api/form-quality" || strings.HasPrefix(p, "/api/admin/integrations/") && strings.HasSuffix(p, "/test")))
+	return (r.Method == "GET" && (p == "/api/usability/feedback" || p == "/api/my-work" || p == "/api/dashboard/overview" || p == "/api/integrations/status" || strings.HasSuffix(p, "/blockers") && strings.HasPrefix(p, "/api/cases/") || strings.HasSuffix(p, "/readiness") && strings.HasPrefix(p, "/api/cases/") || strings.HasSuffix(p, "/finance-status") && strings.HasPrefix(p, "/api/invoices/") || strings.HasSuffix(p, "/journey") && strings.HasPrefix(p, "/api/students/"))) || (r.Method == "POST" && (p == "/api/usability/feedback" || p == "/api/form-quality" || strings.HasPrefix(p, "/api/admin/integrations/") && strings.HasSuffix(p, "/test")))
 }
 func registerDailyRoutes(m *http.ServeMux) {
 	registerProductivityRoutes(m)
@@ -24,11 +25,13 @@ func registerDailyRoutes(m *http.ServeMux) {
 	m.HandleFunc("GET /api/staff-options", authMiddleware(handleStaffOptions))
 	m.HandleFunc("POST /api/documents/{id}/review", authMiddleware(dailyOrigin(handleDocumentReview)))
 	m.HandleFunc("GET /api/cases/{id}/blockers", authMiddleware(handleApplicationBlockers))
+	m.HandleFunc("GET /api/cases/{id}/readiness", authMiddleware(handleApplicationReadiness))
 	m.HandleFunc("GET /api/invoices/{id}/finance-status", authMiddleware(handleInvoiceFinanceStatus))
 	m.HandleFunc("POST /api/payments/{id}/review", authMiddleware(handleReceiptReview))
 	m.HandleFunc("GET /api/usability/feedback", authMiddleware(handleUsabilityFeedback))
 	m.HandleFunc("POST /api/usability/feedback", authMiddleware(dailyOrigin(handleUsabilityFeedback)))
 	m.HandleFunc("GET /api/my-work", authMiddleware(handleMyWork))
+	m.HandleFunc("GET /api/dashboard/overview", authMiddleware(handleDashboardOverview))
 	m.HandleFunc("GET /api/students/{id}/journey", authMiddleware(handleStudentJourney))
 	m.HandleFunc("POST /api/form-quality", authMiddleware(dailyOrigin(handleFormQuality)))
 	m.HandleFunc("GET /api/integrations/status", authMiddleware(handleIntegrationHealth))
@@ -111,9 +114,18 @@ func handleMyWork(w http.ResponseWriter, r *http.Request) {
 	defer close()
 	category := r.URL.Query().Get("category")
 	switch category {
-	case "", "deals", "pipeline", "leads", "students", "cases", "applications", "followups", "overdueLeads", "documents", "deadlines", "tasks", "handoffs", "overdueHandoffs", "pendingApprovals", "invoices", "documentIssues":
+	case "", "deals", "pipeline", "leads", "students", "cases", "applications", "followups", "overdueLeads", "documents", "deadlines", "tasks", "handoffs", "overdueHandoffs", "pendingApprovals", "invoices", "documentIssues", "caseStages", "followupsToday", "followupsUpcoming", "documentsComplete", "invoicesOverdue", "invoicesDueSoon":
 	default:
 		writeError(w, 400, "Choose a valid work category")
+		return
+	}
+	stage := r.URL.Query().Get("stage")
+	if stage != "" && category != "caseStages" {
+		writeError(w, 400, "Choose a stage only for the application stage category")
+		return
+	}
+	if stage != "" && !isValidCaseStage(stage) {
+		writeError(w, 400, "Choose a valid application stage")
 		return
 	}
 	filter := r.URL.Query().Get("scope")
@@ -124,10 +136,24 @@ func handleMyWork(w http.ResponseWriter, r *http.Request) {
 		writeError(w, 400, "Choose mine, unassigned or all")
 		return
 	}
+	branchFilter, valid := resolveDashboardFilter(w, r)
+	if !valid {
+		return
+	}
+	if branchFilter.team != "" {
+		team := branchFilter.team
+		s.Cases = slices.DeleteFunc(s.Cases, func(v Case) bool { return v.TeamID != team })
+		s.Leads = slices.DeleteFunc(s.Leads, func(v Lead) bool { return v.TeamID != team })
+		s.Invoices = slices.DeleteFunc(s.Invoices, func(v Invoice) bool { return v.TeamID != team })
+		s.Deals = slices.DeleteFunc(s.Deals, func(v Deal) bool { return v.TeamID != team })
+		s.Students = slices.DeleteFunc(s.Students, func(v Student) bool { return v.TeamID != team })
+		s.Tasks = slices.DeleteFunc(s.Tasks, func(v Task) bool { return v.TeamID != team })
+	}
 	today := organizationToday(r)
 	items := collectWorkload(currentUser(r), s, today, filter, true)
 	pendingApprovals := map[string]int{}
 	approvalCount := 0
+	invoiceOverdue, invoiceDueSoon := map[string]bool{}, map[string]bool{}
 	// Invoice amounts are kept per invoice/currency rather than adding unlike currencies.
 	{
 		var err error
@@ -143,6 +169,13 @@ func handleMyWork(w http.ResponseWriter, r *http.Request) {
 			priority, reason, rank := "medium", "Outstanding invoice", 3
 			if days, valid := dateDistance(inv.DueDate, today); valid && days < 0 {
 				priority, reason, rank = "urgent", "Invoice is overdue", 0
+				if inv.Balance > 0 {
+					invoiceOverdue[inv.ID] = true
+				}
+			} else if valid && days <= 7 {
+				if inv.Balance > 0 {
+					invoiceDueSoon[inv.ID] = true
+				}
 			}
 			if pendingApprovals[inv.ID] > 0 {
 				reason = "Receipts awaiting approval"
@@ -214,9 +247,29 @@ func handleMyWork(w http.ResponseWriter, r *http.Request) {
 	})
 	counts := map[string]int{"applications": 0, "followups": 0, "documents": 0, "deadlines": 0, "tasks": 0, "invoices": 0, "handoffs": handoffCount, "overdueHandoffs": overdueHandoffs, "overdueLeads": 0, "pendingApprovals": approvalCount, "documentIssues": 0}
 	documentsByCase := map[string]bool{}
+	documentsComplete := map[string]bool{}
+	requiredByCase, verifiedByCase := map[string]int{}, map[string]int{}
+	outstandingByCase := map[string][]string{}
 	for _, doc := range s.Documents {
+		if !doc.Required {
+			continue
+		}
+		requiredByCase[doc.CaseID]++
+		distance, dated := dateDistance(doc.ExpiryDate, today)
+		if strings.EqualFold(doc.Status, "Verified") && !(dated && distance < 0) {
+			verifiedByCase[doc.CaseID]++
+		} else {
+			outstandingByCase[doc.CaseID] = append(outstandingByCase[doc.CaseID], doc.DocName)
+		}
 		if documentNeedsReview(doc, today) {
 			documentsByCase[doc.CaseID] = true
+		}
+	}
+	// Completeness belongs to the application checklist, not to the due-work
+	// queue, so every accessible case is measured once here.
+	for id, required := range requiredByCase {
+		if required > 0 && verifiedByCase[id] == required {
+			documentsComplete[id] = true
 		}
 	}
 	for _, item := range items {
@@ -243,7 +296,14 @@ func handleMyWork(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	limit, offset := parseLimitOffset(r, 25, 0)
-	overview, overviewCounts := dailyOverview(currentUser(r), s, filter, category)
+	// Stage and document-completeness views list every readable application,
+	// including ones with nothing outstanding, so they read the full overview
+	// rather than the due-work queue.
+	overviewSelect := category
+	if category == "caseStages" || category == "documentsComplete" {
+		overviewSelect = "cases"
+	}
+	overview, overviewCounts := dailyOverview(currentUser(r), s, filter, overviewSelect)
 	for key, count := range overviewCounts {
 		counts[key] = count
 	}
@@ -260,21 +320,89 @@ func handleMyWork(w http.ResponseWriter, r *http.Request) {
 			category == "handoffs" && item.Entity == "handoff" ||
 			category == "overdueHandoffs" && item.Entity == "handoff" && dated && days < 0 ||
 			category == "pendingApprovals" && item.Entity == "invoice" && pendingApprovals[item.ID] > 0 ||
-			category == "invoices" && item.Entity == "invoice"
+			category == "invoices" && item.Entity == "invoice" ||
+			category == "invoicesOverdue" && item.Entity == "invoice" && invoiceOverdue[item.ID] ||
+			category == "invoicesDueSoon" && item.Entity == "invoice" && invoiceDueSoon[item.ID]
 		if matches {
 			filtered = append(filtered, item)
 		}
 	}
-	if records, exists := overview[category]; exists {
+	if records, exists := overview[overviewSelect]; exists {
 		filtered = records
 	}
+	if category == "caseStages" || category == "documentsComplete" {
+		selected := []productivityItem{}
+		for _, item := range filtered {
+			if item.Entity != "case" {
+				continue
+			}
+			if c, ok := visibleCases[item.ID]; ok && (activeApplication(c.CurrentStage) || category == "caseStages" && stage != "") && (stage == "" || c.CurrentStage == stage) && (category != "documentsComplete" || documentsComplete[item.ID]) {
+				selected = append(selected, item)
+			}
+		}
+		filtered = selected
+	}
+	if r.URL.Query().Get("dashboard") == "1" || category == "followupsToday" || category == "followupsUpcoming" {
+		// Dashboard totals describe whole record sets, including records outside
+		// the daily attention queue. Build their drill-down from the same sets.
+		selectOverview := ""
+		switch category {
+		case "applications", "documents":
+			selectOverview = "cases"
+		case "leads", "followups", "overdueLeads", "followupsToday", "followupsUpcoming":
+			selectOverview = "leads"
+		}
+		leadMatches := map[string]bool{}
+		for _, lead := range s.Leads {
+			days, dated := dateDistance(lead.FollowUpDate, today)
+			leadMatches[lead.ID] = openLead(lead.Status) && (category == "leads" || category == "followups" && dated && days <= 0 || category == "overdueLeads" && dated && days < 0 || category == "followupsToday" && dated && days == 0 || category == "followupsUpcoming" && dated && days > 0)
+		}
+		if selectOverview != "" {
+			all, _ := dailyOverview(currentUser(r), s, filter, selectOverview)
+			filtered = []productivityItem{}
+			for _, item := range all[selectOverview] {
+				matches := false
+				if selectOverview == "cases" {
+					c := visibleCases[item.ID]
+					matches = c != nil && activeApplication(c.CurrentStage) && (category != "documents" || documentsByCase[item.ID])
+				} else {
+					matches = leadMatches[item.ID]
+				}
+				if matches {
+					filtered = append(filtered, item)
+				}
+			}
+		}
+	}
+	counts["invoicesOverdue"] = len(invoiceOverdue)
+	counts["invoicesDueSoon"] = len(invoiceDueSoon)
+	// Completeness is counted over every readable active application so the
+	// summary matches the records the matching category lists.
+	completeCount := 0
+	for _, c := range visibleCases {
+		if activeApplication(c.CurrentStage) && documentsComplete[c.ID] {
+			completeCount++
+		}
+	}
+	counts["documentsComplete"] = completeCount
 	page := slicePage(filtered, offset, limit)
 	for i := range page {
+		if page[i].Entity == "case" {
+			id := page[i].ID
+			if requiredByCase[id] == 0 {
+				page[i].Details = append(page[i].Details, "No accessible required documents recorded; review the checklist.")
+			} else {
+				page[i].Details = append(page[i].Details, fmt.Sprintf("Required documents verified: %d of %d", verifiedByCase[id], requiredByCase[id]))
+				if names := outstandingByCase[id]; len(names) > 0 {
+					page[i].Details = append(page[i].Details, "Needs verification: "+strings.Join(names, ", "))
+				}
+			}
+		}
 		if user, ok := committedUser(r, "id", page[i].Owner); ok && user.OrgID == currentUser(r).OrgID {
 			page[i].Owner = user.Name
 		}
 	}
-	writeJSON(w, 200, map[string]any{"items": page, "total": len(filtered), "counts": counts, "today": today, "scope": filter, "category": category, "limit": limit, "offset": offset})
+	writeJSON(w, 200, map[string]any{"items": page, "total": len(filtered), "counts": counts, "today": today, "scope": filter, "teamId": branchFilter.team, "teamName": teamName(r, branchFilter.team), "category": category, "limit": limit, "offset": offset})
 }
 func handleStudentJourney(w http.ResponseWriter, r *http.Request) {
 	r, s, close, ok := dailySnapshot(w, r)

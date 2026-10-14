@@ -1,5 +1,7 @@
 # Next priorities
 
+For the current implementation and acceptance status, start with [Current revision status](CURRENT_REVISION_STATUS.md). The dated sections below preserve earlier implementation evidence and planning history.
+
 ## Requested next improvements — 2026-10-12
 
 The first four priorities are implemented and locally verified. Isolated backup

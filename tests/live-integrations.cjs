@@ -3,6 +3,8 @@
 const fs = require('node:fs');
 const {randomUUID} = require('node:crypto');
 const env = process.env;
+const {acceptanceOptions,evaluateAcceptance}=require('./integration-acceptance-policy.cjs');
+const acceptanceOptionsValue=acceptanceOptions(env,process.argv.slice(2));
 const base = new URL(env.ECC_ACCEPTANCE_URL || 'http://127.0.0.1:8080');
 if (!['http:', 'https:'].includes(base.protocol)) throw new Error('Use an HTTP or HTTPS app URL');
 const send = env.ECC_ACCEPTANCE_SEND === 'true';
@@ -79,10 +81,12 @@ async function main() {
   for(const source of out.sources||[])if(source.entity&&source.id)await api('GET','/api/'+encodeURIComponent(source.entity)+'/'+encodeURIComponent(source.id));
   return {status:'response_observed',detail:'Real response and saved history verified; source/role/action acceptance requires the companion checklist'};
  });
- const report={date:new Date().toISOString(),environment:base.origin,marker,sendingEnabled:send,results};
+ const acceptance=evaluateAcceptance(results,acceptanceOptionsValue);
+ const report={date:new Date().toISOString(),environment:base.origin,marker,sendingEnabled:send,acceptance,results};
  const output=JSON.stringify(report,null,2)+'\n';
  if(env.ECC_ACCEPTANCE_REPORT)fs.writeFileSync(env.ECC_ACCEPTANCE_REPORT,output,{mode:0o600});
  console.log(output);
- if(results.some(row=>row.status==='failed'))process.exitCode=1;
+ process.exitCode=acceptance.exitCode;
+ if(acceptanceOptionsValue.strict&&!acceptance.complete)console.error('Strict acceptance incomplete: '+acceptance.incomplete.map(row=>row.integration+' ('+row.status+')').join(', ')+'. Complete the provider and companion checks before approval.');
 }
 main().catch(()=>{console.error('Acceptance setup failed. Check URL, login and server logs; no credentials are printed.');process.exitCode=1});

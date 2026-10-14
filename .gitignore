@@ -61,3 +61,5 @@ archive/
 *.sqlite
 *.sqlite-wal
 *.sqlite-shm
+
+/golang-backend/backend.test

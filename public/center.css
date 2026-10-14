@@ -90,3 +90,28 @@ summary { cursor:pointer; font-weight:650; font-size:14px; }
 nav.workspace-groups{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));overflow:visible;gap:16px} .workspace-nav-group{min-width:0}.workspace-nav-group h3{font-size:13px;margin:0 0 8px;color:var(--muted)}.workspace-nav-links{display:flex;flex-wrap:wrap;gap:6px}.workspace-nav-links button{white-space:normal;text-align:left;min-height:44px}@media(max-width:600px){nav.workspace-groups{grid-template-columns:1fr 1fr;gap:12px}.workspace-nav-links{flex-direction:column}.workspace-nav-links button{width:100%}}
 
 nav[aria-label="Document filters"],nav[aria-label="Document follow-up filters"]{flex-wrap:wrap;overflow:visible}
+
+/* Shared by embedded record tools and standalone workspace screens. */
+@media(max-width:600px){
+ .tools{padding:16px 0;min-width:0}
+ .tools>h2{font-size:21px;letter-spacing:-.4px}
+ .tools .card{padding:16px;border-radius:16px;margin-bottom:12px;box-shadow:none}
+ .tools :is(button,a.button){min-height:48px;border-radius:12px;font-size:14px;touch-action:manipulation}
+ .tools :is(input:not([type=checkbox]):not([type=radio]),select,textarea){font-size:16px;min-height:48px;border-radius:12px;scroll-margin-block:100px}
+ .tools label{font-size:14px;line-height:1.4}
+ .tools .toolbar{gap:10px;align-items:stretch}
+ .tools .toolbar>label{flex:1 1 100%;max-width:none}
+ .tools .toolbar>input,.tools .toolbar>select{max-width:none;width:100%;flex:1 1 100%}
+ .tools form .actions{gap:8px}
+ .tools form .actions>button{flex:1 1 auto}
+ .tools .work-item>p{margin-block:8px;line-height:1.55}
+ .tools .work-item>a.button{display:flex;align-items:center;justify-content:center;width:100%;margin-top:14px}
+ .tools .work-item__title{font-size:18px;line-height:1.4}
+ .tools .work-item__details{border-top:1px solid var(--border);padding-top:12px;margin-top:12px}
+ .tools .work-item__details h4{margin:0;font-size:14px}
+ .tools .dashboard-panel>summary{min-height:48px;align-content:center;font-size:16px;font-weight:650}
+ .tools .stage-list button{min-height:48px}
+ .tools nav.workspace-groups{grid-template-columns:1fr;gap:14px}
+ .tools .workspace-nav-links{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+ .tools .workspace-nav-links button{margin:0;line-height:1.4}
+}

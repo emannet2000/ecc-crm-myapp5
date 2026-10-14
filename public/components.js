@@ -267,34 +267,58 @@
       label.append(scope);const refresh=node('button','Refresh work',{type:'submit',class:'secondary'});
       const summary=node('p'),counts=node('div',null,{class:'work-counts'}),totals=node('div',null,{class:'work-counts'}),selected=node('div',null,{class:'actions'}),heading=node('h3','All work');
       const clear=node('button','Show all work',{type:'button',class:'secondary'}),notice=node('p',null,{role:'status','aria-live':'polite'});
-      clear.hidden=true;selected.append(heading,clear);toolbar.append(label,refresh);
+      const branchStatus=node('p','Branch: All accessible branches',{role:'status','aria-live':'polite','data-work-branch':''}),clearBranch=node('button','Clear branch filter',{type:'button',class:'secondary','data-clear-work-branch':''});
+      clearBranch.hidden=true;clear.hidden=true;selected.append(heading,clear);toolbar.append(label,refresh,branchStatus,clearBranch);
       const overview=node('details',null,{class:'journey-section'});overview.append(node('summary','Browse all records'),node('p','All stages in the selected assignment view. Open pipeline excludes won and lost deals.'),totals);
-      root.append(node('p','Unassigned work is included so it does not get missed.'),toolbar,summary,node('h2','Needs attention'),node('p','These counts overlap: a record can be overdue and also need documents.'),counts,overview,selected,notice,result);this.shadowRoot.append(root);
-      let offset=0,category='',categoryTitle='All work';
+      const categories=node('details',null,{class:'journey-section'});categories.append(node('summary','Filter attention by type'),node('p','Counts overlap: a record can be overdue and also need documents.'),counts);
+      root.append(node('h2','My work today'),node('p','Choose a record below to take its next action. Unassigned work is included.'),toolbar,summary,categories,overview,selected,notice,result);this.shadowRoot.append(root);
+      let offset=0,category='',categoryTitle='All work',stage='',team='',branchName='',dashboard=false;
+      // Categories the dashboard overview can open. They share this record list
+      // instead of duplicating a filtered table in the overview panel.
+      const externalTitles={followupsToday:'Follow-ups today',followupsUpcoming:'Upcoming follow-ups',applications:'Active applications',leads:'Open leads',followups:'Follow-ups due',overdueLeads:'Overdue lead follow-ups',documents:'Applications needing documents',invoices:'Outstanding invoices',pendingApprovals:'Receipts awaiting approval',caseStages:'Applications by stage',documentsComplete:'Applications with complete documents',invoicesOverdue:'Payments overdue',invoicesDueSoon:'Payments due this week'};
+      this.revealCategory=(key,selectedStage,filters={})=>{
+        if(!externalTitles[key])return false;
+        category=key;stage=key==='caseStages'?(selectedStage||''):'';
+        if(filters.scope)scope.value=filters.scope;
+        team=filters.team||'';branchName=filters.teamName||'';dashboard=true;
+        categoryTitle=stage?externalTitles[key]+' · '+stage:externalTitles[key];
+        offset=0;this.load();
+        selected.scrollIntoView({block:'center',behavior:'smooth'});
+        return true;
+      };
+      this.dashboardFocus=event=>{const detail=event.detail||{};if(detail.category&&this.revealCategory(detail.category,detail.stage,detail))event.preventDefault?.()};
+      window.addEventListener('crm:dashboard-focus',this.dashboardFocus);
       const cards=[];
       for(const [key,title] of [['deals','Deals'],['pipeline','Open pipeline'],['leads','Leads'],['students','Students'],['cases','All applications'],['applications','Applications'],['followups','Follow-ups'],['overdueLeads','Overdue lead follow-ups'],['documents','Applications needing documents'],['documentIssues','Document follow-ups'],['deadlines','Due within 7 days / overdue'],['tasks','Tasks'],['handoffs','Pending handoffs'],['overdueHandoffs','Overdue handoffs'],['pendingApprovals','Receipts awaiting approval'],['invoices','Invoices requiring attention']]){
         const card=node('button',null,{type:'button',class:'work-count','aria-pressed':'false','data-category':key}),value=node('strong','–');
         card.append(value,node('span',title));card.setAttribute('aria-label',title+'. Show matching work');
-        card.onclick=()=>{category=key;categoryTitle=title;offset=0;this.load()};(['deals','pipeline','leads','students','cases'].includes(key)?totals:counts).append(card);cards.push({key,title,card,value});
+        card.onclick=()=>{stage='';dashboard=false;category=key;categoryTitle=title;offset=0;this.load()};(['deals','pipeline','leads','students','cases'].includes(key)?totals:counts).append(card);cards.push({key,title,card,value});
       }
       this.load=async()=>{
         const generation=++this.generation,requestedCategory=category,requestedOffset=offset,pageSize=window.matchMedia?.('(max-width: 640px)').matches?10:25;
         const focus=document.documentElement.dataset.navFocus||'adviser';
         refresh.disabled=true;result.inert=true;result.setAttribute('aria-busy','true');notice.textContent='Loading '+categoryTitle.toLowerCase()+'…';
         heading.textContent=categoryTitle;clear.hidden=!category;
+        branchStatus.textContent=team?'Branch: '+(branchName||'Selected branch'):'Branch: All accessible branches';clearBranch.hidden=!team;
         for(const {key,card} of cards){card.setAttribute('aria-pressed',String(category===key));card.hidden=false;}
         try{
-          const out=await request('/api/my-work?'+new URLSearchParams({scope:scope.value,focus,category:requestedCategory,offset:String(requestedOffset),limit:String(pageSize)}));
+          const query={scope:scope.value,focus,category:requestedCategory,offset:String(requestedOffset),limit:String(pageSize)};
+          if(stage)query.stage=stage;
+          if(team)query.team=team;
+          if(dashboard)query.dashboard='1';
+          const out=await request('/api/my-work?'+new URLSearchParams(query));
           if(!this.isConnected||generation!==this.generation)return;
           if(requestedCategory&&out.category!==requestedCategory)throw new Error('The server did not apply this work filter. Restart the CRM server with the latest build, then use Refresh work.');
-          summary.textContent=`${out.today} · ${out.total} work items · full accessible dataset`;
+          if(team&&out.teamId!==team)throw new Error('The server did not apply this branch filter. Use Refresh work to retry.');
+          branchName=out.teamName||branchName;branchStatus.textContent=team?'Branch: '+(branchName||'Selected branch'):'Branch: All accessible branches';
+          summary.textContent=`${out.today} · ${out.total} work items · ${team?'selected branch':'all accessible branches'} · ${scope.querySelector('option[value="'+scope.value+'"]')?.textContent||scope.value}`;
           for(const {key,title,card,value} of cards){value.textContent=String(out.counts?.[key]||0);card.setAttribute('aria-label',`${title}: ${value.textContent}. Show matching work`);}
           result.replaceChildren();notice.textContent='';window.dispatchEvent(new Event('crm:my-work-ready'));
           if(!out.items?.length){
             result.append(node('p',category?'No matching work items in this view. Choose Show all work or change the assignment filter.':'No work items in this view. Choose All accessible work to check other assignments.'));
             const actions=node('div',null,{class:'actions'});
             const all=node('button','Check all accessible work',{type:'button',class:'secondary'});
-            all.onclick=()=>{scope.value='all';category='';categoryTitle='All work';offset=0;this.load()};actions.append(all);
+            all.onclick=()=>{scope.value='all';stage='';team='';dashboard=false;category='';categoryTitle='All work';offset=0;this.load()};actions.append(all);
             for(const [label,href] of [['Create your first lead','/leads'],['Review applications','/cases'],['Review invoices & payments','/invoices']])actions.append(node('a',label,{href,class:'button secondary'}));
             result.append(actions);return;
           }
@@ -303,7 +327,7 @@
             card.append(node('a',item.name,{href:item.route,class:'work-item__title'}),node('p','Needs attention: '+item.reason),node('p','Next action: '+(item.action||'Choose the next action.')),node('p','Responsible: '+(item.owner||'Unassigned')));
             card.append(node('p',item.deadline?'Due '+item.deadline:'Deadline: Not set'));
             if(item.entity==='case'&&!item.owner)card.append(node('a','Assign an officer',{href:item.route+'#handoff',class:'button secondary'}));
-            if(item.details?.length){const details=node('details',null,{class:'work-item__details'});details.append(node('summary','More context'));for(const detail of item.details)details.append(node('p',detail));card.append(details);}
+            if(item.details?.length){const details=node(item.entity==='case'?'section':'details',null,{class:'work-item__details'});details.append(node(item.entity==='case'?'h4':'summary',item.entity==='case'?'Application context and requirements':'More context')); for(const detail of item.details)details.append(node('p',detail));card.append(details);}
             const actionLabel={case:'Review application and next action',lead:'Review lead and follow up',deal:'Review deal and next action',student:'Review student journey',task:'Review and update task',invoice:'Review balance and receipts',handoff:'Review handoff',document:'Review document requirement'}[item.entity]||'Review and take action';
             card.append(node('a',actionLabel,{href:item.route,class:'button secondary','aria-label':actionLabel+' — '+item.name}));result.append(card);
           }
@@ -312,12 +336,13 @@
         }catch(error){if(generation===this.generation){result.replaceChildren();notice.textContent=error.message;}}
         finally{if(generation===this.generation){refresh.disabled=false;result.inert=false;result.setAttribute('aria-busy','false');}}
       };
-      clear.onclick=()=>{category='';categoryTitle='All work';offset=0;this.load()};
+      clearBranch.onclick=()=>{team='';branchName='';offset=0;this.load()};
+      clear.onclick=()=>{category='';stage='';team='';branchName='';dashboard=false;categoryTitle='All work';offset=0;this.load()};
       toolbar.onsubmit=event=>{event.preventDefault();offset=0;this.load()};scope.onchange=()=>{offset=0;this.load()};
-      this.overviewClick=event=>{const target=event.target.closest?.('[data-work-category]');if(!target)return;if(event.type==='keydown'&&!['Enter',' '].includes(event.key))return;event.preventDefault();const match=cards.find(card=>card.key===target.dataset.workCategory);if(!match)return;scope.value='all';overview.open=true;category=match.key;categoryTitle=match.title;offset=0;this.load();selected.scrollIntoView({block:'center',behavior:'smooth'});};document.addEventListener('click',this.overviewClick);document.addEventListener('keydown',this.overviewClick);
+      this.overviewClick=event=>{const target=event.target.closest?.('[data-work-category]');if(!target)return;if(event.type==='keydown'&&!['Enter',' '].includes(event.key))return;event.preventDefault();const match=cards.find(card=>card.key===target.dataset.workCategory);if(!match)return;scope.value='all';overview.open=true;stage='';dashboard=false;category=match.key;categoryTitle=match.title;offset=0;this.load();selected.scrollIntoView({block:'center',behavior:'smooth'});};document.addEventListener('click',this.overviewClick);document.addEventListener('keydown',this.overviewClick);
       this.focusChanged=()=>{offset=0;this.load()};window.addEventListener('ecc-navigation-focus',this.focusChanged);window.addEventListener('crm:record-changed',this.focusChanged);this.load();
     }
-    disconnectedCallback(){this.generation++;document.removeEventListener('click',this.overviewClick);document.removeEventListener('keydown',this.overviewClick);window.removeEventListener('ecc-navigation-focus',this.focusChanged);window.removeEventListener('crm:record-changed',this.focusChanged);this.shadowRoot.replaceChildren();}
+    disconnectedCallback(){this.generation++;document.removeEventListener('click',this.overviewClick);document.removeEventListener('keydown',this.overviewClick);window.removeEventListener('ecc-navigation-focus',this.focusChanged);window.removeEventListener('crm:record-changed',this.focusChanged);window.removeEventListener('crm:dashboard-focus',this.dashboardFocus);this.shadowRoot.replaceChildren();}
   }
   class StudentJourney extends HTMLElement {
     static get observedAttributes(){return ['record-id'];}
@@ -411,7 +436,7 @@
   customElements.define('crm-ai-productivity', AIProductivity);
   const updateTheme = () => {
     const theme=localStorage.getItem('theme') || 'light';
-    for (const element of document.querySelectorAll('crm-workspace,crm-record-tools,crm-insights,crm-ai-productivity,crm-ai-chat,crm-administration,crm-student-journey,crm-my-work,crm-recent-changes,crm-form-quality,crm-integration-health,crm-lead-work,crm-application-blockers,crm-work-plan,crm-client-history,crm-priority-queues,crm-operational-attention,crm-reconciliation')) { if(element.dataset.theme!==theme)element.dataset.theme=theme; }
+    for (const element of document.querySelectorAll('crm-workspace,crm-record-tools,crm-insights,crm-ai-productivity,crm-ai-chat,crm-administration,crm-student-journey,crm-my-work,crm-dashboard-overview,crm-recent-changes,crm-form-quality,crm-integration-health,crm-lead-work,crm-application-blockers,crm-work-plan,crm-client-history,crm-priority-queues,crm-operational-attention,crm-reconciliation')) { if(element.dataset.theme!==theme)element.dataset.theme=theme; }
   };
   new MutationObserver(updateTheme).observe(document.getElementById('app'), {childList:true, subtree:true});
   window.addEventListener('crm:theme-changed', updateTheme);

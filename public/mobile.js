@@ -65,7 +65,7 @@
   function refresh() {
     pending = false;
     prepareTables(document);
-    for (const host of document.querySelectorAll('crm-workspace,crm-record-tools,crm-insights,crm-administration,crm-student-journey,crm-my-work,crm-recent-changes,crm-lead-work')) {
+    for (const host of document.querySelectorAll('crm-workspace,crm-record-tools,crm-insights,crm-administration,crm-student-journey,crm-my-work,crm-dashboard-overview,crm-recent-changes,crm-lead-work')) {
       const root = host.shadowRoot;
       if (!root) continue;
       if (!watched.has(root)) {
@@ -142,6 +142,18 @@
   }
   if ('serviceWorker' in navigator && window.isSecureContext) {
     window.addEventListener('load', () => navigator.serviceWorker.register('/sw.js').catch(error => console.warn('PWA shell caching is unavailable', error)));
+  }
+  // Visual viewport changes let the keyboard use the bottom navigation space.
+  if (window.visualViewport) {
+    const syncKeyboard = () => {
+      const active = document.activeElement?.shadowRoot?.activeElement || document.activeElement;
+      const editing = active?.matches?.('input:not([type=checkbox]):not([type=radio]):not([type=button]),textarea,[contenteditable=true]');
+      const keyboard = mobile.matches && editing && window.innerHeight - window.visualViewport.height > 150;
+      document.documentElement.toggleAttribute('data-mobile-keyboard', !!keyboard);
+    };
+    window.visualViewport.addEventListener('resize', syncKeyboard);
+    document.addEventListener('focusin', syncKeyboard);
+    document.addEventListener('focusout', () => requestAnimationFrame(syncKeyboard));
   }
   refresh();
 })();

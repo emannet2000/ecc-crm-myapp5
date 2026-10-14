@@ -138,7 +138,7 @@ async function fixture(view = 'contacts', options = {}) {
       let data,contentType='application/json',status=200;
       if(url.pathname.startsWith('/public/')) {data=fs.readFileSync(path.join(__dirname,'..',url.pathname));contentType=url.pathname.endsWith('.css')?'text/css':'application/javascript';}
       else if(url.pathname==='/portal') {data=fs.readFileSync(path.join(__dirname,'../public/portal.html'));contentType='text/html';}
-      else if(url.pathname==='/') {contentType='text/html';data=`<!doctype html><html><head><meta charset="utf-8"></head><body><div id="app">${view==='leadwork'?'<crm-lead-work record-id="l_client"></crm-lead-work>':view==='picker'?'<crm-record-picker entity="contacts" value="c_client" label="Client"></crm-record-picker>':view==='ai'?'<crm-ai-chat></crm-ai-chat>':view==='workspace'?'<crm-workspace></crm-workspace>':view==='insights'?'<crm-insights></crm-insights>':view==='daily'?'<crm-my-work></crm-my-work>':view==='journey'?'<crm-student-journey record-id="s_client"></crm-student-journey>':view==='quality'?'<crm-form-quality entity="students" studentcode="DUP"></crm-form-quality>':view==='connections'?'<crm-integration-health></crm-integration-health>':`<crm-record-tools entity="${view}" record-id="${view==='students'?'s_client':view==='leads'?'l_client':'c_client'}"></crm-record-tools>`}</div><script src="/public/pickers.js"></script><script src="/public/assignment-review.js"></script><script src="/public/record-versions.js"></script><script src="/public/draft-recovery.js"></script><script src="/public/productivity.js"></script><script src="/public/ai.js"></script><script src="/public/followup-templates.js"></script><script src="/public/handoffs.js"></script><script src="/public/progress.js"></script><script src="/public/consolidation.js"></script><script src="/public/center.js"></script><script src="/public/components.js"></script><script src="/public/lead-work.js"></script></body></html>`;}
+      else if(url.pathname==='/') {contentType='text/html';data=`<!doctype html><html><head><meta charset="utf-8"></head><body><div id="app">${view==='leadwork'?'<crm-lead-work record-id="l_client"></crm-lead-work>':view==='picker'?'<crm-record-picker entity="contacts" value="c_client" label="Client"></crm-record-picker>':view==='ai'?'<crm-ai-chat></crm-ai-chat>':view==='workspace'?'<crm-workspace></crm-workspace>':view==='insights'?'<crm-insights></crm-insights>':view==='daily'?'<crm-my-work></crm-my-work>':view==='journey'?'<crm-student-journey record-id="s_client"></crm-student-journey>':view==='quality'?'<crm-form-quality entity="students" studentcode="DUP"></crm-form-quality>':view==='connections'?'<crm-integration-health></crm-integration-health>':`<crm-record-tools entity="${view}" record-id="${view==='students'?'s_client':view==='leads'?'l_client':'c_client'}"></crm-record-tools>`}</div><script src="/public/pickers.js"></script><script src="/public/assignment-review.js"></script><script src="/public/record-versions.js"></script><script src="/public/draft-recovery.js"></script><script src="/public/productivity.js"></script><script src="/public/ai.js"></script><script src="/public/followup-templates.js"></script><script src="/public/handoffs.js"></script><script src="/public/progress.js"></script><script src="/public/consolidation.js"></script><script src="/public/workspace-secondary.js"></script><script src="/public/center.js"></script><script src="/public/components.js"></script><script src="/public/lead-work.js"></script></body></html>`;}
       else if(view==='picker'&&url.pathname==='/api/contacts/c_client') data={contact};
       else if(view==='picker'&&url.pathname==='/api/contacts') {
         let rows=Array.from({length:240},(_,i)=>({id:'pick-'+i,name:'Searchable client '+i,email:'client'+i+'@example.com'}));
@@ -373,7 +373,7 @@ test('live dashboard overview cards open record details on desktop and mobile',{
    await page.setViewport({width,height:900});
   await page.waitForFunction(()=>document.querySelector('crm-my-work')?.shadowRoot.querySelector('.work-item'));
   await page.waitForFunction(()=>getComputedStyle(document.querySelector('crm-my-work').shadowRoot.querySelector('.work-count')).display==='grid');
-  await page.$eval('crm-my-work',host=>host.shadowRoot.querySelector('details.journey-section').open=true);
+  await page.$eval('crm-my-work',host=>host.shadowRoot.querySelectorAll('details.journey-section').forEach(section=>section.open=true));
   for(const category of ['deals','pipeline','leads','students','cases','applications','followups','overdueLeads','documents','deadlines']){
     const response=page.waitForResponse(r=>{const url=new URL(r.url());return url.pathname==='/api/my-work'&&url.searchParams.get('category')===category});
     await page.evaluate(category=>document.querySelector('crm-my-work').shadowRoot.querySelector('[data-category="'+category+'"]').scrollIntoView({block:'center',behavior:'instant'}),category);
@@ -475,7 +475,7 @@ test('daily work preserves controls on slow requests, ignores stale results and 
  try{
   await page.waitForFunction(()=>document.querySelector('crm-my-work').shadowRoot.textContent.includes('60 work items'));
   options.workResponse=async(url,data)=>{if(url.searchParams.get('category')==='documents')await new Promise(resolve=>setTimeout(resolve,600));return {data}};
-  await page.evaluate(()=>{const root=document.querySelector('crm-my-work').shadowRoot;window.workButton=root.querySelector('[data-category="documents"]');window.workButton.click();});
+  await page.evaluate(()=>{const root=document.querySelector('crm-my-work').shadowRoot;root.querySelector('.work-counts').parentElement.open=true;window.workButton=root.querySelector('[data-category="documents"]');window.workButton.click();});
   assert.ok(await page.evaluate(()=>{const root=document.querySelector('crm-my-work').shadowRoot;return window.workButton.isConnected&&root.querySelector('[aria-busy="true"]')&&root.querySelector('h3').textContent==='Applications needing documents'}));
   await page.click('crm-my-work >>> [data-category="overdueLeads"]');
   await page.waitForFunction(()=>document.querySelector('crm-my-work').shadowRoot.textContent.includes('No matching work items'));
@@ -507,7 +507,7 @@ test('daily overview cards show record details and links for all five categories
  const {page,errors}=await fixture('daily',options);
  try{
   await page.waitForFunction(()=>document.querySelector('crm-my-work').shadowRoot.querySelector('.work-item'));
-  await page.$eval('crm-my-work',host=>host.shadowRoot.querySelector('details.journey-section').open=true);
+  await page.$eval('crm-my-work',host=>host.shadowRoot.querySelectorAll('details.journey-section').forEach(section=>section.open=true));
   for(const [category,entity]of Object.entries(entities)){
    await page.click('crm-my-work >>> [data-category="'+category+'"]');
    await page.waitForFunction(entity=>document.querySelector('crm-my-work').shadowRoot.textContent.includes('Specific '+entity),{},entity);
@@ -735,4 +735,68 @@ test('service templates preview requirements and action defaults before applying
   assert.equal(await page.$eval('crm-workspace >>> [name=applyTemplatePlan]',e=>e.checked),false);
   assert.deepEqual(errors,[]);
  }finally{await page.close()}
+});
+
+test('live dashboard filters, closed stage transitions and mobile stay consistent',{skip:process.env.ECC_BROWSER_LIVE!=='true',timeout:120000},async()=>{
+ const directory=fs.mkdtempSync(path.join(os.tmpdir(),'ecc-dashboard-regression-')),port='17009',base='http://localhost:'+port;
+ const server=spawn(path.join(__dirname,'../build/ecc-crm'),[],{cwd:path.join(__dirname,'..'),env:{...process.env,PORT:port,DATABASE_PATH:path.join(directory,'crm.sqlite3'),JWT_SECRET:'dashboard-regression-only',APP_URL:base,ALLOW_SIGNUP:'false',SMTP_HOST:'',STRIPE_SECRET_KEY:'',OPENAI_API_KEY:''},stdio:'pipe'});
+ const page=await browser.newPage(),errors=[];page.on('pageerror',error=>errors.push(error.message));
+ await page.setRequestInterception(true);page.on('request',r=>new URL(r.url()).origin===base?r.continue():r.abort());
+ const api=(method,url,body,etag)=>page.evaluate(async({method,url,body,etag})=>{const r=await fetch(url,{method,headers:{'Content-Type':'application/json',...(etag?{'If-Match':etag}:{})},body:body===undefined?undefined:JSON.stringify(body)});return{status:r.status,etag:r.headers.get('etag'),data:await r.json()}},{method,url,body,etag});
+ try{
+  for(let i=0;i<100;i++){try{if((await fetch(base+'/api/health')).ok)break}catch{}await new Promise(r=>setTimeout(r,100))}
+  await page.goto(base,{waitUntil:'networkidle2'});
+  await page.type('input[type=email]','demo@northwind.dev');await page.type('input[type=password]','Demo1234');await page.click('button[type=submit]');
+  await page.waitForSelector('.app-shell');
+  const overview=await api('GET','/api/dashboard/overview?scope=all');
+  const expectedLeads={};
+  for(const [label,offset] of [['overdue',-2],['today',0],['upcoming',30]]){
+   const day=new Date(overview.data.today+'T12:00:00Z');day.setUTCDate(day.getUTCDate()+offset);
+   const created=await api('POST','/api/leads',{name:'Regression '+label,source:'Other',status:'New',followUpDate:day.toISOString().slice(0,10),nextAction:'Regression follow-up'});
+   assert.equal(created.status,201,JSON.stringify(created.data));expectedLeads[label]=created.data.lead.id;
+  }
+  const team=await api('POST','/api/admin/teams',{name:'Regression empty branch'});assert.equal(team.status,201);
+  await page.evaluate(()=>window.dispatchEvent(new Event('crm:record-changed')));
+  await page.waitForFunction(id=>document.querySelector('crm-dashboard-overview')?.shadowRoot.querySelector('[name=team] option[value="'+id+'"]'),{},team.data.id);
+  const cases=await api('GET','/api/cases?limit=100');const id=cases.data.cases[0].id;
+  const record=await api('GET','/api/cases/'+id+'/gates');
+  const moved=await api('POST','/api/cases/'+id+'/transition',{stage:'Closed',override:true,reason:'Browser regression test'},record.data.revision);assert.equal(moved.status,200,JSON.stringify(moved.data));
+  await page.evaluate(()=>window.dispatchEvent(new Event('crm:record-changed')));
+  for(const width of [1280,390]){
+   await page.setViewport({width,height:900});
+   await page.waitForFunction(()=>document.querySelector('crm-dashboard-overview')?.shadowRoot.querySelector('.kpi'));
+   await page.select('crm-dashboard-overview >>> [name=scope]','all');
+   await page.waitForFunction(()=>!document.querySelector('crm-dashboard-overview').shadowRoot.querySelector('button').disabled);
+   for(const category of ['applications','leads','followups','followupsToday','followupsUpcoming','invoicesOverdue']){
+    const response=page.waitForResponse(r=>{const u=new URL(r.url());return u.pathname==='/api/my-work'&&u.searchParams.get('category')===category&&u.searchParams.get('dashboard')==='1'});
+    await page.evaluate(category=>document.querySelector('crm-dashboard-overview').shadowRoot.querySelector('.kpi[data-category="'+category+'"]').click(),category);
+    const r=await response;assert.equal(r.status(),200);const out=await r.json();assert.equal(out.category,category);assert.equal(new URL(r.url()).searchParams.get('scope'),'all');
+    if(category==='followups') {assert.ok(out.items.some(i=>i.id===expectedLeads.today));assert.ok(out.items.some(i=>i.id===expectedLeads.overdue));assert.ok(!out.items.some(i=>i.id===expectedLeads.upcoming));}
+    if(category==='followupsToday') {assert.ok(out.items.some(i=>i.id===expectedLeads.today));assert.ok(!out.items.some(i=>i.id===expectedLeads.upcoming||i.id===expectedLeads.overdue));}
+    if(category==='followupsUpcoming') {assert.ok(out.items.some(i=>i.id===expectedLeads.upcoming));assert.ok(!out.items.some(i=>i.id===expectedLeads.today||i.id===expectedLeads.overdue));}
+
+   }
+   const closedResponse=page.waitForResponse(r=>{const u=new URL(r.url());return u.pathname==='/api/my-work'&&u.searchParams.get('stage')==='Closed'});
+   await page.evaluate(()=>[...document.querySelector('crm-dashboard-overview').shadowRoot.querySelectorAll('.stage-list button')].find(b=>b.getAttribute('aria-label')?.startsWith('Closed:')).click());
+   assert.ok((await (await closedResponse).json()).items.some(item=>item.id===id));
+   const taskResponse=page.waitForResponse(r=>new URL(r.url()).searchParams.get('category')==='tasks');
+   await page.evaluate(()=>document.querySelector('crm-my-work').shadowRoot.querySelector('[data-category=tasks]').click());
+   const tasks=await taskResponse;assert.equal(tasks.status(),200);assert.equal(new URL(tasks.url()).searchParams.get('stage'),null);
+   await page.select('crm-dashboard-overview >>> [name=team]',team.data.id);
+   await page.waitForFunction(()=>!document.querySelector('crm-dashboard-overview').shadowRoot.querySelector('button').disabled);
+   const branchResponse=page.waitForResponse(r=>{const u=new URL(r.url());return u.pathname==='/api/my-work'&&u.searchParams.get('category')==='applications'&&u.searchParams.get('team')===team.data.id});
+   await page.evaluate(()=>document.querySelector('crm-dashboard-overview').shadowRoot.querySelector('.kpi[data-category=applications]').click());
+   const branch=await branchResponse;assert.equal(branch.status(),200);assert.equal((await branch.json()).total,0);
+   await page.waitForFunction(()=>document.querySelector('crm-my-work').shadowRoot.querySelector('[data-work-branch]').textContent==='Branch: Regression empty branch');
+   const clearedResponse=page.waitForResponse(r=>{const u=new URL(r.url());return u.pathname==='/api/my-work'&&u.searchParams.get('category')==='applications'&&!u.searchParams.has('team')});
+   await page.click('crm-my-work >>> [data-clear-work-branch]');
+   assert.equal((await clearedResponse).status(),200);
+   await page.waitForFunction(()=>document.querySelector('crm-my-work').shadowRoot.querySelector('[data-work-branch]').textContent==='Branch: All accessible branches');
+
+   assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth+1),'page must fit mobile and desktop');
+   await page.select('crm-dashboard-overview >>> [name=team]','');
+   await page.waitForFunction(()=>!document.querySelector('crm-dashboard-overview').shadowRoot.querySelector('button').disabled);
+  }
+  assert.deepEqual(errors,[]);
+ }finally{await page.close();server.kill('SIGTERM');await new Promise(resolve=>server.exitCode!==null?resolve():server.once('exit',resolve));fs.rmSync(directory,{recursive:true,force:true})}
 });

@@ -31,9 +31,30 @@ payment form or authorizes a payment automatically.
 3600). Set `ECC_ACCEPTANCE_MARKER` to reproduce a known marker, and
 `ECC_ACCEPTANCE_REPORT` to save a private JSON report. Report statuses distinguish
 `passed`, `provider_accepted`, `callback_observed`, `response_observed`, `pending`,
-`not_configured`, and `failed`. Partial evidence is not full acceptance. A zero
-exit code means the runner encountered no failed checks; pending checks still
-require work. Credentials and CRM response bodies are not included in reports.
+`not_configured`, and `failed`. Partial evidence is not full acceptance.
+
+`npm run test:integrations` is a read-only assessment unless sending is explicitly
+enabled. In assessment mode, exit code zero means no check failed; the report's
+`acceptance.complete` still stays false for unconfigured, pending or partial
+results. Credentials and CRM response bodies are not included in reports.
+
+Use `npm run test:integrations:strict` (or `ECC_ACCEPTANCE_STRICT=true`) for an
+acceptance gate. It returns a nonzero exit code unless every required integration
+has exactly one `passed` result. Missing, duplicate, unconfigured, pending and
+partial results all fail the gate. Any failed check also fails the run. The
+report includes the mode, required integrations, incomplete checks and completion
+state, so a configuration probe cannot be presented as approval.
+
+All four integrations are required by default. Set `ECC_ACCEPTANCE_REQUIRED` to
+an explicit comma-separated subset, such as `email,payments`, when the acceptance
+scope excludes other providers. Empty names, duplicates, unknown integrations,
+and invalid boolean values for `ECC_ACCEPTANCE_STRICT` are rejected. Scope
+selection never disables failures in other checks. Strict mode does not enable
+sending: `ECC_ACCEPTANCE_SEND=true` and dedicated test targets are still needed.
+
+Payment `callback_observed` and AI `response_observed` are intentionally partial
+and do not pass strict acceptance. Their companion checks below remain required;
+the runner does not infer those outcomes from an observed response or callback.
 
 Complete the following companion checks before approving live integrations:
 

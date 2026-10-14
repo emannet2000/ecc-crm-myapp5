@@ -133,6 +133,8 @@ formField model cfg =
             , Attr.attribute "autocomplete" cfg.autocomplete
             , Attr.attribute "autocapitalize" (if cfg.fieldKey == NameField then "words" else "none")
             , Attr.attribute "enterkeyhint" (if isPassword then "go" else "next")
+            , Attr.attribute "spellcheck" "false"
+            , Attr.attribute "aria-invalid" (if err /= Nothing then "true" else "false")
             , value val
             , onInput (UpdatedField cfg.fieldKey)
             ]
@@ -150,6 +152,7 @@ formField model cfg =
                              else
                                 "Show password"
                             )
+                        , Attr.attribute "aria-pressed" (if model.showPassword then "true" else "false")
                         , onClick ToggledShowPassword
                         ]
                         [ if model.showPassword then

@@ -186,3 +186,28 @@ outlier is retained in the report. Faster backend aggregation does not establish
 uniform cold-load performance; deployment traces and larger samples are needed
 before setting a loading target. Both runs use the same current frontend and
 fresh copies of the same synthetic database.
+
+## Daily workflow revision — 2026-10-14
+
+Current build, same representative fixture (5,000 contacts, applications and
+required documents; 20% foreign workspace). Three local authenticated Home loads:
+
+| Load | Usable daily work | Home summaries ready |
+| --- | ---: | ---: |
+| 1 | 1,587.8 ms | 2,077.9 ms |
+| 2 | 877.1 ms | 1,563.7 ms |
+| 3 | 945.0 ms | 1,647.9 ms |
+| Median | 945.0 ms | 1,647.9 ms |
+
+My work now precedes the overview, attention categories and overview breakdowns
+start collapsed, and application cards include accessible document verification
+requirements. This run also passed navigation, document filters and isolated
+restore checks. No baseline binary was supplied, so these observations establish
+current loading times rather than a controlled speedup. The all-summary boundary
+is the existing Home summary readiness probe; it is not a paint measurement or a
+guarantee that every optional component has finished. Detailed request durations
+and bytes are in `tests/artifacts/next-workspace-report.json`.
+
+The synthetic integration assessment remains incomplete and actual participant
+sessions remain pending. These timings do not establish provider acceptance or
+staff usability.

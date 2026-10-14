@@ -136,6 +136,9 @@ func agentTools(settings aiSettings, readOnly bool) []any {
 	if settings.Reports {
 		tools = append(tools, aiFunction("analyze_workspace", "Analyze all accessible CRM data for an inclusive creation-date cohort and the previous period. Returns source conversion, enrolment, pipeline, invoice balances, overdue work and stalled records. Causes are hypotheses, not facts.", map[string]any{"from": aiString("YYYY-MM-DD, or empty for the last 30 days"), "to": aiString("YYYY-MM-DD, or empty for today")}))
 	}
+	if settings.RecordContext {
+		tools = append(tools, aiFunction("workspace_insights", "Answer one recurring operational question from accessible CRM records and return citable record IDs. Read-only: it never writes, never changes a status and never takes a payment. Topics: "+insightsTopics+".", map[string]any{"topic": aiString("One of " + insightsTopics), "scope": aiString("mine, unassigned or all; default mine")}))
+	}
 	if settings.Actions && !readOnly {
 		tools = append(tools, aiFunction("propose_action", "Prepare a reviewed action only when the user asks to perform it. No write happens now. Read the target first. Supported: create_task, update_record, schedule_followup, send_email, schedule_meeting. Use fieldsJson for requested fields only; send_email requires contactId, recipient, subject, body; meeting requires title, occurredAt, body with an explicit timezone/offset. task fields: title, description, dueDate, contactId, owner, status; followup: followUpDate, message. Changes require confirmation.", map[string]any{"kind": map[string]any{"type": "string", "enum": []string{"create_task", "update_record", "schedule_followup", "send_email", "schedule_meeting"}}, "entity": aiString("Plural CRM entity, or empty for a task without a contact"), "id": aiString("Target ID; empty only for an unlinked new task"), "fieldsJson": aiString("JSON object of the requested fields")}))
 	}
@@ -213,8 +216,8 @@ func (a *aiAgent) tool(name, arguments string) (any, error) {
 		return nil, fmt.Errorf("This AI capability is disabled")
 	}
 	var args struct {
-		Query, Entity, ID, From, To, Kind, FieldsJSON string
-		Offset                                        int
+		Query, Entity, ID, From, To, Kind, FieldsJSON, Topic, Scope string
+		Offset                                                      int
 	}
 	if len(arguments) > 16000 || json.Unmarshal([]byte(arguments), &args) != nil {
 		return nil, fmt.Errorf("Invalid tool arguments")
@@ -228,6 +231,8 @@ func (a *aiAgent) tool(name, arguments string) (any, error) {
 		return a.searchKnowledge(args.Query, args.Offset)
 	case "analyze_workspace":
 		return a.analyze(args.From, args.To)
+	case "workspace_insights":
+		return a.workspaceInsights(args.Topic, args.Scope)
 	case "propose_action":
 		var fields map[string]any
 		if json.Unmarshal([]byte(args.FieldsJSON), &fields) != nil {

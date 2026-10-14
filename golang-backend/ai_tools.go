@@ -256,9 +256,13 @@ func aiPlural(entity string) string {
 	return entity
 }
 func aiAttention(s diskStore, user User, today string) []productivityItem {
-	items := productivityWorkload(user, s, today)
+	return aiAttentionScoped(s, user, today, "mine")
+}
+
+func aiAttentionScoped(s diskStore, user User, today, scope string) []productivityItem {
+	items := collectWorkload(user, s, today, scope, false)
 	for _, d := range s.Deals {
-		if d.Stage == "Won" || d.Stage == "Lost" {
+		if d.Stage == "Won" || d.Stage == "Lost" || d.OrgID != user.OrgID || !canRead(d.RecordScope, user) || !workAssigned(d.Owner, d.RecordScope, user, scope) {
 			continue
 		}
 		if distance, ok := dateDistance(d.CloseDate, today); ok && distance < 0 {
@@ -266,7 +270,7 @@ func aiAttention(s diskStore, user User, today string) []productivityItem {
 		}
 	}
 	for _, c := range s.Cases {
-		if c.CurrentStage == "Closed" || c.CurrentStage == "Approved" || c.CurrentStage == "Refused" {
+		if !activeApplication(c.CurrentStage) || c.OrgID != user.OrgID || !canRead(c.RecordScope, user) || !workAssigned(c.AssignedOfficer, c.RecordScope, user, scope) {
 			continue
 		}
 		if distance, ok := dateDistance(c.DateOpened, today); ok && distance <= -30 && c.NextAction == "" {

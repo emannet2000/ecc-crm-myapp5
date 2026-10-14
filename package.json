@@ -2,7 +2,7 @@
   "name": "ecc-crm-verification",
   "private": true,
   "scripts": {
-    "test": "node --test tests/dom.test.cjs tests/administration.test.cjs tests/mobile.test.cjs tests/workspace-interactions.test.cjs tests/usability-review.test.cjs",
+    "test": "node --test tests/dom.test.cjs tests/dashboard.test.cjs tests/administration.test.cjs tests/mobile.test.cjs tests/workspace-interactions.test.cjs tests/usability-review.test.cjs tests/integration-acceptance.test.cjs",
     "test:live": "ECC_BROWSER_LIVE=true node --test tests/browser.test.cjs tests/journey.browser.cjs",
     "test:browser": "node --test tests/browser.test.cjs tests/journey.browser.cjs",
     "test:offline": "node --test tests/offline.browser.cjs",
@@ -13,7 +13,9 @@
     "test:improvements": "node --test tests/improvements.browser.cjs",
     "test:workspace-next": "node --test tests/workspace-next.browser.cjs",
     "test:mobile-chat": "node --test tests/mobile-chat.browser.cjs",
-    "test:reports": "node --test tests/reports.browser.cjs"
+    "test:reports": "node --test tests/reports.browser.cjs",
+    "test:dashboard-live": "ECC_BROWSER_LIVE=true node --test --test-name-pattern=\"live dashboard filters\" tests/browser.test.cjs",
+    "test:integrations:strict": "node tests/live-integrations.cjs --strict"
   },
   "devDependencies": {
     "puppeteer": "25.10.0",

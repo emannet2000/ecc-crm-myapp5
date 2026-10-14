@@ -284,6 +284,7 @@ homeView model user =
                 )
             ]
         , Html.node "crm-my-work" [] []
+        , Html.node "crm-dashboard-overview" [] []
         , details [ class "home-secondary" ]
             [ summary [] [ text "Messages and overdue work summary" ]
             , Html.node "crm-work-outcomes" [ Attr.attribute "attention-only" "" ] []

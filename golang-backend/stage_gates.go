@@ -326,6 +326,50 @@ func handleCaseTransition(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, 200, map[string]any{"saved": true})
 }
 
+// applicationStageFollowUp creates the single task a stage change makes
+// necessary. It runs inside the same transaction as the change, so the task and
+// the transition share one audit entry, and it is idempotent: an equivalent open
+// task is never duplicated. Existing business logic supplies the facts — the
+// checklist decides whether documents are outstanding and the case itself
+// supplies the owner and deadline.
+func applicationStageFollowUp(after *diskStore, c Case, today string) {
+	if !activeApplication(c.CurrentStage) {
+		return
+	}
+	title, description := "", ""
+	switch {
+	case strings.TrimSpace(c.NextAction) == "":
+		title = "Record the next action: " + c.CaseNumber
+		description = c.CaseNumber + " moved to " + c.CurrentStage + " without a next staff action."
+	default:
+		submissionStage := c.CurrentStage == "Ready for Submission" || c.CurrentStage == "Submitted"
+		if !submissionStage {
+			return
+		}
+		for _, d := range after.Documents {
+			if d.CaseID != c.ID || !d.Required || !documentNeedsReview(d, today) {
+				continue
+			}
+			title = "Complete required documents: " + c.CaseNumber
+			description = c.CaseNumber + " is at " + c.CurrentStage + " and still needs " + d.DocName + " (" + d.Status + ")."
+			break
+		}
+	}
+	if title == "" {
+		return
+	}
+	for _, existing := range after.Tasks {
+		if existing.ContactID == c.ClientID && existing.Title == title && existing.Status != "done" {
+			return
+		}
+	}
+	due := c.NextDeadline
+	if due == "" {
+		due = today
+	}
+	after.Tasks = append(after.Tasks, Task{RecordScope: c.RecordScope, ID: newID("t"), Title: title, Description: description, Status: "todo", DueDate: due, ContactID: c.ClientID, ContactName: c.ClientName, Owner: c.AssignedOfficer, CreatedAt: today})
+}
+
 // Every persisted stage change is checked, including edits through legacy forms.
 func enforceApplicationGates(r *http.Request, before diskStore, after *diskStore) error {
 	old := map[string]Case{}
@@ -357,6 +401,7 @@ func enforceApplicationGates(r *http.Request, before diskStore, after *diskStore
 			}
 			return gateDenied{fmt.Sprintf("Stage gate for %s: %s", c.CurrentStage, strings.Join(issues, "; "))}
 		}
+		applicationStageFollowUp(after, c, todayForOrgDB(storeDB(r), c.OrgID))
 		if !rule.Enabled && override == "" {
 			continue
 		}

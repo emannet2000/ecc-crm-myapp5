@@ -35438,6 +35438,7 @@ var $author$project$View$Home$homeView = F2(
 							$elm$core$String$isEmpty(model.ai) ? 'Review your priorities and choose the next action.' : (model.ai + ' · Review your priorities and choose the next action.'))
 						])),
 					A3($elm$html$Html$node, 'crm-my-work', _List_Nil, _List_Nil),
+					A3($elm$html$Html$node, 'crm-dashboard-overview', _List_Nil, _List_Nil),
 					A2(
 					$elm$html$Html$details,
 					_List_fromArray(
@@ -47057,6 +47058,11 @@ var $author$project$View$Helpers$formField = F2(
 								$elm$html$Html$Attributes$attribute,
 								'enterkeyhint',
 								isPassword ? 'go' : 'next'),
+								A2($elm$html$Html$Attributes$attribute, 'spellcheck', 'false'),
+								A2(
+								$elm$html$Html$Attributes$attribute,
+								'aria-invalid',
+								(!_Utils_eq(err, $elm$core$Maybe$Nothing)) ? 'true' : 'false'),
 								$elm$html$Html$Attributes$value(val),
 								$elm$html$Html$Events$onInput(
 								$author$project$Types$UpdatedField(cfg.M))
@@ -47086,6 +47092,10 @@ var $author$project$View$Helpers$formField = F2(
 									$elm$html$Html$Attributes$attribute,
 									'aria-label',
 									model.eO ? 'Hide password' : 'Show password'),
+									A2(
+									$elm$html$Html$Attributes$attribute,
+									'aria-pressed',
+									model.eO ? 'true' : 'false'),
 									$elm$html$Html$Events$onClick($author$project$Types$ToggledShowPassword)
 								]),
 							_List_fromArray(

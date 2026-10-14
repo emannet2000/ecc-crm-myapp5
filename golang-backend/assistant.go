@@ -191,17 +191,24 @@ func collectWorkload(user User, s diskStore, today, filter string, routine bool)
 		if lead.NextAction != "" && lead.FollowUpDate != "" && (!hasDate || distance > 3) {
 			continue
 		}
-		priority, reason, rank := "medium", "Lead follow-up is due", 3
-		if hasDate && distance < 0 {
+		priority, reason, rank := "medium", "Lead has no follow-up date", 3
+		switch {
+		case hasDate && distance < 0:
 			priority, reason, rank = "urgent", "Lead follow-up is overdue", 0
-		} else if lead.FollowUpDate == "" {
-			reason = "Lead has no follow-up date"
+		case hasDate && distance == 0:
+			priority, reason, rank = "high", "Lead follow-up is due today", 1
+		case hasDate:
+			reason = fmt.Sprintf("Upcoming lead follow-up on %s (in %d days)", lead.FollowUpDate, distance)
+		case lead.FollowUpDate != "":
+			reason, rank = "Lead follow-up date is invalid", 2
+		default:
 			rank = 2
 		}
-		if strings.TrimSpace(lead.NextAction) == "" && rank > 1 {
-			reason = "Lead has no next action"
-			priority = "high"
-			rank = 1
+		if strings.TrimSpace(lead.NextAction) == "" {
+			reason += " · Lead has no next action"
+			if rank > 1 {
+				priority, rank = "high", 1
+			}
 		}
 		add(productivityItem{ID: lead.ID, Entity: "lead", Name: lead.Name, Reason: reason, Action: leadNextAction(lead.NextAction), Owner: lead.AssignedTo, Deadline: lead.FollowUpDate, Priority: priority, Route: "/leads/" + lead.ID, Rank: rank})
 	}

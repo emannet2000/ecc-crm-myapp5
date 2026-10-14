@@ -75,3 +75,24 @@ checks do not verify final visual layout or a physical phone's keyboard behavior
 Offline browser verification: `npm run test:offline`. To also exercise the native
 Elm editor against a temporary Go server, build `build/ecc-crm` and run
 `ECC_BROWSER_LIVE=true npm run test:offline`.
+
+## Phone interface revision — 2026-10-14
+
+Phone sign-in uses a light neutral surface, persistent field labels, a 54-pixel
+primary action and a 44-pixel password visibility control. Email/password autofill,
+authenticator/recovery codes and organization sign-in remain available. Fields use
+16-pixel text and keyboard action hints. The desktop sign-in layout is retained.
+
+Mobile work cards display the next action, responsible staff, deadline and available
+application document requirements together. Tool forms use larger controls and
+single-column fields; workspace navigation groups use two-column touch buttons.
+Home summaries and dashboard breakdowns are expandable. Bottom navigation includes
+the configured phone destinations and respects the device's safe area.
+
+On browsers exposing the visual viewport, bottom navigation and floating launchers
+hide while a focused text field's keyboard reduces the viewport by more than
+150 pixels. They return when the keyboard closes. Physical iOS/Android keyboard
+behavior still needs device validation; browser automation checks responsive layout,
+password visibility, mobile Home and chat interactions at 320, 390 and 768 pixels.
+Preview screenshots are written by `npm run test:mobile-chat` to
+`tests/artifacts/mobile-login.png`, `mobile-home.png` and `mobile-chat.png`.

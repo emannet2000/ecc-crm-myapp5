@@ -1,6 +1,9 @@
 module Main exposing (main)
 
 import Api
+import Frontend.RequestOrder as RequestOrder
+import Update.RequestOrder as ReadOrder
+import Update.SaveOrder as SaveOrder
 import Administration
 import WorkDashboard
 import ManagementReport
@@ -40,6 +43,7 @@ type alias Flags =
     { token : Maybe String
     , today : String
     , theme : Maybe String
+    , logoutPending : Bool
     }
 
 
@@ -50,7 +54,8 @@ init flags url key =
             parseRoute url
 
         model =
-            { workDashboard = WorkDashboard.init
+            { requests = RequestOrder.init
+            , workDashboard = WorkDashboard.init
             , managementReport = ManagementReport.init
             , teamChat = TeamChat.init
             , administration = Administration.init
@@ -76,6 +81,11 @@ init flags url key =
             , user = Nothing
             , showPassword = False
             , bootstrapping = flags.token /= Nothing
+            , sessionGeneration = 0
+            , sessionOwner = Nothing
+            , logoutPending = flags.logoutPending
+            , logoutBusy = flags.logoutPending
+            , logoutMessage = ""
             , route = route
             , workspaceQuery = Maybe.withDefault "" url.query
             , contacts = NotAsked
@@ -171,9 +181,11 @@ init flags url key =
             , navKey = key
             }
     in
-    case flags.token of
+    if flags.logoutPending then
+        ( { model | token = Nothing, bootstrapping = False }, Ports.logoutSession () )
+    else case flags.token of
         Just t ->
-            ( model, Api.refreshSession RefreshedSession )
+            ( model, Api.refreshSession (RefreshedSession model.sessionGeneration) )
 
         Nothing ->
             ( model, Cmd.none )
@@ -181,6 +193,67 @@ init flags url key =
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
+    case msg of
+        OrderedRead issued owner reply ->
+            case ReadOrder.scope (ReadOrder.unwrap reply) of
+                Just key ->
+                    if model.user /= Nothing && model.sessionOwner == owner && RequestOrder.current key issued model.requests then
+                        update (ReadOrder.unwrap reply) model
+                    else
+                        ( model, Cmd.none )
+                Nothing ->
+                    let
+                        completion = ReadOrder.unwrap reply
+                    in
+                    if SaveOrder.sessionReply completion &&
+                        (model.user == Nothing || model.sessionOwner /= owner || not (RequestOrder.current "identity" issued model.requests)) then
+                        ( model, Cmd.none )
+                    else if SaveOrder.bulkCompletion completion && not (RequestOrder.current "deal-selection" issued model.requests) then
+                        let
+                            ( next, cmd ) = update completion model
+                        in
+                        ( { next | selectedDeals = model.selectedDeals, movingDealId = model.movingDealId }, cmd )
+                    else if SaveOrder.completion completion then
+                        if model.user == Nothing || model.sessionOwner /= owner then
+                            ( model, Cmd.none )
+                        else if RequestOrder.current "form" issued model.requests then
+                            update completion model
+                        else
+                            let
+                                ( next, cmd ) = update completion model
+                            in
+                            ( SaveOrder.preserveForms model next, cmd )
+                    else
+                        update completion model
+
+        _ ->
+            let
+                ( next, cmd ) = updateHelp msg model
+                navigation = case msg of
+                    NavigatedTo _ -> True
+                    UrlChanged _ -> True
+                    _ -> next.route /= model.route
+                boundary = next.user == Nothing && model.user /= Nothing || next.sessionOwner /= model.sessionOwner
+                keys =
+                    if navigation || boundary then ReadOrder.all
+                    else if SaveOrder.boundary msg then "form" :: ReadOrder.affectedFor model.route msg
+                    else ReadOrder.affectedFor model.route msg
+                identityBoundary =
+                    boundary || (model.user == Nothing && next.user /= Nothing) ||
+                        (case msg of
+                            GotAuth (Ok _) -> True
+                            _ -> False
+                        )
+                protectedKeys =
+                    (if identityBoundary then [ "identity" ] else []) ++
+                    (if SaveOrder.selectionBoundary msg then [ "deal-selection" ] else []) ++ keys
+                requests = RequestOrder.advance protectedKeys next.requests
+            in
+            ( { next | requests = requests }, Cmd.map (ReadOrder.unwrap >> OrderedRead requests next.sessionOwner) cmd )
+
+
+updateHelp : Msg -> Model -> ( Model, Cmd Msg )
+updateHelp msg model =
     case msg of
         WorkDashboardMsg workMsg ->
             let
@@ -231,6 +304,12 @@ update msg model =
                 ( next, Cmd.batch [ cmd, Nav.replaceUrl model.navKey "/administration" ] )
             else
                 Update.Navigation.update msg model
+
+        RecordsChanged _ ->
+            let
+                ( next, cmd ) = updateNavigation (NavigatedTo model.route) model
+            in
+            ( SaveOrder.preserveForms model { next | sidebarOpen = model.sidebarOpen }, cmd )
 
         NavigatedTo route ->
             if model.route == Types.Administration && route == Types.Administration then
@@ -433,10 +512,11 @@ escapeDecoder =
 subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.batch
-        [ if model.route == Home && model.user /= Nothing then Browser.Events.onResize (\width _ -> WorkDashboardMsg (WorkDashboard.Viewport width)) else Sub.none
+        [ Ports.logoutFinished LogoutFinished
+        , if model.route == Home && model.user /= Nothing then Browser.Events.onResize (\width _ -> WorkDashboardMsg (WorkDashboard.Viewport width)) else Sub.none
         , if model.route == Reports && model.user /= Nothing then Ports.printResult (ManagementReport.Printed >> ManagementReportMsg) else Sub.none
         , if model.route == Chat && model.user /= Nothing then Sub.map TeamChatMsg (TeamChat.subscriptions model.teamChat) else Sub.none
-        , Ports.recordChanged (\_ -> NavigatedTo model.route)
+        , Ports.recordChanged RecordsChanged
         , Browser.Events.onKeyDown escapeDecoder
         , if model.user /= Nothing then
             Sub.batch [ Time.every 600000 (\_ -> RefreshSession), Time.every 60000 (\_ -> PollWorkspaceClock) ]

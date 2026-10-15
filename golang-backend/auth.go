@@ -367,10 +367,8 @@ func (state *runtimeStore) handleUpdateMe(w http.ResponseWriter, r *http.Request
 		writeError(w, http.StatusInternalServerError, "Could not issue token")
 		return
 	}
-	if err := mintSession(w, r, user, true); err != nil {
-		writeError(w, 500, "Could not refresh session")
-		return
-	}
+	// Profile edits retain the authenticated session. A new cookie here could
+	// arrive after logout and silently create another signed-in session.
 	if _, err := r.Cookie("ecc_session"); err == nil {
 		token = "cookie-session"
 	}

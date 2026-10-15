@@ -271,8 +271,12 @@ update msg model =
                                 , editingId = Nothing
                                 , viewingContact =
                                     case model.route of
-                                        ContactDetail _ ->
-                                            Just contact
+                                        ContactDetail id ->
+                                            if id == contact.id then
+                                                Just contact
+
+                                            else
+                                                model.viewingContact
 
                                         _ ->
                                             model.viewingContact
@@ -324,27 +328,19 @@ update msg model =
         ConfirmedDeleteContact ->
             case ( model.deletingContact, model.token ) of
                 ( Just contact, Just token ) ->
-                    ( model, Api.deleteContact token contact.id GotDeletedContact )
+                    ( model, Api.deleteContact token contact.id (GotDeletedContact contact.id contact.name) )
 
                 _ ->
                     ( model, Cmd.none )
 
-        GotDeletedContact result ->
+        GotDeletedContact deletedId name result ->
             case result of
                 Ok _ ->
                     let
-                        name =
-                            case model.deletingContact of
-                                Just c ->
-                                    c.name
-
-                                Nothing ->
-                                    "contact"
-
                         backToContacts =
                             case model.route of
-                                ContactDetail _ ->
-                                    True
+                                ContactDetail id ->
+                                    id == deletedId
 
                                 _ ->
                                     False

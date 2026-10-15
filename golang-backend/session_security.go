@@ -9,6 +9,7 @@ import (
 	"crypto/sha1"
 	"crypto/sha256"
 	"crypto/subtle"
+	"database/sql"
 	"encoding/base32"
 	"encoding/base64"
 	"encoding/binary"
@@ -207,26 +208,67 @@ func cookieIdentity(r *http.Request) (User, string, error) {
 	}
 	return user, id, nil
 }
+
+// A brief, non-sliding window makes refresh idempotent across tabs and Elm/JS
+// clients. Successor cookies are encrypted at rest; every replay still checks
+// account policy, revocation and the session's absolute refresh expiry.
 func (state *runtimeStore) handleSessionRefresh(w http.ResponseWriter, r *http.Request) {
 	cookie, err := r.Cookie("ecc_refresh")
 	if err != nil {
-		clearSessionCookies(w, r)
 		writeError(w, 401, "Sign in to continue")
 		return
 	}
-	var id, userID, expiry string
+	now := time.Now().UTC()
+	var id, userID, expiry, currentHash string
 	var version int
 	var persistent bool
-	err = storeDB(r).QueryRow("SELECT id,user_id,refresh_expires_at,version,persistent FROM sessions WHERE refresh_hash=? AND revoked_at IS NULL", hashSecret(cookie.Value)).Scan(&id, &userID, &expiry, &version, &persistent)
+	presented := hashSecret(cookie.Value)
+	err = storeDB(r).QueryRow(`SELECT s.id,s.user_id,s.refresh_expires_at,s.version,s.persistent,s.refresh_hash
+ FROM sessions s
+ WHERE s.revoked_at IS NULL AND (s.refresh_hash=? OR s.id=(SELECT session_id FROM session_refresh_grace WHERE previous_hash=? AND expires_at>?))`, presented, presented, now.Format(time.RFC3339)).Scan(&id, &userID, &expiry, &version, &persistent, &currentHash)
+	if err != nil && err != sql.ErrNoRows {
+		writeError(w, 500, "Could not refresh session")
+		return
+	}
 	when, parseErr := time.Parse(time.RFC3339, expiry)
 	user, exists := state.findUserByID(userID)
-	if err != nil || parseErr != nil || !when.After(time.Now()) || !exists || user.Disabled || user.SessionVersion != version || !ipAllowed(r, user) {
-		clearSessionCookies(w, r)
+	if err != nil || parseErr != nil || !when.After(now) || !exists || user.Disabled || user.SessionVersion != version || !ipAllowed(r, user) {
+		// A late rejected response must not erase cookies set by another tab.
 		writeError(w, 401, "Session expired. Please sign in again")
 		return
 	}
+	if _, err := storeDB(r).Exec("DELETE FROM session_refresh_grace WHERE expires_at<=?", now.Format(time.RFC3339)); err != nil {
+		writeError(w, 500, "Could not refresh session")
+		return
+	}
+	var encrypted string
+	err = storeDB(r).QueryRow("SELECT cookies FROM session_refresh_grace WHERE session_id=? AND expires_at>?", id, now.Format(time.RFC3339)).Scan(&encrypted)
+	if err == nil {
+		plain, decodeErr := decryptSecret(encrypted)
+		parts := strings.Split(plain, "\n")
+		if decodeErr != nil || len(parts) != 2 || hashSecret(parts[1]) != currentHash {
+			writeError(w, 500, "Could not refresh session")
+			return
+		}
+		setSessionCookies(w, r, parts[0], parts[1], persistent)
+		writeJSON(w, 200, authResponse{Token: "cookie-session", User: user})
+		return
+	}
+	if err != sql.ErrNoRows {
+		writeError(w, 500, "Could not refresh session")
+		return
+	}
 	access, refresh := randomSecret(), randomSecret()
-	_, err = storeDB(r).Exec("UPDATE sessions SET access_hash=?,refresh_hash=?,last_seen=?,expires_at=? WHERE id=?", hashSecret(access), hashSecret(refresh), utcNow(), time.Now().Add(15*time.Minute).UTC().Format(time.RFC3339), id)
+	encrypted, err = encryptSecret(access + "\n" + refresh)
+	if err != nil {
+		writeError(w, 500, "Could not refresh session")
+		return
+	}
+	_, err = storeDB(r).Exec("UPDATE sessions SET access_hash=?,refresh_hash=?,last_seen=?,expires_at=? WHERE id=?", hashSecret(access), hashSecret(refresh), utcNow(), now.Add(15*time.Minute).Format(time.RFC3339), id)
+	if err == nil {
+		_, err = storeDB(r).Exec(`INSERT INTO session_refresh_grace(session_id,previous_hash,cookies,expires_at) VALUES(?,?,?,?)
+  ON CONFLICT(session_id) DO UPDATE SET previous_hash=excluded.previous_hash,cookies=excluded.cookies,expires_at=excluded.expires_at`, id, currentHash, encrypted, now.Add(10*time.Second).Format(time.RFC3339))
+	}
 	if err != nil {
 		writeError(w, 500, "Could not refresh session")
 		return

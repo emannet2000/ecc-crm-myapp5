@@ -77,7 +77,7 @@ async function handlePrivateRequest(request) {
   const path=new URL(request.url).pathname;
   if(path==='/api/session/logout'||path==='/api/me/logout-all') {
     await offlineExclusive(()=>clearPrivate({enabled:false,jobs:[],logoutPending:true}));
-    try{const response=await offlineFetch(request);if(response.ok)await offlineExclusive(()=>clearPrivate());return response}catch{return jsonResponse({message:'Signed out on this device. Server sign-out will finish when connected.'})}
+    try{const response=await offlineFetch(request);if(response.ok)await offlineExclusive(()=>clearPrivate());return response}catch{return jsonResponse({message:'Signed out on this device. Server sign-out will finish when connected.'},202)}
   }
   let state;try{state=await offlineState()}catch{return fetch(request)}
   if(state.logoutPending){try{const response=await offlineFetch('/api/session/logout',{method:'POST',credentials:'include'});if(response.ok){await offlineExclusive(()=>clearPrivate());state=await offlineState()}}catch{};if(state.logoutPending)return jsonResponse({message:'Reconnect to finish signing out.'},401)}

@@ -2,6 +2,13 @@
 
 Updated 2026-10-14. This is the starting point for the current improvement cycle; dated roadmap sections retain historical evidence.
 
+For the 2026-10-15 session/save verification and outstanding staff/provider
+acceptance, see [the dated acceptance record](ACCEPTANCE_2026-10-15.md).
+
+Applications now explain next-stage blockers, responsibility and resolution
+links alongside automatic-readiness blockers and follow-up reminders. See
+[blocked application work](BLOCKED_WORK.md).
+
 | Area | Implemented revision | Acceptance remaining |
 | --- | --- | --- |
 | Daily workflow | My work appears first on Home. Application work cards show available requirements alongside responsibility, next action and deadline. Attention categories remain accessible in a collapsed filter section. | Actual adviser tasks and mobile retest. |

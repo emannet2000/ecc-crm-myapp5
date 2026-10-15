@@ -273,8 +273,12 @@ update msg model =
                                 , editingCaseId = Nothing
                                 , viewingCase =
                                     case model.route of
-                                        CaseDetail _ ->
-                                            Just c
+                                        CaseDetail id ->
+                                            if id == c.id then
+                                                Just c
+
+                                            else
+                                                model.viewingCase
 
                                         _ ->
                                             model.viewingCase
@@ -313,38 +317,43 @@ update msg model =
         ConfirmedDeleteCase ->
             case ( model.deletingCase, model.token ) of
                 ( Just c, Just token ) ->
-                    ( model, Api.deleteCase token c.id GotDeletedCase )
+                    ( model, Api.deleteCase token c.id (GotDeletedCase c.id c.caseNumber) )
 
                 _ ->
                     ( model, Cmd.none )
 
-        GotDeletedCase result ->
+        GotDeletedCase deletedId name result ->
             case result of
                 Ok _ ->
                     let
-                        name =
-                            case model.deletingCase of
-                                Just c ->
-                                    c.caseNumber
-
-                                Nothing ->
-                                    "case"
-
                         fresh =
                             { model
                                 | deletingCase = Nothing
                                 , viewingCase =
                                     case model.route of
-                                        CaseDetail _ ->
-                                            Nothing
+                                        CaseDetail id ->
+                                            if id == deletedId then
+                                                Nothing
+
+                                            else
+                                                model.viewingCase
 
                                         _ ->
                                             model.viewingCase
-                                , caseDocuments = NotAsked
+                                , caseDocuments =
+                                    if model.route == CaseDetail deletedId then
+                                        NotAsked
+
+                                    else
+                                        model.caseDocuments
                                 , route =
                                     case model.route of
-                                        CaseDetail _ ->
-                                            Cases
+                                        CaseDetail id ->
+                                            if id == deletedId then
+                                                Cases
+
+                                            else
+                                                model.route
 
                                         _ ->
                                             model.route

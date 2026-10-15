@@ -283,23 +283,15 @@ update msg model =
         ConfirmedDeleteTask ->
             case ( model.deletingTask, model.token ) of
                 ( Just task, Just token ) ->
-                    ( model, Api.deleteTask token task.id GotDeletedTask )
+                    ( model, Api.deleteTask token task.id (GotDeletedTask task.id task.title) )
 
                 _ ->
                     ( model, Cmd.none )
 
-        GotDeletedTask result ->
+        GotDeletedTask deletedId name result ->
             case result of
                 Ok _ ->
                     let
-                        name =
-                            case model.deletingTask of
-                                Just t ->
-                                    t.title
-
-                                Nothing ->
-                                    "task"
-
                         fresh =
                             { model | deletingTask = Nothing, toast = Just ("Deleted " ++ name) }
                     in

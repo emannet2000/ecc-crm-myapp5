@@ -120,6 +120,64 @@ func handleApplicationBlockers(w http.ResponseWriter, r *http.Request) {
 			out = append(out, ApplicationBlocker{"handoff", "Ownership handoff", detail, "Review handoff", "/cases/" + c.ID + "#handoff", false})
 		}
 	}
+	// Preview the immediate destination with the same rules used by transitions.
+	// Include restricted documents in evaluation; evaluateStageGate redacts names.
+	nextStage := ""
+	if activeApplication(c.CurrentStage) {
+		for i, stage := range validCaseStages {
+			if stage == c.CurrentStage && i+1 < len(validCaseStages) {
+				nextStage = validCaseStages[i+1]
+				break
+			}
+		}
+	}
+	gate := map[string]any{"stage": nextStage, "enabled": false, "items": []map[string]any{}}
+	if nextStage != "" {
+		rule, gateErr := gatePolicy(r, c.OrgID, nextStage)
+		if gateErr != nil {
+			writeError(w, 500, "Could not load next-stage requirements")
+			return
+		}
+		gate["enabled"] = rule.Enabled
+		if rule.Enabled {
+			rows, gateErr := queryObjects(r, "SELECT data FROM documents WHERE json_extract(data,'$.caseId')=? AND json_extract(data,'$.orgId')=? ORDER BY sort_order,id", c.ID, c.OrgID)
+			if gateErr != nil {
+				writeError(w, 500, "Could not load next-stage documents")
+				return
+			}
+			snapshot := diskStore{Cases: []Case{c}}
+			for _, row := range rows {
+				var doc Document
+				if json.Unmarshal([]byte(fmtString(row["data"])), &doc) != nil {
+					writeError(w, 500, "Could not load next-stage documents")
+					return
+				}
+				snapshot.Documents = append(snapshot.Documents, doc)
+			}
+			issues, _, gateErr := evaluateStageGate(r, c, snapshot, rule)
+			if gateErr != nil {
+				writeError(w, 500, "Could not evaluate next-stage requirements")
+				return
+			}
+			gateItems := []map[string]any{}
+			for _, issue := range issues {
+				responsible, due, action := c.AssignedOfficer, c.NextDeadline, "Review stage requirements"
+				route := "/cases/" + c.ID + "#record-tools?tab=overview&stage=" + strings.ReplaceAll(nextStage, " ", "%20")
+				if strings.HasPrefix(issue, "A manager must approve") {
+					responsible = "Workspace manager"
+					action = "Review approval"
+				}
+				for _, requirement := range checklist {
+					if strings.HasPrefix(issue, requirement.Title+" ") {
+						responsible, due, action, route = requirement.Responsible, requirement.DueDate, "Review document", requirement.Route
+						break
+					}
+				}
+				gateItems = append(gateItems, map[string]any{"detail": issue, "responsible": responsible, "deadline": due, "action": action, "route": route})
+			}
+			gate["items"] = gateItems
+		}
+	}
 	blocking := 0
 	for _, b := range out {
 		if b.Blocking {
@@ -152,5 +210,5 @@ func handleApplicationBlockers(w http.ResponseWriter, r *http.Request) {
 		}
 		enriched = append(enriched, row)
 	}
-	writeJSON(w, 200, map[string]any{"items": enriched, "checklist": checklist, "requiredCount": len(checklist), "completedCount": completed, "owner": c.AssignedOfficer, "nextAction": c.NextAction, "deadline": c.NextDeadline, "blockingCount": blocking, "autoAdvance": c.AutoAdvance, "scope": "Accessible application records", "today": today})
+	writeJSON(w, 200, map[string]any{"caseNumber": c.CaseNumber, "editable": canWrite(c.RecordScope, currentUser(r)), "nextStageGate": gate, "active": activeApplication(c.CurrentStage), "items": enriched, "checklist": checklist, "requiredCount": len(checklist), "completedCount": completed, "owner": c.AssignedOfficer, "nextAction": c.NextAction, "deadline": c.NextDeadline, "blockingCount": blocking, "autoAdvance": c.AutoAdvance, "scope": "Accessible application records", "today": today})
 }

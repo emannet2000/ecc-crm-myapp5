@@ -8,7 +8,7 @@ async function mount(observations,canReviewAll){
  const {window}=parseHTML('<html><body></body></html>');
  Object.defineProperty(window.HTMLSelectElement.prototype,'value',{configurable:true,get(){return this.querySelector('option')?.getAttribute('value')||''}});
  const context=vm.createContext({window,document:window.document,HTMLElement:window.HTMLElement,customElements:window.customElements,FormData,fetch:async()=>({ok:true,json:async()=>({observations,canReviewAll})})});
- vm.runInContext(fs.readFileSync(path.join(__dirname,'../public/usability.js'),'utf8'),context);
+ for (const file of ['session.js','usability.js']) vm.runInContext(fs.readFileSync(path.join(__dirname,'../public',file),'utf8'),context);
  const element=window.document.createElement('crm-usability');window.document.body.append(element);await new Promise(resolve=>setTimeout(resolve,0));return element;
 }
 const observation=(task,completed,neededHelp=false,errors=0,userId='staff-a')=>({userId,createdAt:'2026-10-11',data:JSON.stringify({role:task==='invoice-receipt'?'finance':'adviser',task,completed,neededHelp,errors,seconds:30,comments:'Observed obstacle'})});

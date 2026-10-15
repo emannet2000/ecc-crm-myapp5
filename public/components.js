@@ -12,11 +12,8 @@
     root.append(node('link', null, {rel: 'stylesheet', href: '/public/mobile-tables.css'}));
   };
   async function request(path, options = {}) {
-    let response = await fetch(path, {credentials: 'same-origin', ...options});
-    if (response.status === 401) {
-      const refresh = await fetch('/api/session/refresh', {method: 'POST', credentials: 'same-origin'});
-      if (refresh.ok) response = await fetch(path, {credentials: 'same-origin', ...options});
-    }
+    let response = await window.CRMAuthenticatedFetch(path, {credentials: 'same-origin', ...options});
+
     const result = await response.json();
     if (!response.ok) throw new Error(result.error || 'Request failed. Use Refresh to retry.');
     return result;
@@ -43,9 +40,10 @@
   class RecordTools extends HTMLElement {
     static get observedAttributes() { return ['entity', 'record-id']; }
     constructor() { super(); this.attachShadow({mode: 'open'}); this.generation = 0; }
-    connectedCallback() { this.mount(); }
+    connectedCallback() { this.stageLink=()=>this.openStageGate();window.addEventListener('hashchange',this.stageLink);this.mount(); }
     attributeChangedCallback() { if (this.isConnected) this.mount(); }
-    disconnectedCallback() { this.generation++; this.stop?.(); }
+    disconnectedCallback() { this.generation++; this.stop?.();window.removeEventListener('hashchange',this.stageLink); }
+    openStageGate(){const params=new URLSearchParams(location.hash.split('?')[1]||'');const stage=params.get('stage');const panel=this.shadowRoot.querySelector('[data-stage-readiness]');if(stage&&panel){panel.open=true;panel.querySelector('crm-stage-gates').dispatchEvent(new CustomEvent('crm:select-stage',{detail:stage}));this.scrollIntoView({block:'start'});}}
     async mount() {
       const generation = ++this.generation;
       this.stop?.(); this.shadowRoot.replaceChildren(); shell(this.shadowRoot);
@@ -64,13 +62,14 @@
           this.shadowRoot.querySelector('#tabs').before(summary);
 
         }
-        if(entity==='cases'){const gates=node('details');gates.append(node('summary','Stage readiness and policy'),node('crm-stage-gates',null,{'record-id':id}));this.shadowRoot.querySelector('#tabs').before(gates);}
+        if(entity==='cases'){const gates=node('details',null,{'data-stage-readiness':''});gates.append(node('summary','Stage readiness and policy'),node('crm-stage-gates',null,{'record-id':id}));this.shadowRoot.querySelector('#tabs').before(gates);}
         if(['cases','students'].includes(entity)){
           const history=node('details'),summary=node('summary','Unified client timeline');history.append(summary);history.addEventListener('toggle',()=>{if(history.open&&!history.querySelector('crm-client-history'))history.append(node('crm-client-history',null,{entity,'record-id':id}))});this.shadowRoot.querySelector('#tabs').before(history);
         }
         const relatedClient=entity==='contacts'?id:detail.record.clientId||detail.record.contactId||detail.record.convertedContactId;
         if(relatedClient){const links=node('nav',null,{class:'links','aria-label':'Related client'});links.append(node('a','Client profile and history',{href:'/contacts/'+encodeURIComponent(relatedClient)+'#record-tools?tab=history'}));this.shadowRoot.querySelector('#tabs').before(links)}
         this.stop = window.mountWorkspaceTools(this.shadowRoot, {entity, id, editable: detail.editable, tab: tabs[entity]});
+        this.openStageGate();
       } catch (error) {
         if (generation === this.generation) main.replaceChildren(node('p', error.message));
       }
@@ -110,7 +109,7 @@
         if (!window.confirm('Remove this profile photo?')) return;
         removeButton.disabled = true;
         try {
-          const response = await fetch('/api/records/' + encodeURIComponent(entity) + '/' + encodeURIComponent(id) + '/photo', {method: 'DELETE', credentials: 'same-origin'});
+          const response = await window.CRMAuthenticatedFetch('/api/records/' + encodeURIComponent(entity) + '/' + encodeURIComponent(id) + '/photo', {method: 'DELETE', credentials: 'same-origin'});
           if (!response.ok) throw new Error('Could not remove photo.');
           notice.textContent = 'Photo removed.'; image.hidden = true; fallback.hidden = false; removeButton.hidden = true;
         } catch (error) { notice.textContent = error.message; }
@@ -122,7 +121,7 @@
         const data = new FormData(); data.append('photo', photo, photo.name);
         button.disabled = true; notice.textContent = 'Uploading…';
         try {
-          const response = await fetch('/api/records/' + encodeURIComponent(entity) + '/' + encodeURIComponent(id) + '/photo', {method: 'PUT', body: data, credentials: 'same-origin'});
+          const response = await window.CRMAuthenticatedFetch('/api/records/' + encodeURIComponent(entity) + '/' + encodeURIComponent(id) + '/photo', {method: 'PUT', body: data, credentials: 'same-origin'});
           if (!response.ok) { const result = await response.json().catch(() => ({})); throw new Error(result.message || result.error || 'Could not upload photo.'); }
           notice.textContent = 'Photo saved.'; refresh();
         } catch (error) { notice.textContent = error.message; }

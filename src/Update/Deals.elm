@@ -261,8 +261,12 @@ update msg model =
                                 , editingDealId = Nothing
                                 , viewingDeal =
                                     case model.route of
-                                        DealDetail _ ->
-                                            Just deal
+                                        DealDetail id ->
+                                            if id == deal.id then
+                                                Just deal
+
+                                            else
+                                                model.viewingDeal
 
                                         _ ->
                                             model.viewingDeal
@@ -320,8 +324,12 @@ update msg model =
                                 | movingDealId = Nothing
                                 , viewingDeal =
                                     case model.route of
-                                        DealDetail _ ->
-                                            Just deal
+                                        DealDetail id ->
+                                            if id == deal.id then
+                                                Just deal
+
+                                            else
+                                                model.viewingDeal
 
                                         _ ->
                                             model.viewingDeal
@@ -351,27 +359,19 @@ update msg model =
         ConfirmedDeleteDeal ->
             case ( model.deletingDeal, model.token ) of
                 ( Just deal, Just token ) ->
-                    ( model, Api.deleteDeal token deal.id GotDeletedDeal )
+                    ( model, Api.deleteDeal token deal.id (GotDeletedDeal deal.id deal.title) )
 
                 _ ->
                     ( model, Cmd.none )
 
-        GotDeletedDeal result ->
+        GotDeletedDeal deletedId name result ->
             case result of
                 Ok _ ->
                     let
-                        name =
-                            case model.deletingDeal of
-                                Just d ->
-                                    d.title
-
-                                Nothing ->
-                                    "deal"
-
                         backToDeals =
                             case model.route of
-                                DealDetail _ ->
-                                    True
+                                DealDetail id ->
+                                    id == deletedId
 
                                 _ ->
                                     False
@@ -574,7 +574,10 @@ update msg model =
 
                 freshModel =
                     { model
-                        | selectedDeals = Set.empty
+                        | selectedDeals =
+                            case result of
+                                Ok _ -> Set.diff model.selectedDeals (Set.fromList ids)
+                                Err _ -> model.selectedDeals
                         , movingDealId = Nothing
                         , toast = Just msgText
                     }
@@ -604,7 +607,10 @@ update msg model =
 
                 freshModel =
                     { model
-                        | selectedDeals = Set.empty
+                        | selectedDeals =
+                            case result of
+                                Ok _ -> Set.diff model.selectedDeals (Set.fromList ids)
+                                Err _ -> model.selectedDeals
                         , toast = Just msgText
                     }
             in

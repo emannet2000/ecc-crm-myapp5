@@ -280,8 +280,12 @@ update msg model =
                                 , editingPartnerId = Nothing
                                 , viewingPartner =
                                     case model.route of
-                                        PartnerDetail _ ->
-                                            Just p
+                                        PartnerDetail id ->
+                                            if id == p.id then
+                                                Just p
+
+                                            else
+                                                model.viewingPartner
 
                                         _ ->
                                             model.viewingPartner
@@ -320,37 +324,37 @@ update msg model =
         ConfirmedDeletePartner ->
             case ( model.deletingPartner, model.token ) of
                 ( Just p, Just token ) ->
-                    ( model, Api.deletePartner token p.id GotDeletedPartner )
+                    ( model, Api.deletePartner token p.id (GotDeletedPartner p.id p.legalCompanyName) )
 
                 _ ->
                     ( model, Cmd.none )
 
-        GotDeletedPartner result ->
+        GotDeletedPartner deletedId name result ->
             case result of
                 Ok _ ->
                     let
-                        name =
-                            case model.deletingPartner of
-                                Just p ->
-                                    p.legalCompanyName
-
-                                Nothing ->
-                                    "partner"
-
                         fresh =
                             { model
                                 | deletingPartner = Nothing
                                 , viewingPartner =
                                     case model.route of
-                                        PartnerDetail _ ->
-                                            Nothing
+                                        PartnerDetail id ->
+                                            if id == deletedId then
+                                                Nothing
+
+                                            else
+                                                model.viewingPartner
 
                                         _ ->
                                             model.viewingPartner
                                 , route =
                                     case model.route of
-                                        PartnerDetail _ ->
-                                            Partners
+                                        PartnerDetail id ->
+                                            if id == deletedId then
+                                                Partners
+
+                                            else
+                                                model.route
 
                                         _ ->
                                             model.route

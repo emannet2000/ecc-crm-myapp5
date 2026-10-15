@@ -9,13 +9,61 @@
         node: document.getElementById("app"),
         flags: {
           token: token,
+          logoutPending: sessionStorage.getItem('ecc:logout-pending:v1') === 'true',
           today: today,
           theme: localStorage.getItem("theme")
         }
       });
-      app.ports.storeToken.subscribe(function (token) {
+      app.ports.storeToken.subscribe(function () {
         localStorage.removeItem("token");
-        if (!token) fetch("/api/session/logout", {method:"POST",credentials:"same-origin"});
+      });
+      // Only an explicit sign-out may revoke the shared browser session. A stale
+      // authentication failure in one tab must not revoke a newer login elsewhere.
+      app.ports.logoutSession.subscribe(async function () {
+        sessionStorage.setItem('ecc:logout-pending:v1', 'true');
+        const controller = new AbortController();
+        const timer = setTimeout(function () { controller.abort(); }, 12000);
+        try {
+          const response = await fetch('/api/session/logout', {method:'POST',credentials:'same-origin',signal:controller.signal});
+          const data = await response.json();
+          if (!response.ok || response.status === 202 || data.status !== 'ok') throw new Error('pending');
+          sessionStorage.removeItem('ecc:logout-pending:v1');
+          app.ports.logoutFinished.send({ok:true,message:'Signed out.'});
+        } catch (_) {
+          app.ports.logoutFinished.send({ok:false,message:'Server sign-out could not be confirmed. Reconnect and retry to finish signing out.'});
+        } finally { clearTimeout(timer); }
+      });
+      app.ports.preserveSessionDrafts.subscribe(function (owner) {
+        window.CRMSessionDrafts?.capture(owner);
+      });
+      const currentUser = () => document.querySelector('#workspace-navigation')?.getAttribute('data-user-id');
+      function accountChanged() {
+        if (window.CRMAccountChanging) return;
+        window.CRMAccountChanging = true;
+        window.CRMSessionDrafts?.capture(currentUser());
+        document.body.inert = true;
+        document.body.style.visibility = 'hidden';
+        location.replace('/');
+      }
+      app.ports.sessionIdentity.subscribe(function (id) {
+        try { localStorage.setItem('ecc:account-id:v1', id); } catch (_) {}
+      });
+      window.addEventListener('storage', function (event) {
+        if (event.key === 'ecc:account-id:v1' && event.newValue && currentUser() && event.newValue !== currentUser()) accountChanged();
+      });
+      window.addEventListener('crm:account-changed', accountChanged);
+      let checkingAccount = false;
+      window.addEventListener('focus', async function () {
+        const expected = currentUser();
+        if (!expected || checkingAccount) return;
+        checkingAccount = true;
+        try {
+          const response = await fetch('/api/me', {credentials:'same-origin'});
+          if (response.ok) {
+            const data = await response.json();
+            if (data.user?.id && data.user.id !== expected && currentUser() === expected) accountChanged();
+          }
+        } catch (_) {} finally { checkingAccount = false; }
       });
       // Elm owns draft state; this adapter invokes the browser's unload API.
       var protectUnsaved = false;

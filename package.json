@@ -2,7 +2,7 @@
   "name": "ecc-crm-verification",
   "private": true,
   "scripts": {
-    "test": "node --test tests/dom.test.cjs tests/dashboard.test.cjs tests/administration-elm.test.cjs tests/mobile.test.cjs tests/workspace-interactions.test.cjs tests/usability-review.test.cjs tests/integration-acceptance.test.cjs",
+    "test": "node --test tests/session.test.cjs tests/session-drafts.test.cjs tests/dom.test.cjs tests/dashboard.test.cjs tests/administration-elm.test.cjs tests/mobile.test.cjs tests/workspace-interactions.test.cjs tests/usability-review.test.cjs tests/integration-acceptance.test.cjs",
     "test:live": "ECC_BROWSER_LIVE=true node --test tests/browser.test.cjs tests/journey.browser.cjs",
     "test:browser": "node --test tests/browser.test.cjs tests/journey.browser.cjs",
     "test:offline": "node --test tests/offline.browser.cjs",
@@ -24,7 +24,8 @@
     "test:mobile": "node --test --test-concurrency=1 tests/mobile.test.cjs tests/mobile-chat.browser.cjs tests/improvements.browser.cjs tests/offline.browser.cjs"
   },
   "devDependencies": {
-    "puppeteer": "25.10.0",
-    "linkedom": "0.18.12"
+    "elm": "0.19.2-0",
+    "linkedom": "0.18.12",
+    "puppeteer": "25.10.0"
   }
 }

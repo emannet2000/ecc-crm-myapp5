@@ -438,6 +438,8 @@ func migrateWorkspace(tx *sql.Tx, version int) error {
 		`CREATE TABLE IF NOT EXISTS organizations(id TEXT PRIMARY KEY,name TEXT NOT NULL,timezone TEXT NOT NULL DEFAULT 'Asia/Manila',currency TEXT NOT NULL DEFAULT 'USD',ip_allowlist TEXT NOT NULL DEFAULT '',created_at TEXT NOT NULL)`,
 		`CREATE TABLE IF NOT EXISTS teams(id TEXT PRIMARY KEY,org_id TEXT NOT NULL,name TEXT NOT NULL,UNIQUE(org_id,name))`,
 		`CREATE TABLE IF NOT EXISTS sessions(id TEXT PRIMARY KEY,user_id TEXT NOT NULL,org_id TEXT NOT NULL,access_hash TEXT NOT NULL UNIQUE,refresh_hash TEXT NOT NULL UNIQUE,created_at TEXT NOT NULL,last_seen TEXT NOT NULL,expires_at TEXT NOT NULL,refresh_expires_at TEXT NOT NULL,ip TEXT NOT NULL,user_agent TEXT NOT NULL,version INTEGER NOT NULL,persistent INTEGER NOT NULL DEFAULT 0,revoked_at TEXT)`,
+		`CREATE TABLE IF NOT EXISTS session_refresh_grace(session_id TEXT PRIMARY KEY,previous_hash TEXT NOT NULL UNIQUE,cookies TEXT NOT NULL,expires_at TEXT NOT NULL)`,
+		`CREATE INDEX IF NOT EXISTS session_refresh_grace_expiry ON session_refresh_grace(expires_at)`,
 		`CREATE INDEX IF NOT EXISTS sessions_user ON sessions(user_id,revoked_at)`,
 		`CREATE TABLE IF NOT EXISTS auth_tokens(hash TEXT PRIMARY KEY,user_id TEXT NOT NULL,purpose TEXT NOT NULL,expires_at TEXT NOT NULL,used_at TEXT)`,
 		`CREATE TABLE IF NOT EXISTS security_events(id INTEGER PRIMARY KEY AUTOINCREMENT,org_id TEXT NOT NULL,user_id TEXT NOT NULL,event TEXT NOT NULL,ip TEXT NOT NULL,user_agent TEXT NOT NULL,occurred_at TEXT NOT NULL)`,

@@ -84,6 +84,9 @@ update msg model =
             in
             case result of
                 Ok res ->
+                    if model.user == Nothing || model.sessionOwner /= Just res.user.id then
+                        ( model, Cmd.none )
+                    else
                     ( { model
                         | profileForm =
                             { pf

@@ -12,7 +12,7 @@ import Browser
 import Browser.Navigation as Nav
 import Router exposing (parseRoute, routeToPath)
 import Types exposing (..)
-import Update.Loaders exposing (fetchForAgentRoute, fetchForCaseRoute, fetchForContactRoute, fetchForDealRoute, fetchForInvoiceRoute, fetchForLeadRoute, fetchForPartnerRoute, fetchForSchoolRoute, fetchForStudentRoute, loadActivities, loadAgents, loadCaseDocuments, loadCases, loadContacts, loadDeals, loadInvoicePayments, loadInvoices, loadLeads, loadPartners, loadSchools, loadStudentDossier, loadStudents, loadTasks)
+import Update.Loaders exposing (fetchForAgentRoute, fetchForCaseRoute, fetchForContactRoute, fetchForDealRoute, fetchForInvoiceRoute, fetchForLeadRoute, fetchForPartnerRoute, fetchForSchoolRoute, fetchForStudentRoute, loadActivities, loadAgents, loadCaseDocuments, loadCases, loadContacts, loadDeals, loadInvoicePayments, loadInvoices, loadLeads, loadPartners, loadSchools, loadStudentDossier, loadStudents, loadTasks, refresh)
 import Url
 
 
@@ -470,7 +470,7 @@ update msg model =
                                 clearedModel.reports
                         , contacts =
                             if needsContacts then
-                                Loading
+                                refresh clearedModel.contacts
 
                             else
                                 clearedModel.contacts
@@ -482,19 +482,19 @@ update msg model =
                                 clearedModel.deals
                         , tasks =
                             if needsTasks then
-                                Loading
+                                refresh clearedModel.tasks
 
                             else
                                 clearedModel.tasks
                         , schools =
                             if needsSchools then
-                                Loading
+                                refresh clearedModel.schools
 
                             else
                                 clearedModel.schools
                         , students =
                             if needsStudents then
-                                Loading
+                                refresh clearedModel.students
 
                             else
                                 clearedModel.students
@@ -510,31 +510,31 @@ update msg model =
                                     NotAsked
                         , agents =
                             if needsAgents then
-                                Loading
+                                refresh clearedModel.agents
 
                             else
                                 clearedModel.agents
                         , leads =
                             if needsLeads then
-                                Loading
+                                refresh clearedModel.leads
 
                             else
                                 clearedModel.leads
                         , cases =
                             if needsCases then
-                                Loading
+                                refresh clearedModel.cases
 
                             else
                                 clearedModel.cases
                         , invoices =
                             if needsInvoices then
-                                Loading
+                                refresh clearedModel.invoices
 
                             else
                                 clearedModel.invoices
                         , partners =
                             if needsPartners then
-                                Loading
+                                refresh clearedModel.partners
 
                             else
                                 clearedModel.partners

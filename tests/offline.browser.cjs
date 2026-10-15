@@ -35,7 +35,7 @@ async function fixture(context, options={}){
  await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
  const executable=path.join(os.homedir(),'.cache/ms-playwright/chromium-1234/chrome-linux64/chrome');
  let browser;
- try{browser=await puppeteer.launch({executablePath:process.env.CHROME_PATH||(fs.existsSync(executable)?executable:puppeteer.executablePath()),headless:true,pipe:true,args:['--no-sandbox','--disable-dev-shm-usage']})}catch(error){await new Promise(resolve=>server.close(resolve));throw error}
+ try{browser=await puppeteer.launch({executablePath:process.env.CHROME_PATH||(fs.existsSync(executable)?executable:await puppeteer.executablePath()),headless:true,pipe:true,args:['--no-sandbox','--disable-dev-shm-usage']})}catch(error){await new Promise(resolve=>server.close(resolve));throw error}
  let closed=false;
  const close=async()=>{if(closed)return;closed=true;await browser.close().catch(()=>{});server.closeAllConnections();await new Promise(resolve=>server.close(resolve))};
  context.after(close);
@@ -93,14 +93,17 @@ test('live Elm contact edits survive offline reload and synchronize to the Go AP
  const start=async()=>{server=spawn(path.join(root,'build/ecc-crm'),[],{cwd:root,env:{...process.env,SEED_DEMO_DATA:'true',PORT:String(port),DATABASE_PATH:path.join(directory,'crm.sqlite3'),JWT_SECRET:'offline-test-only',APP_URL:base,ALLOW_SIGNUP:'false',GRAPH_ORG_ID:'',WHATSAPP_ORG_ID:''},stdio:'pipe'});server.stderr.on('data',data=>output+=data);for(let i=0;i<100;i++){try{if((await fetch(base+'/api/health')).ok)return}catch{}await new Promise(resolve=>setTimeout(resolve,100))}throw new Error('Server failed to start: '+output)};
  const stop=async()=>{if(!server||server.exitCode!==null)return;server.kill('SIGTERM');await new Promise(resolve=>server.once('exit',resolve))};
  const executable=path.join(os.homedir(),'.cache/ms-playwright/chromium-1234/chrome-linux64/chrome');
- const browser=await puppeteer.launch({executablePath:process.env.CHROME_PATH||(fs.existsSync(executable)?executable:puppeteer.executablePath()),headless:true,pipe:true,args:['--no-sandbox','--disable-dev-shm-usage']});const page=await browser.newPage();const errors=[];page.on('pageerror',error=>errors.push(error.message));
+ const browser=await puppeteer.launch({executablePath:process.env.CHROME_PATH||(fs.existsSync(executable)?executable:await puppeteer.executablePath()),headless:true,pipe:true,args:['--no-sandbox','--disable-dev-shm-usage']});const page=await browser.newPage();const errors=[];page.on('pageerror',error=>errors.push(error.message));
  try{
   await start();await page.goto(base,{waitUntil:'networkidle2'});await page.waitForSelector('input[type=email]');await page.type('input[type=email]','demo@northwind.dev');await page.type('input[type=password]','Demo1234');await page.click('button[type=submit]');await page.waitForSelector('.app-shell');await page.waitForFunction(()=>!!navigator.serviceWorker.controller);
   const contact=await page.evaluate(async()=>{const response=await fetch('/api/contacts',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:'Offline original',email:'offline-test@example.com',stage:'Lead'})});if(!response.ok)throw new Error(await response.text());return(await response.json()).contact});
   await page.evaluate(()=>window.crmOffline.command('enable'));await page.goto(base+'/contacts/'+contact.id,{waitUntil:'networkidle2'});await page.waitForFunction(()=>[...document.querySelectorAll('button')].some(b=>b.textContent.trim()==='Edit'));
   await stop();await page.setOfflineMode(true);
   await page.evaluate(()=>[...document.querySelectorAll('button')].find(b=>b.textContent.trim()==='Edit').click());await page.waitForSelector('#cf-name');await page.$eval('#cf-name',input=>{input.value='Offline updated';input.dispatchEvent(new Event('input',{bubbles:true}))});
-  await page.click('.modal button[type=submit]');await page.waitForFunction(()=>!document.querySelector('.modal'));
+  await page.waitForFunction(()=>document.querySelector('.modal button[type=submit]')?.disabled===false);
+  await page.click('.modal button[type=submit]');
+  try { await page.waitForFunction(()=>!document.querySelector('.modal')); }
+  catch(error) { throw new Error(error.message+' '+JSON.stringify(await page.evaluate(async()=>({modal:document.querySelector('.modal')?.textContent,offline:await window.crmOffline.command('status')})))); }
   assert.equal((await page.evaluate(()=>window.crmOffline.command('status'))).jobs.length,1);
   await page.reload({waitUntil:'domcontentloaded'});await page.waitForSelector('.app-shell');await page.waitForFunction(()=>document.querySelector('main')?.textContent.includes('Offline updated'));
   await start();await page.setOfflineMode(false);await page.evaluate(()=>window.crmOffline.command('sync'));

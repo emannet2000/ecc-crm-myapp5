@@ -100,6 +100,7 @@
             body: JSON.stringify(email ? {contactId: picker.value, recipient: recipient.value, subject: subject.value, body: body.value} : {body: body.value})
           });
           if (!form.isConnected) return;
+          window.CRMSessionDrafts?.saved?.(form,result);
           body.value = ''; section.dataset.dirty = 'false';
           message.textContent = result.message || 'Message queued. Check its delivery status below.';
           load(0);
@@ -127,7 +128,7 @@
         event.preventDefault(); if (send.disabled) return;
         if (!picker.value) { message.textContent = 'Choose an invoice.'; return; }
         send.disabled = true;
-        try { await request('/api/invoices/' + encodeURIComponent(picker.value) + '/email', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: '{}'}); message.textContent = 'Invoice queued.'; load(0); }
+        try { await request('/api/invoices/' + encodeURIComponent(picker.value) + '/email', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: '{}'}); window.CRMSessionDrafts?.saved?.(form); message.textContent = 'Invoice queued.'; load(0); }
         catch (error) { message.textContent = error.message; }
         finally { send.disabled = false; }
       };
@@ -169,7 +170,7 @@
             form.onsubmit = async event => {
               event.preventDefault(); if (save.disabled || !picker.value) return;
               save.disabled = true;
-              try { await request('/api/inbound/unmatched/' + encodeURIComponent(row.id) + '/link', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({contactId: picker.value})}); load(offset); }
+              try { await request('/api/inbound/unmatched/' + encodeURIComponent(row.id) + '/link', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({contactId: picker.value})}); window.CRMSessionDrafts?.saved?.(form); load(offset); }
               catch (error) { status.textContent = error.message; save.disabled = false; }
             };
             card.append(form);

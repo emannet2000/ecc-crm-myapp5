@@ -211,8 +211,12 @@ update msg model =
                                 , editingSchoolId = Nothing
                                 , viewingSchool =
                                     case model.route of
-                                        SchoolDetail _ ->
-                                            Just school
+                                        SchoolDetail id ->
+                                            if id == school.id then
+                                                Just school
+
+                                            else
+                                                model.viewingSchool
 
                                         _ ->
                                             model.viewingSchool
@@ -251,37 +255,37 @@ update msg model =
         ConfirmedDeleteSchool ->
             case ( model.deletingSchool, model.token ) of
                 ( Just school, Just token ) ->
-                    ( model, Api.deleteSchool token school.id GotDeletedSchool )
+                    ( model, Api.deleteSchool token school.id (GotDeletedSchool school.id school.name) )
 
                 _ ->
                     ( model, Cmd.none )
 
-        GotDeletedSchool result ->
+        GotDeletedSchool deletedId name result ->
             case result of
                 Ok _ ->
                     let
-                        name =
-                            case model.deletingSchool of
-                                Just s ->
-                                    s.name
-
-                                Nothing ->
-                                    "school"
-
                         fresh =
                             { model
                                 | deletingSchool = Nothing
                                 , viewingSchool =
                                     case model.route of
-                                        SchoolDetail _ ->
-                                            Nothing
+                                        SchoolDetail id ->
+                                            if id == deletedId then
+                                                Nothing
+
+                                            else
+                                                model.viewingSchool
 
                                         _ ->
                                             model.viewingSchool
                                 , route =
                                     case model.route of
-                                        SchoolDetail _ ->
-                                            Schools
+                                        SchoolDetail id ->
+                                            if id == deletedId then
+                                                Schools
+
+                                            else
+                                                model.route
 
                                         _ ->
                                             model.route

@@ -1,7 +1,7 @@
 'use strict';
 // Session-only recovery for record modals. Consent, files and passwords are never restored.
 (function(){
- const attached=new WeakMap();let pending=null,candidate=null;
+ const attached=new WeakMap(),pending=new Map();let candidate=null,draftSequence=0;
  const user=()=>document.querySelector('#workspace-navigation')?.getAttribute('data-user-id');
  const controls=form=>[...form.querySelectorAll('input,textarea,select,crm-staff-picker,crm-record-picker')].filter(e=>!['password','file','checkbox','radio','hidden','submit'].includes(e.type));
  const snapshot=form=>controls(form).map((e,index)=>({key:e.id||e.name||e.tagName+':'+index,value:e.value??e.getAttribute('value')??''}));
@@ -13,15 +13,17 @@
    restore.onclick=()=>{if(saved.original!==original&&!window.confirm('The saved record differs from this draft. Confirm this is the same record and compare the restored fields before saving.'))return;const fields=controls(form);for(const field of saved.fields||[]){const element=fields.find((e,index)=>(e.id||e.name||e.tagName+':'+index)===field.key);if(!element)continue;element.value=field.value;for(const event of ['input','change'])element.dispatchEvent(new Event(event,{bubbles:true,composed:true}))}data.versions=saved.versions||{};window.dispatchEvent(new CustomEvent('crm:restore-draft-versions',{detail:data.versions}));panel.replaceChildren(document.createTextNode('Draft restored. Reselect files and review the fields. '));const label=document.createElement('label'),confirm=document.createElement('input');confirm.type='checkbox';label.append(confirm,document.createTextNode(' I compared the latest saved record and want to use its current version.'));confirm.onchange=()=>window.dispatchEvent(new CustomEvent('crm:restore-draft-versions',{detail:confirm.checked?(window.crmDraftRevisions?.()||{}):data.versions}));panel.append(label)};
    discard.onclick=()=>{try{sessionStorage.removeItem(key)}catch{}panel.remove()};panel.append(restore,discard)
   }else panel.remove();
-  const store=()=>{try{sessionStorage.setItem(key,JSON.stringify({original,fields:snapshot(form),versions:data.versions}))}catch{}};form.addEventListener('input',store,{signal:controller.signal});form.addEventListener('change',store,{signal:controller.signal});
-  form.addEventListener('submit',event=>{if(data.pending){event.preventDefault();event.stopImmediatePropagation();return}candidate={form,data};store()},{capture:true,signal:controller.signal});
+  const store=()=>{const draftVersion=++draftSequence;try{sessionStorage.setItem(key,JSON.stringify({original,fields:snapshot(form),versions:data.versions,draftVersion}))}catch{}return draftVersion};form.addEventListener('input',store,{signal:controller.signal});form.addEventListener('change',store,{signal:controller.signal});
+  form.addEventListener('submit',event=>{if(data.pending){event.preventDefault();event.stopImmediatePropagation();return}candidate={form,data,submitted:JSON.stringify(snapshot(form)),draftVersion:store()}},{capture:true,signal:controller.signal});
  }}
- window.addEventListener('crm:save-start',event=>{if(candidate?.form.isConnected){pending={...candidate,path:event.detail.path};pending.data.pending=true;candidate=null}});
+ window.addEventListener('crm:save-start',event=>{if(event.detail.requestId!=null&&candidate?.form.isConnected){const attempt={...candidate,path:event.detail.path};pending.set(event.detail.requestId,attempt);attempt.data.pending=true;candidate=null}});
  window.addEventListener('crm:save-result',event=>{
-  if(!pending||event.detail.path!==pending.path)return;
-  const{form,data}=pending,status=event.detail.status;data.pending=false;
+  const attempt=pending.get(event.detail.requestId);
+  if(!attempt||event.detail.path!==attempt.path)return;
+  pending.delete(event.detail.requestId);
+  const{form,data}=attempt,status=event.detail.status;data.pending=false;
   const host=form.querySelector('crm-draft-recovery');host?.querySelector('.save-recovery')?.remove();
-  if(status>=200&&status<300){try{sessionStorage.removeItem(data.key)}catch{}}
+  if(status>=200&&status<300){try{if(JSON.stringify(snapshot(form))===attempt.submitted&&JSON.parse(sessionStorage.getItem(data.key))?.draftVersion===attempt.draftVersion)sessionStorage.removeItem(data.key)}catch{}}
   else if(host){
    const panel=document.createElement('div');panel.className='draft-recovery save-recovery';panel.setAttribute('role','alert');
    const heading=document.createElement('strong'),message=document.createElement('p');
@@ -32,7 +34,6 @@
    else{heading.textContent='Changes were not saved';message.textContent='Your fields are still in this form and your draft is kept in this tab. Correct the highlighted fields or the issue described below, then save again.'}
    panel.append(heading,message);host.append(panel);
   }
-  pending=null;
  });
  new MutationObserver(attach).observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['data-draft-record-id','record-id','user-id']});attach();
 })();

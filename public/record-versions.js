@@ -2,7 +2,7 @@
 // Elm's HTTP requests use XHR. Capture record versions and freeze them while a
 // modal is open so a background refresh cannot authorize a stale form save.
 (function () {
-  const revisions = new Map(); let frozen = null, recovered = null;
+  const revisions = new Map(); let frozen = null, recovered = null, saveSequence = 0;
   window.crmDraftRevisions = () => Object.fromEntries(frozen || revisions);
   window.addEventListener('crm:restore-draft-versions',event=>{recovered=new Map(Object.entries(event.detail||{}))});
   function observe(value) {
@@ -29,7 +29,8 @@
         const revision = (recovered || frozen || revisions).get(decodeURIComponent(match[2]));
         if (revision) this.setRequestHeader('If-Match', revision);
       }
-      if(['POST','PUT','PATCH','DELETE'].includes(this.crmMethod)&&/^\/api\/(contacts|deals|tasks|schools|students|agents|leads|cases|documents|invoices|payments|partners|activities)(?:\/|$)/.test(this.crmURL.pathname))window.dispatchEvent(new CustomEvent('crm:save-start',{detail:{path:this.crmURL.pathname}}));
+      const requestId = ++saveSequence;
+      if(['POST','PUT','PATCH','DELETE'].includes(this.crmMethod)&&/^\/api\/(contacts|deals|tasks|schools|students|agents|leads|cases|documents|invoices|payments|partners|activities)(?:\/|$)/.test(this.crmURL.pathname))window.dispatchEvent(new CustomEvent('crm:save-start',{detail:{path:this.crmURL.pathname,requestId}}));
       // Capture before the application's load callback can open an edit dialog.
       this.addEventListener('readystatechange', () => {
         if (this.readyState === 4 && this.status >= 200 && this.status < 300) {
@@ -40,7 +41,7 @@
         }
       });
       if(['POST','PUT','PATCH','DELETE'].includes(this.crmMethod))this.addEventListener('loadend',()=>{
-        window.dispatchEvent(new CustomEvent('crm:save-result',{detail:{path:this.crmURL.pathname,status:this.status}}));
+        window.dispatchEvent(new CustomEvent('crm:save-result',{detail:{path:this.crmURL.pathname,status:this.status,requestId}}));
       });
     }
     return originalSend.call(this, body);

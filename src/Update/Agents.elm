@@ -208,8 +208,12 @@ update msg model =
                                 , editingAgentId = Nothing
                                 , viewingAgent =
                                     case model.route of
-                                        AgentDetail _ ->
-                                            Just agent
+                                        AgentDetail id ->
+                                            if id == agent.id then
+                                                Just agent
+
+                                            else
+                                                model.viewingAgent
 
                                         _ ->
                                             model.viewingAgent
@@ -248,37 +252,37 @@ update msg model =
         ConfirmedDeleteAgent ->
             case ( model.deletingAgent, model.token ) of
                 ( Just agent, Just token ) ->
-                    ( model, Api.deleteAgent token agent.id GotDeletedAgent )
+                    ( model, Api.deleteAgent token agent.id (GotDeletedAgent agent.id agent.name) )
 
                 _ ->
                     ( model, Cmd.none )
 
-        GotDeletedAgent result ->
+        GotDeletedAgent deletedId name result ->
             case result of
                 Ok _ ->
                     let
-                        name =
-                            case model.deletingAgent of
-                                Just a ->
-                                    a.name
-
-                                Nothing ->
-                                    "agent"
-
                         fresh =
                             { model
                                 | deletingAgent = Nothing
                                 , viewingAgent =
                                     case model.route of
-                                        AgentDetail _ ->
-                                            Nothing
+                                        AgentDetail id ->
+                                            if id == deletedId then
+                                                Nothing
+
+                                            else
+                                                model.viewingAgent
 
                                         _ ->
                                             model.viewingAgent
                                 , route =
                                     case model.route of
-                                        AgentDetail _ ->
-                                            Agents
+                                        AgentDetail id ->
+                                            if id == deletedId then
+                                                Agents
+
+                                            else
+                                                model.route
 
                                         _ ->
                                             model.route

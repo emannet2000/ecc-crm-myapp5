@@ -269,3 +269,57 @@ func TestReceiptControlsIncludeHiddenLedgerWithoutLeakingReceiptDetails(t *testi
 		t.Fatal("pending aggregate and private receipt scope were mixed")
 	}
 }
+
+func TestApplicationBlockersExplainOnlyNextGateAndRedactRestrictedDocuments(t *testing.T) {
+	setupStore(t)
+	admin, _ := findUserByEmail("demo@northwind.dev")
+	member := addPermissionUser(t, "member", admin.OrgID, "next-gate-reader")
+	scope := RecordScope{OrgID: admin.OrgID, OwnerID: member.ID, Visibility: "organization"}
+	hidden := scope
+	hidden.OwnerID = admin.ID
+	hidden.Visibility = "private"
+	mu.Lock()
+	cases = []Case{{RecordScope: scope, ID: "gate-summary", CurrentStage: "Assessment", AssignedOfficer: member.Name, NextAction: "Review eligibility"}}
+	documents = []Document{{RecordScope: hidden, ID: "secret-gate-doc", CaseID: "gate-summary", DocName: "Confidential evidence", Required: true, Status: "Requested"}}
+	mu.Unlock()
+	if err := saveStore(); err != nil {
+		t.Fatal(err)
+	}
+	h := expansionTestMux()
+	configureTestGate(t, h, StageGateRule{Stage: "Eligibility Review", Enabled: true, RequiredDocuments: true, Uploaded: true, ManagerApproval: true})
+	configureTestGate(t, h, StageGateRule{Stage: "Submitted", Enabled: true, DocumentNames: []string{"Future requirement"}, Uploaded: true})
+	w := rawUserRequest(t, h, member, "GET", "/api/cases/gate-summary/blockers", nil)
+	assertStatus(t, w, 200)
+	var out struct {
+		NextStageGate struct {
+			Stage   string
+			Enabled bool
+			Items   []struct{ Detail, Responsible, Route string }
+		}
+		BlockingCount int
+	}
+	if err := json.Unmarshal(w.Body.Bytes(), &out); err != nil {
+		t.Fatal(err)
+	}
+	if out.NextStageGate.Stage != "Eligibility Review" || !out.NextStageGate.Enabled || len(out.NextStageGate.Items) != 2 {
+		t.Fatalf("wrong gate: %s", w.Body.String())
+	}
+	if out.BlockingCount != 0 {
+		t.Fatal("manual document follow-up marked as automatic blocker")
+	}
+	if strings.Contains(w.Body.String(), "Confidential") || strings.Contains(w.Body.String(), "secret-gate-doc") || strings.Contains(w.Body.String(), "Future requirement") {
+		t.Fatal("private or later-stage requirement leaked into next stage")
+	}
+	if out.NextStageGate.Items[1].Responsible != "Workspace manager" || !strings.Contains(out.NextStageGate.Items[1].Route, "stage=Eligibility%20Review") {
+		t.Fatal("approval lacks role or destination")
+	}
+	configureTestGate(t, h, StageGateRule{Stage: "Eligibility Review", Enabled: false})
+	w = rawUserRequest(t, h, member, "GET", "/api/cases/gate-summary/blockers", nil)
+	assertStatus(t, w, 200)
+	if err := json.Unmarshal(w.Body.Bytes(), &out); err != nil {
+		t.Fatal(err)
+	}
+	if out.NextStageGate.Enabled || len(out.NextStageGate.Items) != 0 {
+		t.Fatal("disabled gate still blocks work")
+	}
+}

@@ -3766,9 +3766,34 @@ fetchExport token entity toMsg =
         }
 
 
-refreshSession : (Result String AuthResponse -> msg) -> Cmd msg
+sessionRefreshResult : Http.Response String -> Result SessionRefreshError AuthResponse
+sessionRefreshResult response =
+    case response of
+        Http.BadStatus_ metadata _ ->
+            if metadata.statusCode == 401 || metadata.statusCode == 403 then
+                Err SessionRejected
+            else
+                Err (SessionUnavailable "Could not check your session. Please retry. Your entries are kept.")
+
+        Http.GoodStatus_ _ body ->
+            D.decodeString authResponseDecoder body
+                |> Result.mapError (\_ -> SessionUnavailable "Could not read the session response. Please retry. Your entries are kept.")
+
+        _ ->
+            Err (SessionUnavailable "Could not connect to check your session. Please retry. Your entries are kept.")
+
+
+refreshSession : (Result SessionRefreshError AuthResponse -> msg) -> Cmd msg
 refreshSession toMsg =
-    Http.post { url = "/api/session/refresh", body = Http.emptyBody, expect = authExpect toMsg }
+    Http.request
+        { method = "POST"
+        , url = "/api/session/refresh"
+        , headers = []
+        , body = Http.emptyBody
+        , expect = Http.expectStringResponse toMsg sessionRefreshResult
+        , timeout = Just 15000
+        , tracker = Nothing
+        }
 
 
 httpErrorMessage : Http.Error -> String

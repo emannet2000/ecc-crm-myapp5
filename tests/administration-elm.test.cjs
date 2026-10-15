@@ -15,7 +15,13 @@ test('Elm frontend preserves drafts, isolates accounts and protects reports and 
   config['source-directories'] = [path.join(root, 'src'), path.join(root, 'tests/elm')];
   fs.writeFileSync(path.join(directory, 'elm.json'), JSON.stringify(config));
   const output = path.join(directory, 'checks.js');
-  execFileSync('elm', ['make', path.join(root, 'tests/elm/AdministrationChecks.elm'), '--output=' + output], {cwd:directory,timeout:120000,stdio:'pipe'});
+  const localCompiler = path.join(root, 'node_modules/.bin/elm');
+  const compiler = fs.existsSync(localCompiler) ? localCompiler : 'elm';
+  try {
+    execFileSync(compiler, ['make', path.join(root, 'tests/elm/AdministrationChecks.elm'), '--output=' + output], {cwd:directory,timeout:120000,stdio:'pipe'});
+  } catch (error) {
+    throw new Error('Elm checks failed to compile:\n' + String(error.stderr || error.stdout || error.message));
+  }
   const {Elm} = require(output);
   const app = Elm.AdministrationChecks.init({flags:null});
   const checks = await new Promise((resolve, reject) => {

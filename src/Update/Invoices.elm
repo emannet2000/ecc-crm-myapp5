@@ -219,8 +219,12 @@ update msg model =
                                 , editingInvoiceId = Nothing
                                 , viewingInvoice =
                                     case model.route of
-                                        InvoiceDetail _ ->
-                                            Just inv
+                                        InvoiceDetail id ->
+                                            if id == inv.id then
+                                                Just inv
+
+                                            else
+                                                model.viewingInvoice
 
                                         _ ->
                                             model.viewingInvoice
@@ -259,38 +263,43 @@ update msg model =
         ConfirmedDeleteInvoice ->
             case ( model.deletingInvoice, model.token ) of
                 ( Just inv, Just token ) ->
-                    ( model, Api.deleteInvoice token inv.id GotDeletedInvoice )
+                    ( model, Api.deleteInvoice token inv.id (GotDeletedInvoice inv.id inv.invoiceNumber) )
 
                 _ ->
                     ( model, Cmd.none )
 
-        GotDeletedInvoice result ->
+        GotDeletedInvoice deletedId name result ->
             case result of
                 Ok _ ->
                     let
-                        name =
-                            case model.deletingInvoice of
-                                Just inv ->
-                                    inv.invoiceNumber
-
-                                Nothing ->
-                                    "invoice"
-
                         fresh =
                             { model
                                 | deletingInvoice = Nothing
                                 , viewingInvoice =
                                     case model.route of
-                                        InvoiceDetail _ ->
-                                            Nothing
+                                        InvoiceDetail id ->
+                                            if id == deletedId then
+                                                Nothing
+
+                                            else
+                                                model.viewingInvoice
 
                                         _ ->
                                             model.viewingInvoice
-                                , invoicePayments = NotAsked
+                                , invoicePayments =
+                                    if model.route == InvoiceDetail deletedId then
+                                        NotAsked
+
+                                    else
+                                        model.invoicePayments
                                 , route =
                                     case model.route of
-                                        InvoiceDetail _ ->
-                                            Invoices
+                                        InvoiceDetail id ->
+                                            if id == deletedId then
+                                                Invoices
+
+                                            else
+                                                model.route
 
                                         _ ->
                                             model.route
@@ -479,8 +488,12 @@ update msg model =
                     let
                         updatedViewingInvoice =
                             case model.route of
-                                InvoiceDetail _ ->
-                                    Just inv
+                                InvoiceDetail id ->
+                                    if id == inv.id then
+                                        Just inv
+
+                                    else
+                                        model.viewingInvoice
 
                                 _ ->
                                     model.viewingInvoice

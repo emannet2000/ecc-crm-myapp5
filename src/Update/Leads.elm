@@ -235,8 +235,12 @@ update msg model =
                                 , editingLeadId = Nothing
                                 , viewingLead =
                                     case model.route of
-                                        LeadDetail _ ->
-                                            Just lead
+                                        LeadDetail id ->
+                                            if id == lead.id then
+                                                Just lead
+
+                                            else
+                                                model.viewingLead
 
                                         _ ->
                                             model.viewingLead
@@ -275,37 +279,37 @@ update msg model =
         ConfirmedDeleteLead ->
             case ( model.deletingLead, model.token ) of
                 ( Just lead, Just token ) ->
-                    ( model, Api.deleteLead token lead.id GotDeletedLead )
+                    ( model, Api.deleteLead token lead.id (GotDeletedLead lead.id lead.name) )
 
                 _ ->
                     ( model, Cmd.none )
 
-        GotDeletedLead result ->
+        GotDeletedLead deletedId name result ->
             case result of
                 Ok _ ->
                     let
-                        name =
-                            case model.deletingLead of
-                                Just l ->
-                                    l.name
-
-                                Nothing ->
-                                    "lead"
-
                         fresh =
                             { model
                                 | deletingLead = Nothing
                                 , viewingLead =
                                     case model.route of
-                                        LeadDetail _ ->
-                                            Nothing
+                                        LeadDetail id ->
+                                            if id == deletedId then
+                                                Nothing
+
+                                            else
+                                                model.viewingLead
 
                                         _ ->
                                             model.viewingLead
                                 , route =
                                     case model.route of
-                                        LeadDetail _ ->
-                                            Leads
+                                        LeadDetail id ->
+                                            if id == deletedId then
+                                                Leads
+
+                                            else
+                                                model.route
 
                                         _ ->
                                             model.route

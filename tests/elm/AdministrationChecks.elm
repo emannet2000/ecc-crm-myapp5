@@ -1,6 +1,10 @@
 port module AdministrationChecks exposing (main)
 
+import Api
+import Http
+import Types exposing (SessionRefreshError(..))
 import Account
+import RequestOrderChecks
 import TeamChat as Chat
 import Administration as Admin
 import Dict
@@ -56,7 +60,14 @@ checks data =
         retry = saving |> step (Admin.Saved saving.generation (Err "session-expired"))
         retryFailed = retry |> step (Admin.Saved retry.generation (Err "session-expired"))
     in
-    [ ( "Opening an unchanged form does not prompt", not (Admin.dirty editing) )
+    [ ( "Administration refresh failures keep server guidance and drafts", let failedRefresh = step (Admin.Refreshed retry.generation True "/api/admin/users/member" E.null Nothing (Err "Temporarily unavailable. Please retry.")) retry in has "name" "Updated member" failedRefresh && String.contains "Temporarily unavailable" failedRefresh.notice && not (String.contains "session expired" failedRefresh.notice) && not failedRefresh.busy )
+    , ( "Administration refresh rejection still requests sign-in", let expiredRefresh = step (Admin.Refreshed retry.generation True "" E.null Nothing (Err "session-expired")) retry in String.contains "session expired" expiredRefresh.notice && has "name" "Updated member" expiredRefresh )
+    , ( "Security history names the target user", Admin.securityEventLabel data.users "admin.sessions_revoked:member" == "Signed out all devices: Member" )
+    , ( "Unknown security events remain visible", Admin.securityEventLabel data.users "future.event:member" == "future.event:member" )
+    , ( "Deleted target users retain their identity", Admin.securityEventLabel data.users "admin.user_updated:deleted" == "User access updated: deleted" )
+    , ( "Security dates show the explicit UTC timezone", Admin.securityTime "2026-10-15T01:19:53Z" == "2026-10-15 01:19:53 UTC" )
+    , ( "Unknown timestamp formats remain visible", Admin.securityTime "invalid" == "invalid" )
+    , ( "Opening an unchanged form does not prompt", not (Admin.dirty editing) )
     , ( "Actual edits mark the form dirty", Admin.dirty dirty )
     , ( "Returning to original values clears dirty state", not (Admin.dirty (dirty |> step (Admin.Changed "name" "Member"))) )
     , ( "Switching sections keeps the form until a decision", leave.tab == "users" && leave.pending /= Nothing && has "name" "Updated member" leave )
@@ -151,13 +162,27 @@ accountChecks =
     , ( "SSO rejects malformed or unsuccessful responses", List.all (\body -> Result.toMaybe (Account.decodeSuccess Account.Sso body) == Nothing) [ "{}", "{\"status\":\"failed\"}", "{\"message\":\"ok\"}", "invalid" ] )
     ]
 
+sessionChecks =
+    let
+        bad status = Http.BadStatus_ { url = "/api/session/refresh", statusCode = status, statusText = "", headers = Dict.empty } "{}"
+        temporary response = case Api.sessionRefreshResult response of
+            Err (SessionUnavailable _) -> True
+            _ -> False
+    in
+    [ ( "Refresh server failures do not invalidate the login", List.all (bad >> temporary) [ 429, 500, 502, 503 ] )
+    , ( "Refresh connection failures do not invalidate the login", temporary Http.NetworkError_ && temporary Http.Timeout_ )
+    , ( "Invalid refresh responses do not invalidate the login", temporary (Http.GoodStatus_ { url = "", statusCode = 200, statusText = "OK", headers = Dict.empty } "{}") )
+    , ( "Expired and revoked sessions require sign-in", List.all (\status -> Api.sessionRefreshResult (bad status) == Err SessionRejected) [ 401, 403 ] )
+    ]
+
+
 main =
     Platform.worker
         { init = \() ->
             let
                 output =
                     case D.decodeString Admin.decoder fixture of
-                        Ok data -> checks data ++ chatChecks ++ accountChecks ++ propertyChecks data ++ ReportChecks.checks ++ RecordBrowserChecks.checks ++ DashboardChecks.checks
+                        Ok data -> RequestOrderChecks.checks ++ sessionChecks ++ checks data ++ chatChecks ++ accountChecks ++ propertyChecks data ++ ReportChecks.checks ++ RecordBrowserChecks.checks ++ DashboardChecks.checks
                         Err _ -> [ ( "Fixture decodes", False ) ]
             in
             ( (), results (E.list (\( name, passed ) -> E.object [ ( "name", E.string name ), ( "passed", E.bool passed ) ]) output) )

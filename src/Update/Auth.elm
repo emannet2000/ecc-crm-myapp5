@@ -4,6 +4,7 @@ module Update.Auth exposing (update)
 -}
 
 import Api
+import Browser.Navigation as Nav
 import Ports exposing (storeToken)
 import Set
 import Types exposing (..)
@@ -14,20 +15,41 @@ import Update.Validate exposing (validate)
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        RefreshSession ->
-            ( model, Api.refreshSession RefreshedSession )
+        RetryLogout ->
+            if model.logoutBusy then ( model, Cmd.none )
+            else ( { model | logoutPending = True, logoutBusy = True, logoutMessage = "" }, Ports.logoutSession () )
 
-        RefreshedSession result ->
-            case result of
+        LogoutFinished result ->
+            if not model.logoutPending then ( model, Cmd.none )
+            else ( { model | logoutPending = not result.ok, logoutBusy = False, logoutMessage = result.message }, Cmd.none )
+
+        RefreshSession ->
+            if model.token == Nothing then
+                ( model, Cmd.none )
+            else
+                let generation = model.sessionGeneration + 1 in
+                ( { model | bootstrapping = model.user == Nothing, alert = Nothing, sessionGeneration = generation }, Api.refreshSession (RefreshedSession generation) )
+
+        RefreshedSession generation result ->
+            if generation /= model.sessionGeneration then
+                ( model, Cmd.none )
+            else case result of
                 Ok response ->
-                    if model.bootstrapping then
+                    if model.sessionOwner /= Nothing && model.sessionOwner /= Just response.user.id then
+                        -- Start a fresh document so old API replies, JS caches and
+                        -- forms cannot cross the account boundary.
+                        ( { model | user = Nothing, bootstrapping = True, sessionGeneration = model.sessionGeneration + 1 }, Nav.load "/" )
+                    else if model.bootstrapping then
                         update (GotUser (Ok response.user)) { model | token = Just response.token }
 
                     else
                         ( { model | token = Just response.token, user = Just response.user }, Cmd.none )
 
-                Err message ->
-                    update (GotUser (Err message)) model
+                Err SessionRejected ->
+                    update (GotUser (Err "Your session expired. Please sign in again.")) model
+
+                Err (SessionUnavailable message) ->
+                    ( { model | bootstrapping = False, alert = Just { kind = AlertError, message = message }, toast = if model.user == Nothing then model.toast else Just message }, Cmd.none )
 
         UpdatedOTP value ->
             ( { model | form = (\f -> { f | otp = value }) model.form }, Cmd.none )
@@ -102,11 +124,16 @@ update msg model =
                 Ok { token, user } ->
                     let
                         storeCmd =
-                            storeToken (Just token)
+                            Cmd.batch [ storeToken (Just token), Ports.sessionIdentity user.id ]
 
+                        recovering = model.sessionOwner == Just user.id && model.user == Nothing
+                        changedAccount = model.sessionOwner /= Nothing && model.sessionOwner /= Just user.id
                         modelWithAuth =
                             { model
                                 | submitting = False
+                                , sessionGeneration = model.sessionGeneration + 1
+                                , sessionOwner = Just user.id
+                                , form = emptyForm
                                 , token = Just token
                                 , user = Just user
                                 , route = model.route
@@ -130,9 +157,16 @@ update msg model =
                             }
 
                         ( routedModel, routeCmds ) =
-                            Update.Navigation.update (NavigatedTo model.route) modelWithAuth
+                            if recovering then
+                                ( { model | token = Just token, user = Just user, sessionOwner = Just user.id, sessionGeneration = model.sessionGeneration + 1, form = emptyForm, submitting = False, bootstrapping = False, alert = Nothing, toast = Just "Signed in again. Your unsaved entries are restored; review them before saving." }
+                                , Update.Navigation.update (NavigatedTo model.route) modelWithAuth |> Tuple.second
+                                )
+                            else Update.Navigation.update (NavigatedTo model.route) modelWithAuth
                     in
-                    ( routedModel, Cmd.batch [ storeCmd, routeCmds, Api.fetchWorkspaceClock token RefreshedWorkspaceClock ] )
+                    if changedAccount then
+                        ( { model | user = Nothing, bootstrapping = True, sessionGeneration = model.sessionGeneration + 1 }, Nav.load "/" )
+                    else
+                        ( routedModel, Cmd.batch [ storeCmd, routeCmds, Api.fetchWorkspaceClock token RefreshedWorkspaceClock ] )
 
                 Err message ->
                     ( { model
@@ -147,25 +181,36 @@ update msg model =
                 Ok user ->
                     let
                         modelWithUser =
-                            { model | user = Just user, bootstrapping = False }
+                            { model | user = Just user, sessionOwner = Just user.id, bootstrapping = False }
 
                         ( routedModel, routeCmds ) =
                             Update.Navigation.update (NavigatedTo model.route) modelWithUser
                     in
-                    ( routedModel, Cmd.batch [ routeCmds, Api.fetchWorkspaceClock (Maybe.withDefault "cookie-session" model.token) RefreshedWorkspaceClock ] )
+                    ( routedModel, Cmd.batch [ Ports.sessionIdentity user.id, routeCmds, Api.fetchWorkspaceClock (Maybe.withDefault "cookie-session" model.token) RefreshedWorkspaceClock ] )
 
-                Err _ ->
+                Err message ->
                     ( { model
-                        | token = Nothing
+                        | sessionGeneration = model.sessionGeneration + 1
+                        , token = Nothing
                         , user = Nothing
                         , bootstrapping = False
+                        , passwordForm = emptyPasswordForm
+                        , leadForm = Maybe.map (\draft -> { draft | duplicateConfirmed = False, submitting = False }) model.leadForm
+                        , paymentForm = Maybe.map (\draft -> { draft | confirmDuplicate = False, submitting = False }) model.paymentForm
+                        , form = emptyForm
+                        , alert = if model.sessionOwner == Nothing then Nothing else Just { kind = AlertError, message = message ++ " Sign in with the same account to recover your unsaved entries." }
                       }
-                    , storeToken Nothing
+                    , Cmd.batch [ storeToken Nothing, Ports.preserveSessionDrafts (Maybe.withDefault "" model.sessionOwner) ]
                     )
 
         LoggedOut ->
             ( { model
-                | token = Nothing
+                | sessionGeneration = model.sessionGeneration + 1
+                , sessionOwner = Nothing
+                , logoutPending = True
+                , logoutBusy = True
+                , logoutMessage = ""
+                , token = Nothing
                 , user = Nothing
                 , form = emptyForm
                 , mode = Login
@@ -265,7 +310,7 @@ update msg model =
                 , deletingPartner = Nothing
                 , pendingPartnersQuery = Nothing
               }
-            , storeToken Nothing
+            , Cmd.batch [ storeToken Nothing, Ports.logoutSession () ]
             )
 
         _ ->

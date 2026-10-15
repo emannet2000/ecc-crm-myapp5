@@ -1,4 +1,4 @@
-module Administration exposing (Action(..), Model, Msg(..), decoder, dirty, init, update, view)
+module Administration exposing (Action(..), Model, Msg(..), decoder, dirty, init, securityEventLabel, securityTime, update, view)
 
 import Browser.Navigation as Nav
 import Dict exposing (Dict)
@@ -348,7 +348,8 @@ update msg model =
             if generation /= model.generation then ( model, Cmd.none )
             else case result of
                 Ok _ -> ( model, send generation writing path payload target model )
-                Err _ -> ( { model | busy = False, loading = False, confirmation = Nothing, afterSave = Nothing, notice = "Your session expired. Sign in again. Your entries are kept on this screen.", error = True }, Cmd.none )
+                Err "session-expired" -> ( { model | busy = False, loading = False, confirmation = Nothing, afterSave = Nothing, notice = "Your session expired. Sign in again. Your entries are kept on this screen.", error = True }, Cmd.none )
+                Err message -> ( { model | busy = False, loading = False, confirmation = Nothing, afterSave = Nothing, notice = message ++ " Your entries are kept on this screen.", error = True }, Cmd.none )
 
         Navigate path ->
             ( model, Nav.load path )
@@ -501,6 +502,39 @@ jsonTable columns entries =
     tableView (List.map Tuple.second columns) (List.map (\row -> List.map (\( key, _ ) -> text (if str key row == "" then "—" else str key row)) columns) entries)
 
 
+securityTime : String -> String
+securityTime timestamp =
+    if timestamp == "" then "—"
+    else if String.endsWith "Z" timestamp && String.contains "T" timestamp then
+        String.replace "T" " " (String.dropRight 1 timestamp) ++ " UTC"
+    else timestamp
+
+
+securityEventLabel : List D.Value -> String -> String
+securityEventLabel users event =
+    let
+        code = String.split ":" event |> List.head |> Maybe.withDefault event
+        target = String.split ":" event |> List.drop 1 |> String.join ":"
+        person = users |> List.filter (\user -> str "id" user == target) |> List.head |> Maybe.map (str "name") |> Maybe.withDefault target
+        labels = Dict.fromList
+            [ ( "login.succeeded", "Signed in" ), ( "login.failed", "Sign-in failed" )
+            , ( "login.ip_denied", "Sign-in blocked by IP policy" ), ( "login.sso_mfa", "Signed in with SSO and two-factor authentication" )
+            , ( "login.oidc", "Signed in with OpenID Connect" ), ( "login.saml", "Signed in with SAML" )
+            , ( "account.created", "Account created" ), ( "invite.accepted", "Invitation accepted" )
+            , ( "two_factor.enabled", "Two-factor authentication enabled" ), ( "two_factor.disabled", "Two-factor authentication disabled" )
+            , ( "password_reset.requested", "Password reset requested" ), ( "password_reset.completed", "Password reset completed" )
+            , ( "admin.user_created", "User created" ), ( "admin.user_updated", "User access updated" )
+            , ( "admin.sessions_revoked", "Signed out all devices" )
+            , ( "admin.reset_link_created", "Password reset link created" ), ( "admin.invite_link_created", "Invitation link created" )
+            , ( "trash.policy_updated", "Trash retention policy updated" ), ( "trash.purged", "Trash purged" )
+            , ( "escalation.rule_saved", "Escalation rule saved" ), ( "application.gate_policy_updated", "Application stage policy updated" )
+            ]
+    in
+    case Dict.get code labels of
+        Just title -> title ++ (if target == "" then "" else ": " ++ person)
+        Nothing -> event
+
+
 content : Model -> Snapshot -> List (Html Msg)
 content model data =
     let
@@ -528,9 +562,9 @@ content model data =
             , card "Record visibility" "Administrator and Manager roles can access all records in their workspace. Member and Viewer access follows record ownership and visibility." [ tableView [ "Visibility", "Who can read" ] (List.map (List.map text) [ [ "Private", "Owner, Administrators and Managers" ], [ "Team", "Owner, matching team, Administrators and Managers" ], [ "Organization", "All users in this workspace" ] ]), link model "Manage record ownership and visibility" "/workspace?tab=team" ]
             ]
         "security" ->
-            [ card "Active sessions" "The 100 most recently active sessions in this workspace. Account access changes revoke all previous sessions." [ tableView [ "User", "Browser / device", "IP address", "Last active", "Actions" ] (List.map (\row -> List.map (\key -> text (str key row)) [ "name", "userAgent", "ip", "lastSeen" ] ++ [ btn model "Sign out all devices" (Request (Account (Mutation ("/api/admin/users/" ++ str "userId" row ++ "/revoke-sessions") "POST" (E.object []) (Just (str "userId" row)) ("Sign out all devices for " ++ str "name" row ++ "?")))) ]) data.sessions) ]
-            , card "User access history" "The 100 most recent user changes, with the administrator who made each change." [ jsonTable [ ( "actor", "Changed by" ), ( "label", "User" ), ( "action", "Action" ), ( "occurredAt", "When" ) ] data.changes ]
-            , card "Login and security history" "The 100 most recent security events in this workspace." [ jsonTable [ ( "name", "User / actor" ), ( "event", "Event" ), ( "ip", "IP address" ), ( "occurredAt", "When" ) ] data.security ]
+            [ card "Active sessions" "The 100 most recently active sessions in this workspace. Account access changes revoke all previous sessions." [ tableView [ "User", "Browser / device", "IP address", "Last active (UTC)", "Actions" ] (List.map (\row -> List.map (\key -> text (str key row)) [ "name", "userAgent", "ip" ] ++ [ text (securityTime (str "lastSeen" row)) ] ++ [ btn model "Sign out all devices" (Request (Account (Mutation ("/api/admin/users/" ++ str "userId" row ++ "/revoke-sessions") "POST" (E.object []) (Just (str "userId" row)) ("Sign out all devices for " ++ str "name" row ++ "?")))) ]) data.sessions) ]
+            , card "User access history" "The 100 most recent user changes, with the administrator who made each change." [ jsonTable [ ( "actor", "Changed by" ), ( "label", "User" ), ( "action", "Action" ), ( "occurredAt", "When (UTC)" ) ] (List.map (\row -> E.object [ ( "actor", E.string (str "actor" row) ), ( "label", E.string (str "label" row) ), ( "action", E.string (str "action" row) ), ( "occurredAt", E.string (securityTime (str "occurredAt" row)) ) ]) data.changes) ]
+            , card "Login and security history" "The 100 most recent security events in this workspace." [ tableView [ "User / actor", "Event", "IP address", "When (UTC)" ] (List.map (\row -> [ text (str "name" row), text (securityEventLabel data.users (str "event" row)), text (str "ip" row), text (securityTime (str "occurredAt" row)) ]) data.security) ]
             ]
         "settings" ->
             [ draft, card "Integrations" "Configure email delivery, AI assistance and webhooks." [ link model "Open integration settings" "/workspace?tab=integrations" ], card "Workspace readiness" "Review setup, delivery failures, backup status and isolated restore verification." [ link model "Getting started & readiness" "/workspace?tab=readiness" ] ]

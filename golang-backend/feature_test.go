@@ -83,7 +83,21 @@ func TestCookieSessionsRotationAndRevocation(t *testing.T) {
 	assertStatus(t, w, 200)
 	refresh := featureRequest(h, "POST", "/api/session/refresh", nil, cookies)
 	assertStatus(t, refresh, 200)
-	assertStatus(t, featureRequest(h, "POST", "/api/session/refresh", nil, cookies), 401)
+	replayed := featureRequest(h, "POST", "/api/session/refresh", nil, cookies)
+	assertStatus(t, replayed, 200)
+	for i, cookie := range refresh.Result().Cookies() {
+		if replayed.Result().Cookies()[i].Value != cookie.Value {
+			t.Fatal("overlapping refreshes issued different cookies")
+		}
+	}
+	if _, err := database.Exec("UPDATE session_refresh_grace SET expires_at=?", time.Now().Add(-time.Second).UTC().Format(time.RFC3339Nano)); err != nil {
+		t.Fatal(err)
+	}
+	rejected := featureRequest(h, "POST", "/api/session/refresh", nil, cookies)
+	assertStatus(t, rejected, 401)
+	if len(rejected.Result().Cookies()) != 0 {
+		t.Fatal("stale refresh must not erase another client's cookies")
+	}
 	assertStatus(t, featureRequest(h, "GET", "/api/me", nil, cookies), 401)
 	next := refresh.Result().Cookies()
 	assertStatus(t, featureRequest(h, "GET", "/api/me", nil, next), 200)

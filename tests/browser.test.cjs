@@ -135,10 +135,11 @@ async function fixture(view = 'contacts', options = {}) {
   page.on('request', async req=> {
     try {
       const url=new URL(req.url()); calls.push({query:url.search,path:url.pathname,method:req.method(),headers:req.headers(),body:req.postData()});
+      if(options.onContactSave&&url.pathname==='/api/contacts/c_client'&&req.method()==='PUT'){options.onContactSave(req);return;}
       let data,contentType='application/json',status=200;
       if(url.pathname.startsWith('/public/')) {data=fs.readFileSync(path.join(__dirname,'..',url.pathname));contentType=url.pathname.endsWith('.css')?'text/css':'application/javascript';}
       else if(url.pathname==='/portal') {data=fs.readFileSync(path.join(__dirname,'../public/portal.html'));contentType='text/html';}
-      else if(url.pathname==='/') {contentType='text/html';data=`<!doctype html><html><head><meta charset="utf-8"></head><body><div id="app">${view==='leadwork'?'<crm-lead-work record-id="l_client"></crm-lead-work>':view==='picker'?'<crm-record-picker entity="contacts" value="c_client" label="Client"></crm-record-picker>':view==='ai'?'<crm-ai-chat></crm-ai-chat>':view==='workspace'?'<crm-workspace></crm-workspace>':view==='insights'?'<crm-insights></crm-insights>':view==='daily'?'<div id="work-dashboard-fixture"></div>':view==='journey'?'<crm-student-journey record-id="s_client"></crm-student-journey>':view==='quality'?'<crm-form-quality entity="students" studentcode="DUP"></crm-form-quality>':view==='connections'?'<crm-integration-health></crm-integration-health>':`<crm-record-tools entity="${view}" record-id="${view==='students'?'s_client':view==='leads'?'l_client':'c_client'}"></crm-record-tools>`}</div><script src="/public/pickers.js"></script><script src="/public/assignment-review.js"></script><script src="/public/record-versions.js"></script><script src="/public/draft-recovery.js"></script><script src="/public/productivity.js"></script><script src="/public/ai.js"></script><script src="/public/followup-templates.js"></script><script src="/public/handoffs.js"></script><script src="/public/progress.js"></script><script src="/public/consolidation.js"></script><script src="/public/workspace-secondary.js"></script><link rel="stylesheet" href="/public/work-dashboard-elm.css"><script src="/public/work-dashboard-elm.js"></script><script src="/public/record-browser-elm.js"></script><script src="/public/center.js"></script><script src="/public/components.js"></script><script src="/public/lead-work.js"></script>${view==='daily'?'<script>Elm.WorkDashboard.init({node:document.getElementById("work-dashboard-fixture"),flags:{userId:"u_manager"}})</script>':''}</body></html>`;}
+      else if(url.pathname==='/') {contentType='text/html';data=`<!doctype html><html><head><meta charset="utf-8"></head><body><div id="app">${view==='leadwork'?'<crm-lead-work record-id="l_client"></crm-lead-work>':view==='picker'?'<crm-record-picker entity="contacts" value="c_client" label="Client"></crm-record-picker>':view==='ai'?'<crm-ai-chat></crm-ai-chat>':view==='workspace'?'<crm-workspace></crm-workspace>':view==='insights'?'<crm-insights></crm-insights>':view==='daily'?'<div id="work-dashboard-fixture"></div>':view==='journey'?'<crm-student-journey record-id="s_client"></crm-student-journey>':view==='quality'?'<crm-form-quality entity="students" studentcode="DUP"></crm-form-quality>':view==='connections'?'<crm-integration-health></crm-integration-health>':`<crm-record-tools entity="${view}" record-id="${view==='students'?'s_client':view==='leads'?'l_client':'c_client'}"></crm-record-tools>`}</div><script src="/public/session.js"></script><script src="/public/session-drafts.js"></script><script src="/public/pickers.js"></script><script src="/public/assignment-review.js"></script><script src="/public/record-versions.js"></script><script src="/public/draft-recovery.js"></script><script src="/public/productivity.js"></script><script src="/public/ai.js"></script><script src="/public/followup-templates.js"></script><script src="/public/handoffs.js"></script><script src="/public/progress.js"></script><script src="/public/consolidation.js"></script><script src="/public/workspace-secondary.js"></script><link rel="stylesheet" href="/public/work-dashboard-elm.css"><script src="/public/work-dashboard-elm.js"></script><script src="/public/record-browser-elm.js"></script><script src="/public/center.js"></script><script src="/public/components.js"></script><script src="/public/lead-work.js"></script>${view==='daily'?'<script>Elm.WorkDashboard.init({node:document.getElementById("work-dashboard-fixture"),flags:{userId:"u_manager"}})</script>':''}</body></html>`;}
       else if(view==='picker'&&url.pathname==='/api/contacts/c_client') data={contact};
       else if(view==='picker'&&url.pathname==='/api/contacts') {
         let rows=Array.from({length:240},(_,i)=>({id:'pick-'+i,name:'Searchable client '+i,email:'client'+i+'@example.com'}));
@@ -193,6 +194,7 @@ async function fixture(view = 'contacts', options = {}) {
       else if(url.pathname==='/api/contacts/c_client'&&req.method()==='PUT'){status=options.staleContact?409:200;data=options.staleContact?{error:'Record changed'}:{contact};}
       else if(url.pathname==='/api/contacts/c_client'&&req.method()==='GET') data={contact};
       else data={status:'ok'};
+      if(url.pathname==='/api/cases/case_client/blockers'&&options.blockers)data=options.blockers;
       await req.respond({status,contentType,body:typeof data==='object'&&!Buffer.isBuffer(data)?JSON.stringify(data):data});
     }catch(e){errors.push(e.message);await req.abort().catch(()=>{});}
   });
@@ -500,7 +502,7 @@ test('daily overview cards show record details and links for all five categories
  const options={workResponse:async(url,data)=>{
   const category=url.searchParams.get('category');if(!entities[category])return {data};
   const entity=entities[category],plural={deal:'deals',lead:'leads',student:'students',case:'cases'}[entity];
-  return {data:{...data,total:1,items:[{id:'overview',entity,name:'Specific '+entity,reason:'Status: Active',action:'Review details',owner:'Adviser',route:'/'+plural+'/overview',priority:'medium',details:['Program: Nursing','Source: Flor']}]}};
+  return {data:{...data,total:1,items:[{id:'overview',entity,name:'Specific '+category,reason:'Status: Active',action:'Review details',owner:'Adviser',route:'/'+plural+'/overview',priority:'medium',details:['Program: Nursing','Source: Flor']}]}};
  }};
  const {page,errors}=await fixture('daily',options);
  try{
@@ -508,7 +510,7 @@ test('daily overview cards show record details and links for all five categories
   await page.$eval('.daily-work',host=>host.querySelectorAll('details.journey-section').forEach(section=>section.open=true));
   for(const [category,entity]of Object.entries(entities)){
    await page.click('.daily-work [data-category="'+category+'"]');
-   await page.waitForFunction(entity=>!document.querySelector('.daily-work [aria-busy=true]')&&document.querySelector('.daily-work').textContent.includes('Specific '+entity),{},entity);
+   await page.waitForFunction(category=>!document.querySelector('.daily-work [aria-busy=true]')&&document.querySelector('.daily-work').textContent.includes('Specific '+category),{},category);
    assert.ok(await page.evaluate(entity=>{const root=document.querySelector('.daily-work');return root.textContent.includes('Program: Nursing')&&root.textContent.includes('Source: Flor')&&[...root.querySelectorAll('.work-item a')].some(a=>a.classList.contains('button')&&a.getAttribute('href')==='/'+({deal:'deals',lead:'leads',student:'students',case:'cases'}[entity])+'/overview')},entity));
   }
   assert.deepEqual(errors,[]);
@@ -689,14 +691,36 @@ test('live application essentials group daily actions and reveal linked handoffs
  try{
   for(let i=0;i<100;i++){try{if((await fetch('http://localhost:'+port+'/api/health')).ok)break}catch{}await new Promise(resolve=>setTimeout(resolve,100))}
   await page.goto('http://localhost:'+port,{waitUntil:'networkidle2'});
+  await page.waitForSelector('input[type=email]');
   await page.type('input[type=email]','demo@northwind.dev');await page.type('input[type=password]','Demo1234');await page.click('button[type=submit]');await page.waitForSelector('.app-shell');
   const id=await page.evaluate(async()=>{const out=await(await fetch('/api/cases')).json();return out.cases[0].id});
+  const destination=await page.evaluate(async id=>{
+   const preview=await(await fetch('/api/cases/'+id+'/gates')).json();
+   const index=preview.stages.findIndex(row=>row.rule.stage===preview.case.currentStage);
+   const rule={...preview.stages[index+1].rule,enabled:true,requiredDocuments:false,documentNames:[],uploaded:false,reviewed:false,verified:false,managerApproval:true};
+   const response=await fetch('/api/application-gates',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(rule)});
+   if(!response.ok)throw new Error(await response.text());return rule.stage;
+  },id);
   for(const width of [1280,390]){
    await page.setViewport({width,height:900});
    await page.goto('http://localhost:'+port+'/cases/'+id,{waitUntil:'networkidle2'});
    await page.waitForSelector('.application-essentials');
    await page.waitForFunction(()=>document.querySelector('.application-essentials crm-work-plan')?.shadowRoot.querySelector('textarea'));
    assert.equal(await page.$eval('crm-record-tools',e=>e.shadowRoot.querySelectorAll('crm-work-plan').length),0);
+   await page.waitForFunction(()=>document.querySelector('crm-application-blockers')?.shadowRoot.querySelector('.blocker-summary')?.textContent.includes('Workspace manager'));
+   const blocked=await page.$eval('crm-application-blockers',e=>e.shadowRoot.querySelector('.blocker-summary').textContent);
+   assert.ok(blocked.includes('Move to '+destination+' — blocked'));
+   await page.$eval('crm-application-blockers',e=>e.shadowRoot.querySelector('.blocker-summary a').click());
+   await page.waitForFunction(stage=>{const tools=document.querySelector('crm-record-tools')?.shadowRoot;return tools?.querySelector('[data-stage-readiness]')?.open&&tools.querySelector('crm-stage-gates')?.shadowRoot.querySelector('[name=stage]')?.value===stage},{},destination);
+
+   await page.$eval('crm-application-blockers',e=>{const guidance=e.shadowRoot.querySelector('.application-guidance');guidance.open=true;[...guidance.querySelectorAll('li')].find(row=>row.textContent.includes('Ask a workspace manager')).querySelector('button').click()});
+   await page.waitForSelector('crm-work-plan >>> .suggested-plan button');
+   await page.$eval('crm-work-plan >>> .suggested-plan button',e=>e.click());
+   const suggested='Ask a workspace manager to approve the current application for '+destination;
+   assert.equal(await page.$eval('crm-work-plan >>> textarea',e=>e.value),suggested);
+   await page.$eval('crm-work-plan >>> input[type=date]',e=>{e.value='2099-01-01';e.dispatchEvent(new Event('input',{bubbles:true}))});
+   await Promise.all([page.waitForResponse(r=>r.url().includes('/api/work-plans/cases/')&&r.request().method()==='PUT'&&r.ok()),page.$eval('crm-work-plan >>> form',e=>e.requestSubmit())]);
+   const persisted=await page.evaluate(async id=>(await(await fetch('/api/work-plans/cases/'+id)).json()).nextAction,id);assert.equal(persisted,suggested);
    const essentials=await page.$eval('.application-essentials',e=>e.textContent);
    assert.ok(essentials.includes('Application essentials')&&essentials.includes('Stage:'));
    assert.equal(await page.$eval('#handoff',e=>e.open),false);
@@ -797,4 +821,478 @@ test('live dashboard filters, closed stage transitions and mobile stay consisten
   }
   assert.deepEqual(errors,[]);
  }finally{await page.close();server.kill('SIGTERM');await new Promise(resolve=>server.exitCode!==null?resolve():server.once('exit',resolve));fs.rmSync(directory,{recursive:true,force:true})}
+});
+
+
+test('live session checks preserve drafts through server and network failures', {skip:process.env.ECC_BROWSER_LIVE!=='true',timeout:90000}, async()=>{
+ const directory=fs.mkdtempSync(path.join(os.tmpdir(),'ecc-session-')),port='17004',base='http://localhost:'+port;
+ const server=spawn(path.join(__dirname,'../build/ecc-crm'),[],{cwd:path.join(__dirname,'..'),env:{...process.env,SEED_DEMO_DATA:'true',PORT:port,DATABASE_PATH:path.join(directory,'crm.sqlite3'),JWT_SECRET:'session-regression-only',APP_URL:base,ALLOW_SIGNUP:'false'},stdio:'ignore'});
+ const page=await browser.newPage();await page.setBypassServiceWorker(true);let mode='server',logoutMode='normal',logouts=0,refreshes=0,holdRefresh,stage='start';const loginResults=[],pageErrors=[];page.on('pageerror',e=>pageErrors.push(e.message));page.on('response',r=>{if(r.url().endsWith('/api/login'))loginResults.push(r.status())});
+ await page.evaluateOnNewDocument(()=>{
+  const interval=window.setInterval;
+  window.setInterval=(callback,delay,...args)=>{
+   if(delay===600000)window.triggerSessionCheck=callback;
+   return interval(callback,delay,...args);
+  };
+ });
+ await page.setRequestInterception(true);
+ page.on('request',r=>{
+  const url=new URL(r.url());
+  if(url.origin!==base)return r.abort();
+  if(url.pathname==='/api/session/logout'){logouts++;if(logoutMode==='failure')return r.abort('failed');}
+  if(url.pathname==='/api/session/refresh'){
+   refreshes++;
+   if(mode==='delayed'){holdRefresh(r);return;}
+   if(mode==='network')return r.abort('failed');
+   if(mode==='server')return r.respond({status:503,contentType:'application/json',body:'{"error":"Temporary failure"}'});
+   if(mode==='rejected')return r.respond({status:401,contentType:'application/json',body:'{"error":"Expired"}'});
+  }
+  return r.continue();
+ });
+ try{
+  for(let i=0;i<100;i++){try{if((await fetch(base+'/api/health')).ok)break}catch{}await new Promise(r=>setTimeout(r,100))}
+  await page.goto(base,{waitUntil:'networkidle2'});
+  await page.waitForFunction(()=>document.body.textContent.includes('Retry session check'));
+  assert.equal(logouts,0);
+  assert.equal(await page.$('input[type=password]'),null);
+  mode='normal';
+  await page.evaluate(()=>[...document.querySelectorAll('button')].find(b=>b.textContent==='Retry session check').click());
+  await page.waitForSelector('input[type=email]');
+  await page.type('input[type=email]','demo@northwind.dev');await page.type('input[type=password]','Demo1234');await page.click('button[type=submit]');
+  stage='waiting for signed-in app, logouts='+logouts;await page.waitForSelector('.app-shell',{timeout:10000});
+  const afterLogin=logouts;
+  await page.goto(base+'/leads',{waitUntil:'networkidle2'});
+  await page.waitForFunction(()=>[...document.querySelectorAll('button')].some(b=>b.textContent.trim()==='Add lead'));
+  await page.evaluate(()=>[...document.querySelectorAll('button')].find(b=>b.textContent.trim()==='Add lead').click());
+  await page.waitForSelector('#lf-name');
+  await page.$eval('#lf-name',e=>{e.value='Keep my unsaved draft';e.dispatchEvent(new Event('input',{bubbles:true}))});
+  for(const failure of ['server','network']){
+   mode=failure;const before=refreshes;
+   await page.evaluate(()=>window.triggerSessionCheck());
+   await page.waitForFunction(message=>document.querySelector('.toast')?.textContent===message,{timeout:5000},failure==='server'?'Could not check your session. Please retry. Your entries are kept.':'Could not connect to check your session. Please retry. Your entries are kept.');
+   assert.ok(refreshes>before);
+   assert.ok(await page.$('.app-shell'));
+   assert.equal(await page.$eval('#lf-name',e=>e.value),'Keep my unsaved draft');
+   assert.equal(logouts,afterLogin);
+  }
+  mode='normal';
+  await Promise.all([page.waitForResponse(r=>r.url().endsWith('/api/session/refresh')&&r.status()===200),page.evaluate(()=>window.triggerSessionCheck())]);
+  assert.equal(await page.$eval('#lf-name',e=>e.value),'Keep my unsaved draft');
+  const user=await page.evaluate(async()=> (await (await fetch('/api/me')).json()).user);
+  const held=new Promise(resolve=>{holdRefresh=resolve});
+  mode='delayed';await page.evaluate(()=>window.triggerSessionCheck());
+  const delayed=await held;
+  await Promise.all([page.waitForResponse(r=>r.url().endsWith('/api/session/logout')),page.evaluate(()=>[...document.querySelectorAll('button')].find(b=>b.textContent.trim()==='Sign out').click())]);
+  await page.waitForSelector('input[type=password]');
+  await Promise.all([page.waitForResponse(r=>r.url().endsWith('/api/session/refresh')&&r.status()===200),delayed.respond({status:200,contentType:'application/json',body:JSON.stringify({token:'cookie-session',user})})]);
+  await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
+  assert.equal(await page.$('.app-shell'),null,'a late successful refresh must not undo sign-out');
+  assert.ok(await page.$('input[type=password]'));
+  mode='normal';await page.type('input[type=email]','demo@northwind.dev');await page.type('input[type=password]','Demo1234');await page.click('button[type=submit]');
+  stage='waiting for signed-in app, logouts='+logouts;await page.waitForSelector('.app-shell',{timeout:10000});
+  await page.goto(base+'/leads',{waitUntil:'networkidle2'});
+  await page.waitForFunction(()=>[...document.querySelectorAll('button')].some(b=>b.textContent.trim()==='Add lead'));
+  await page.evaluate(()=>[...document.querySelectorAll('button')].find(b=>b.textContent.trim()==='Add lead').click());
+  await page.waitForSelector('#lf-name');
+  await page.$eval('#lf-name',e=>{e.value='Recover this account draft';e.dispatchEvent(new Event('input',{bubbles:true}))});
+  const beforeRejection=logouts;
+  const otherTab=await browser.newPage();
+  try{
+   await otherTab.goto(base,{waitUntil:'networkidle2'});
+   await otherTab.waitForSelector('.app-shell');
+   await page.bringToFront();
+   mode='rejected';await page.evaluate(()=>window.triggerSessionCheck());
+  await page.waitForSelector('input[type=password]');
+  assert.equal(await page.$('.app-shell'),null);
+   await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
+   assert.equal(logouts,beforeRejection,'a rejected check must not send a server logout');
+   assert.equal(await otherTab.evaluate(async()=> (await fetch('/api/me')).status),200,'another tab must retain its valid login');
+  }finally{await otherTab.close()}
+  mode='normal';await page.type('input[type=email]','demo@northwind.dev');await page.type('input[type=password]','Demo1234');await page.click('button[type=submit]');
+  await page.waitForSelector('#lf-name');
+  assert.equal(await page.$eval('#lf-name',e=>e.value),'Recover this account draft','same-account sign-in restores the open form');
+  logoutMode='failure';
+  await page.evaluate(()=>[...document.querySelectorAll('button')].find(b=>b.textContent.trim()==='Sign out').click());
+  await page.waitForFunction(()=>document.body.textContent.includes('Retry sign out'));
+  assert.equal(await page.$('input[type=password]'),null,'do not claim sign-out completed');
+  assert.equal(await page.$('.app-shell'),null);
+  await page.reload({waitUntil:'networkidle2'});
+  await page.waitForFunction(()=>document.body.textContent.includes('Retry sign out'));
+  logoutMode='normal';
+  await page.evaluate(()=>[...document.querySelectorAll('button')].find(b=>b.textContent==='Retry sign out').click());
+  await page.waitForSelector('input[type=password]');
+  assert.equal(await page.evaluate(()=>sessionStorage.getItem('ecc:logout-pending:v1')),null);
+  await page.type('input[type=email]','demo@northwind.dev');await page.type('input[type=password]','Demo1234');await page.click('button[type=submit]');
+  stage='waiting for signed-in app, logouts='+logouts;await page.waitForSelector('.app-shell',{timeout:10000});
+  const second=await page.evaluate(async()=>{
+   const r=await fetch('/api/admin/users',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:'Second account',email:'second-account@example.com',password:'SecondPassword123!',role:'member'})});
+   if(!r.ok)throw new Error(await r.text());return (await r.json()).user;
+  });
+  await page.goto(base+'/leads',{waitUntil:'networkidle2'});
+  await page.waitForFunction(()=>[...document.querySelectorAll('button')].some(b=>b.textContent.trim()==='Add lead'));
+  await page.evaluate(()=>[...document.querySelectorAll('button')].find(b=>b.textContent.trim()==='Add lead').click());
+  await page.waitForSelector('#lf-name');await page.$eval('#lf-name',e=>{e.value='Private first-account draft';e.dispatchEvent(new Event('input',{bubbles:true}))});
+  const secondTab=await browser.newPage();
+  try{
+   await secondTab.goto(base,{waitUntil:'networkidle2'});
+   const switched=await secondTab.evaluate(async()=>{
+    const r=await fetch('/api/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:'second-account@example.com',password:'SecondPassword123!'})});
+    const data=await r.json();if(!r.ok)throw new Error(JSON.stringify(data));
+    localStorage.setItem('ecc:account-id:v1',data.user.id);return data.user.id;
+   });
+   assert.equal(switched,second.id);await page.bringToFront();
+   await page.waitForFunction(id=>document.querySelector('#workspace-navigation')?.getAttribute('data-user-id')===id,{},second.id);
+   assert.equal(await page.$('#lf-name'),null,'old-account form must not survive account switch');
+   assert.ok(!(await page.$eval('body',e=>e.textContent)).includes('Private first-account draft'));
+  }finally{await secondTab.close()}
+ }catch(error){throw new Error(error.message+' '+JSON.stringify({stage,loginResults,pageErrors,mode,refreshes,logouts,ui:await page.evaluate(()=>({toast:document.querySelector('.toast')?.textContent,body:document.body.textContent.slice(-2000)}))}))}finally{await page.close();server.kill('SIGTERM');await new Promise(resolve=>{if(server.exitCode!==null)return resolve();server.once('exit',resolve)});fs.rmSync(directory,{recursive:true,force:true})}
+});
+
+test('live searches, pagination and record navigation ignore delayed successes and errors', {skip:process.env.ECC_BROWSER_LIVE!=='true',timeout:120000},async()=>{
+ const directory=fs.mkdtempSync(path.join(os.tmpdir(),'ecc-request-order-')),port='17005',base='http://localhost:'+port;
+ const server=spawn(path.join(__dirname,'../build/ecc-crm'),[],{cwd:path.join(__dirname,'..'),env:{...process.env,SEED_DEMO_DATA:'true',PORT:port,DATABASE_PATH:path.join(directory,'crm.sqlite3'),JWT_SECRET:'request-order-regression',APP_URL:base,ALLOW_SIGNUP:'false'},stdio:'ignore'});
+ const page=await browser.newPage();await page.setBypassServiceWorker(true);
+ const errors=[];page.on('pageerror',e=>errors.push(e.message));
+ let contact,held,resolveHeld,detailMode=false,detailCalls=0,activitiesMode=false,writeMode=false;
+ const hold=r=>{held=r;resolveHeld?.(r)};
+ const expectHeld=()=>new Promise(resolve=>{resolveHeld=resolve});
+ const respond=(r,name,status=200,total=1)=>r.respond({status,contentType:'application/json',body:JSON.stringify(status>=400?{error:name}:{contacts:[{...contact,id:'ordered-row',name}],total})});
+ await page.setRequestInterception(true);
+ page.on('request',r=>{
+  const url=new URL(r.url());if(url.origin!==base)return r.abort();
+  if(writeMode&&url.pathname==='/api/contacts/c_1'&&['PUT','DELETE'].includes(r.method()))return hold(r);
+  if(url.pathname==='/api/contacts'&&r.method()==='GET'){
+   const q=url.searchParams.get('q');
+   if(q==='older'||q==='older-error')return hold(r);
+   if(q==='latest')return respond(r,'Latest search result');
+   if(q==='pages'){
+    const offset=Number(url.searchParams.get('offset')||0);
+    if(offset===25)return hold(r);
+    return respond(r,'Page at '+offset,200,75);
+   }
+  }
+  if(url.pathname==='/api/cases'&&url.searchParams.get('stage')==='Assessment')return hold(r);
+  if(url.pathname==='/api/cases'&&url.searchParams.get('stage')==='Approved')return r.respond({status:200,contentType:'application/json',body:JSON.stringify({cases:[{id:'case-order',caseNumber:'Latest approved application',currentStage:'Approved'}],total:1})});
+  if(url.pathname==='/api/tasks'&&url.searchParams.get('q')==='context')return r.respond({status:200,contentType:'application/json',body:JSON.stringify({tasks:[{id:'task-order',title:'Task context page '+(url.searchParams.get('offset')||0)}],total:75})});
+  if(activitiesMode&&url.pathname==='/api/contacts/c_1/activities')return hold(r);
+  if(activitiesMode&&url.pathname==='/api/contacts/c_2/activities')return r.respond({status:200,contentType:'application/json',body:JSON.stringify({activities:[{id:'fresh-activity',contactId:'c_2',kind:'note',title:'Current contact activity'}]})});
+  if(detailMode&&url.pathname==='/api/contacts/c_1'&&r.method()==='GET'){
+   if(++detailCalls===1)return hold(r);
+   return r.respond({status:200,contentType:'application/json',body:JSON.stringify({contact:{...contact,id:'c_1',name:'Newest visit to contact one'}})});
+  }
+  return r.continue();
+ });
+ const search=async value=>page.$eval('input[aria-label="Search contacts"]',(e,value)=>{e.value=value;e.dispatchEvent(new Event('input',{bubbles:true}))},value);
+ const navigate=async route=>page.evaluate(route=>{history.pushState(null,'',route);window.dispatchEvent(new PopStateEvent('popstate'))},route);
+ const renderDone=()=>page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
+ try{
+  for(let i=0;i<100;i++){try{if((await fetch(base+'/api/health')).ok)break}catch{}await new Promise(r=>setTimeout(r,100))}
+  await page.goto(base,{waitUntil:'networkidle2'});
+  await page.waitForSelector('input[type=email]');await page.type('input[type=email]','demo@northwind.dev');await page.type('input[type=password]','Demo1234');await page.click('button[type=submit]');await page.waitForSelector('.app-shell');
+  await page.goto(base+'/contacts',{waitUntil:'networkidle2'});await page.waitForSelector('input[aria-label="Search contacts"]');
+  contact=await page.evaluate(async()=> (await (await fetch('/api/contacts/c_1')).json()).contact);
+  const secondName=await page.evaluate(async()=> (await (await fetch('/api/contacts/c_2')).json()).contact.name);
+  for(const failed of [false,true]){
+   const waiting=expectHeld();await search(failed?'older-error':'older');const old=await waiting;
+   await search('latest');await page.waitForFunction(()=>document.querySelector('.content__body table')?.textContent.includes('Latest search result'));
+   await Promise.all([page.waitForResponse(r=>r.request()===old),respond(old,'Old response must not appear',failed?500:200)]);held=null;
+   await renderDone();assert.ok(await page.$eval('.content__body table',e=>e.textContent.includes('Latest search result')));
+   assert.equal(await page.$eval('input[aria-label="Search contacts"]',e=>e.value),'latest');
+  }
+  await search('pages');await page.waitForFunction(()=>document.querySelector('.content__body table')?.textContent.includes('Page at 0'));
+  const waitingPage=expectHeld();await page.evaluate(()=>[...document.querySelectorAll('.pagination button')].find(b=>b.textContent==='Next').click());const oldPage=await waitingPage;await renderDone();
+  await page.evaluate(()=>[...document.querySelectorAll('.pagination button')].find(b=>b.textContent==='Next').click());
+  await page.waitForFunction(()=>document.querySelector('.content__body table')?.textContent.includes('Page at 50'));
+  await Promise.all([page.waitForResponse(r=>r.request()===oldPage),respond(oldPage,'Old page 25',200,75)]);held=null;await renderDone();
+  assert.ok(await page.$eval('.content__body table',e=>e.textContent.includes('Page at 50')));
+  await navigate('/cases');await page.waitForSelector('.stage-pills');
+  const waitingFilter=expectHeld();await page.evaluate(()=>[...document.querySelectorAll('.stage-pills button')].find(b=>b.textContent==='Assessment').click());const oldFilter=await waitingFilter;
+  await page.evaluate(()=>[...document.querySelectorAll('.stage-pills button')].find(b=>b.textContent==='Approved').click());
+  await page.waitForFunction(()=>document.querySelector('.content__body table')?.textContent.includes('Latest approved application'));
+  await Promise.all([page.waitForResponse(r=>r.request()===oldFilter),oldFilter.respond({status:500,contentType:'application/json',body:JSON.stringify({error:'Old filter error'})})]);held=null;await renderDone();
+  assert.ok(await page.$eval('.content__body table',e=>e.textContent.includes('Latest approved application')));
+  await navigate('/tasks');await page.waitForSelector('input[aria-label="Search tasks"]');
+  await page.$eval('input[aria-label="Search tasks"]',e=>{e.value='context';e.dispatchEvent(new Event('input',{bubbles:true}))});
+  await page.waitForFunction(()=>document.querySelector('.content__body').textContent.includes('Task context page 0'));
+  await page.evaluate(()=>[...document.querySelectorAll('.content__body button')].find(b=>b.textContent==='Next').click());
+  await page.waitForFunction(()=>document.querySelector('.content__body').textContent.includes('Task context page 25'));
+  assert.equal(await page.$eval('input[aria-label="Search tasks"]',e=>e.value),'context','page refresh must retain the search query');
+  await page.evaluate(()=>{window.orderDocument='same document'});
+  for(const failed of [false,true]){
+   detailMode=true;detailCalls=0;
+   const waitingDetail=expectHeld();await navigate('/contacts/c_1');const oldDetail=await waitingDetail;
+   await navigate('/contacts/c_2');await page.waitForFunction(name=>location.pathname==='/contacts/c_2'&&document.querySelector('.detail-hero__name')?.textContent===name,{},secondName);
+   await navigate('/contacts/c_1');await page.waitForFunction(()=>document.querySelector('.detail-hero__name')?.textContent==='Newest visit to contact one');
+   await Promise.all([page.waitForResponse(r=>r.request()===oldDetail),oldDetail.respond({status:failed?500:200,contentType:'application/json',body:JSON.stringify(failed?{error:'Old failed visit'}:{contact:{...contact,id:'c_1',name:'Old visit must not win'}})})]);held=null;
+   await renderDone();assert.equal(await page.$eval('.detail-hero__name',e=>e.textContent),'Newest visit to contact one');
+   assert.equal(await page.evaluate(()=>window.orderDocument),'same document');
+   detailMode=false;await navigate('/contacts');await page.waitForSelector('input[aria-label="Search contacts"]');
+  }
+  activitiesMode=true;const waitingActivities=expectHeld();await navigate('/contacts/c_1');const oldActivities=await waitingActivities;
+  await navigate('/contacts/c_2');await page.waitForFunction(()=>document.querySelector('.detail-hero__name')&&document.body.textContent.includes('Current contact activity'));
+  await Promise.all([page.waitForResponse(r=>r.request()===oldActivities),oldActivities.respond({status:200,contentType:'application/json',body:JSON.stringify({activities:[{id:'old-activity',contactId:'c_1',kind:'note',title:'Wrong record activity'}]})})]);held=null;await renderDone();
+  assert.ok(!(await page.$eval('body',e=>e.textContent)).includes('Wrong record activity'));
+  assert.ok((await page.$eval('body',e=>e.textContent)).includes('Current contact activity'));
+  activitiesMode=false;writeMode=true;
+  await navigate('/contacts/c_1');await page.waitForFunction(name=>location.pathname==='/contacts/c_1'&&document.querySelector('.detail-hero__name')?.textContent===name,{},contact.name);
+  await page.evaluate(()=>[...document.querySelectorAll('.detail-hero__actions button')].find(b=>b.textContent.trim()==='Edit').click());
+  await page.waitForSelector('.modal #cf-name');
+  await page.$eval('.modal #cf-name',e=>{e.value='Delayed saved contact';e.dispatchEvent(new Event('input',{bubbles:true}))});
+  const waitingSave=expectHeld();await page.click('.modal button[type=submit]');const oldSave=await waitingSave;
+  await navigate('/contacts/c_2');await page.waitForFunction(name=>location.pathname==='/contacts/c_2'&&document.querySelector('.detail-hero__name')?.textContent===name,{},secondName);
+  const currentName=await page.$eval('.detail-hero__name',e=>e.textContent);
+  await page.evaluate(()=>[...document.querySelectorAll('.detail-hero__actions button')].find(b=>b.textContent.trim()==='Edit').click());
+  await page.waitForSelector('.modal #cf-name');
+  await page.$eval('.modal #cf-name',e=>{e.value='Keep this newer form';e.dispatchEvent(new Event('input',{bubbles:true}))});
+  await renderDone();
+  await Promise.all([page.waitForResponse(r=>r.request()===oldSave),oldSave.respond({status:200,contentType:'application/json',body:JSON.stringify({contact:{...contact,name:'Delayed saved contact'}})})]);held=null;await renderDone();
+  assert.equal(await page.$eval('.detail-hero__name',e=>e.textContent),currentName,'saving another record must not replace the current detail');
+  assert.equal(await page.evaluate(()=>location.pathname),'/contacts/c_2');
+  assert.equal(await page.$eval('.modal #cf-name',e=>e.value),'Keep this newer form','an older save cannot close a newer form');
+  await navigate('/contacts/c_1');await page.waitForFunction(name=>location.pathname==='/contacts/c_1'&&document.querySelector('.detail-hero__name')?.textContent===name,{},contact.name);
+  await page.evaluate(()=>[...document.querySelectorAll('.detail-hero__actions button')].find(b=>b.textContent.trim()==='Delete').click());
+  await page.waitForSelector('.modal[aria-label="Delete contact"]');
+  const waitingDelete=expectHeld();await page.evaluate(()=>[...document.querySelectorAll('.modal button')].find(b=>b.textContent.trim()==='Delete').click());const oldDelete=await waitingDelete;
+  await navigate('/contacts/c_2');await page.waitForFunction(name=>location.pathname==='/contacts/c_2'&&document.querySelector('.detail-hero__name')?.textContent===name,{},secondName);
+  await Promise.all([page.waitForResponse(r=>r.request()===oldDelete),oldDelete.respond({status:200,contentType:'application/json',body:JSON.stringify({deleted:'c_1'})})]);held=null;await renderDone();
+  assert.equal(await page.evaluate(()=>location.pathname),'/contacts/c_2','deleting another record must not leave the current detail');
+  assert.equal(await page.$eval('.detail-hero__name',e=>e.textContent),currentName);
+  await navigate('/contacts/c_1');await page.waitForFunction(name=>document.querySelector('.detail-hero__name')?.textContent===name,{},contact.name);
+  await page.evaluate(()=>[...document.querySelectorAll('.detail-hero__actions button')].find(b=>b.textContent.trim()==='Edit').click());
+  await page.waitForSelector('.modal #cf-name');
+  await page.$eval('.modal #cf-name',e=>{e.value='Older rejected edit';e.dispatchEvent(new Event('input',{bubbles:true}))});
+  const waitingFailure=expectHeld();await page.click('.modal button[type=submit]');const oldFailure=await waitingFailure;
+  await navigate('/contacts/c_2');await page.waitForFunction(name=>document.querySelector('.detail-hero__name')?.textContent===name,{},secondName);
+  await page.evaluate(()=>[...document.querySelectorAll('.detail-hero__actions button')].find(b=>b.textContent.trim()==='Edit').click());
+  await page.waitForSelector('.modal #cf-name');
+  await page.$eval('.modal #cf-name',e=>{e.value='Keep newer edits after rejection';e.dispatchEvent(new Event('input',{bubbles:true}))});await renderDone();
+  await Promise.all([page.waitForResponse(r=>r.request()===oldFailure),oldFailure.respond({status:500,contentType:'application/json',body:JSON.stringify({error:'Older save rejection'})})]);held=null;await renderDone();
+  assert.equal(await page.$eval('.modal #cf-name',e=>e.value),'Keep newer edits after rejection');
+  assert.equal(await page.$eval('.modal',e=>!!e.querySelector('.ecc-alert--error')),false,'an older failure cannot annotate a newer form');
+  await navigate('/contacts/c_1');await page.waitForFunction(name=>document.querySelector('.detail-hero__name')?.textContent===name,{},contact.name);
+  await page.evaluate(()=>[...document.querySelectorAll('.detail-hero__actions button')].find(b=>b.textContent.trim()==='Edit').click());
+  await page.waitForSelector('.modal #cf-name');
+  await page.$eval('.modal #cf-name',e=>{e.value='Pending save before reopening';e.dispatchEvent(new Event('input',{bubbles:true}))});
+  const waitingReopen=expectHeld();await page.click('.modal button[type=submit]');const oldReopened=await waitingReopen;
+  await page.click('.modal__close');await page.waitForFunction(()=>!document.querySelector('.modal'));
+  await page.evaluate(()=>[...document.querySelectorAll('.detail-hero__actions button')].find(b=>b.textContent.trim()==='Edit').click());
+  await page.waitForSelector('.modal #cf-name');
+  await page.$eval('.modal #cf-name',e=>{e.value='New draft for the same record';e.dispatchEvent(new Event('input',{bubbles:true}))});await renderDone();
+  await Promise.all([page.waitForResponse(r=>r.request()===oldReopened),oldReopened.respond({status:200,contentType:'application/json',body:JSON.stringify({contact:{...contact,name:'Saved before reopening'}})})]);held=null;await renderDone();
+  assert.equal(await page.$eval('.modal #cf-name',e=>e.value),'New draft for the same record','reopening the same record creates a distinct form owner');
+  assert.deepEqual(errors,[]);
+ }finally{if(held)await held.abort().catch(()=>{});await page.close();server.kill('SIGTERM');await new Promise(resolve=>{if(server.exitCode!==null)return resolve();server.once('exit',resolve)});fs.rmSync(directory,{recursive:true,force:true})}
+});
+
+test('recovered workspace drafts survive a rejected save and clear after confirmed success',async()=>{
+ const options={stalePlan:true};const{page,errors}=await fixture('workspace',options);
+ try{
+  await page.evaluate(()=>{const nav=document.createElement('nav');nav.id='workspace-navigation';nav.setAttribute('data-user-id','u_manager');document.body.prepend(nav);const plan=document.createElement('crm-work-plan');plan.setAttribute('entity','deals');plan.setAttribute('record-id','deal-1');document.body.append(plan)});
+  await page.waitForSelector('crm-work-plan >>> textarea');
+  await page.waitForFunction(()=>document.querySelector('crm-work-plan').shadowRoot.querySelector('textarea').value==='Call client');
+  await page.$eval('crm-work-plan >>> textarea',e=>{e.value='Recovered action draft';e.dispatchEvent(new Event('input',{bubbles:true}))});
+  await page.evaluate(()=>{window.CRMSessionDrafts.capture('u_manager');const old=document.querySelector('crm-work-plan'),next=old.cloneNode();old.replaceWith(next)});
+  await page.waitForSelector('crm-work-plan >>> [data-session-recovery]');
+  await page.$eval('crm-work-plan >>> [data-session-recovery] button',e=>e.click());
+  await page.$eval('crm-work-plan >>> [data-session-recovery] input[type=checkbox]',e=>{e.checked=true;e.dispatchEvent(new Event('change',{bubbles:true}))});
+  await page.$eval('crm-work-plan >>> form',e=>e.requestSubmit());
+  await page.waitForFunction(()=>document.querySelector('crm-work-plan').shadowRoot.textContent.includes('Record changed'));
+  assert.ok(await page.evaluate(()=>Object.keys(sessionStorage).some(key=>key.startsWith('ecc:session-draft:v1:')&&key.includes('crm-work-plan'))));
+  options.stalePlan=false;
+  await page.$eval('crm-work-plan >>> form',e=>e.requestSubmit());
+  await page.waitForFunction(()=>document.querySelector('crm-work-plan').shadowRoot.textContent.includes('Next action saved.'));
+  assert.equal(await page.evaluate(()=>Object.keys(sessionStorage).some(key=>key.startsWith('ecc:session-draft:v1:')&&key.includes('crm-work-plan'))),false);
+  assert.deepEqual(errors,[]);
+ }finally{await page.close()}
+});
+
+
+test('a confirmed older modal save preserves edits typed while it was pending',async()=>{
+ let capture;const pending=new Promise(resolve=>{capture=resolve});
+ const{page,contact,errors}=await fixture('workspace',{onContactSave:capture});
+ try{
+  await page.evaluate(async()=>{
+   const nav=document.createElement('nav');nav.id='workspace-navigation';nav.setAttribute('data-user-id','pending-editor');document.body.prepend(nav);
+   await new Promise(resolve=>{const xhr=new XMLHttpRequest();xhr.open('GET','/api/contacts/c_client');xhr.onload=resolve;xhr.send()});
+   window.openPendingModal=()=>{const modal=document.createElement('div');modal.className='modal';modal.setAttribute('data-draft-record-id','c_client');modal.innerHTML='<h2>Edit contact</h2><form><crm-draft-recovery></crm-draft-recovery><input id="pending-name" value="Saved name"><button type="submit">Save</button></form>';modal.querySelector('form').addEventListener('submit',event=>{event.preventDefault();const xhr=new XMLHttpRequest();xhr.open('PUT','/api/contacts/c_client');xhr.send(JSON.stringify({name:document.querySelector('#pending-name').value}))});document.body.append(modal)};
+   window.openPendingModal();
+  });
+  await page.waitForSelector('crm-draft-recovery');
+  await page.$eval('#pending-name',e=>{e.value='Submitted version';e.dispatchEvent(new Event('input',{bubbles:true}))});
+  await page.$eval('.modal form',e=>e.requestSubmit());const oldSave=await pending;
+  await page.$eval('#pending-name',e=>{e.value='Newer edit after submit';e.dispatchEvent(new Event('input',{bubbles:true}))});
+  await Promise.all([page.waitForResponse(r=>r.request()===oldSave),oldSave.respond({status:200,contentType:'application/json',body:JSON.stringify({contact})})]);
+  await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
+  await page.evaluate(()=>{document.querySelector('.modal').remove();window.openPendingModal()});
+  await page.waitForFunction(()=>document.querySelector('crm-draft-recovery').textContent.includes('Restore draft'));
+  await page.evaluate(()=>[...document.querySelector('crm-draft-recovery').querySelectorAll('button')].find(b=>b.textContent==='Restore draft').click());
+  assert.equal(await page.$eval('#pending-name',e=>e.value),'Newer edit after submit');
+  assert.deepEqual(errors,[]);
+ }finally{await page.close()}
+});
+
+test('overlapping modal saves to the same URL keep responses and recovery drafts separate',async()=>{
+ for(const olderFirst of [true,false]){
+  const requests=[];let notify;
+  const options={onContactSave:request=>{requests.push(request);notify?.()}};
+  const{page,contact,errors}=await fixture('workspace',options);
+  const waitRequest=count=>requests.length>=count?Promise.resolve():new Promise(resolve=>{notify=resolve});
+  try{
+   await page.evaluate(()=>{
+    const nav=document.createElement('nav');nav.id='workspace-navigation';nav.setAttribute('data-user-id','overlap-editor');document.body.prepend(nav);
+    window.openOverlapForm=()=>{
+     document.querySelector('.modal')?.remove();
+     const modal=document.createElement('div');modal.className='modal';modal.setAttribute('data-draft-record-id','c_client');
+     modal.innerHTML='<h2>Edit contact</h2><form><crm-draft-recovery></crm-draft-recovery><input id="overlap-name" value="Saved name"><button type="submit">Save</button></form>';
+     const form=modal.querySelector('form');form.addEventListener('submit',event=>{event.preventDefault();window.overlapSends=(window.overlapSends||0)+1;const xhr=new XMLHttpRequest();xhr.open('PUT','/api/contacts/c_client');xhr.send(JSON.stringify({name:form.querySelector('input').value}))});document.body.append(modal);
+    };
+    window.openOverlapForm();
+   });
+   await page.waitForSelector('crm-draft-recovery');
+   await page.$eval('#overlap-name',e=>{e.value='Older submitted draft';e.dispatchEvent(new Event('input',{bubbles:true}))});
+   await page.$eval('.modal form',e=>e.requestSubmit());await waitRequest(1);
+   await page.evaluate(()=>window.openOverlapForm());
+   await page.waitForFunction(()=>document.querySelector('crm-draft-recovery').textContent.includes('Restore draft'));
+   await page.$eval('#overlap-name',e=>{e.value='Newer submitted draft';e.dispatchEvent(new Event('input',{bubbles:true}))});
+   await page.$eval('.modal form',e=>e.requestSubmit());await waitRequest(2);
+   const finishOlder=()=>Promise.all([page.waitForResponse(r=>r.request()===requests[0]),requests[0].respond({status:200,contentType:'application/json',body:JSON.stringify({contact})})]);
+   const finishNewer=()=>Promise.all([page.waitForResponse(r=>r.request()===requests[1]),requests[1].respond({status:500,contentType:'application/json',body:JSON.stringify({error:'Newer save failed'})})]);
+   if(olderFirst){
+    await finishOlder();await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
+    await page.$eval('.modal form',e=>e.requestSubmit());
+    assert.equal(await page.evaluate(()=>window.overlapSends),2,'an older response must not release the newer form\'s pending submission');
+    await finishNewer();
+   }else{await finishNewer();await finishOlder()}
+   await page.waitForFunction(()=>document.querySelector('crm-draft-recovery .save-recovery')?.textContent.includes('Save could not be confirmed'));
+   const stored=await page.evaluate(()=>Object.keys(sessionStorage).filter(key=>key.startsWith('ecc:modal-draft:v2:')).map(key=>JSON.parse(sessionStorage.getItem(key))));
+   assert.equal(stored.length,1);assert.equal(stored[0].fields.find(field=>field.key==='overlap-name').value,'Newer submitted draft');
+   assert.equal(await page.$eval('#overlap-name',e=>e.value),'Newer submitted draft');
+   assert.deepEqual(errors,[]);
+  }finally{for(const request of requests)if(!request.isInterceptResolutionHandled())await request.abort().catch(()=>{});await page.close()}
+ }
+});
+
+test('live profile, deletion and bulk replies cannot overwrite newer sessions or user choices',{skip:process.env.ECC_BROWSER_LIVE!=='true',timeout:120000},async()=>{
+ const directory=fs.mkdtempSync(path.join(os.tmpdir(),'ecc-mutation-order-')),port='17006',base='http://localhost:'+port;
+ const server=spawn(path.join(__dirname,'../build/ecc-crm'),[],{cwd:path.join(__dirname,'..'),env:{...process.env,SEED_DEMO_DATA:'true',PORT:port,DATABASE_PATH:path.join(directory,'crm.sqlite3'),JWT_SECRET:'mutation-order-regression',APP_URL:base,ALLOW_SIGNUP:'false'},stdio:'ignore'});
+ const page=await browser.newPage();await page.setViewport({width:1280,height:900});await page.setBypassServiceWorker(true);const errors=[];page.on('pageerror',e=>errors.push(e.message));
+ let notify,held;const waitRequest=()=>new Promise(resolve=>{notify=resolve});
+ await page.setRequestInterception(true);page.on('request',r=>{
+  const url=new URL(r.url());if(url.origin!==base)return r.abort();
+  if((url.pathname==='/api/me'&&r.method()==='PUT')||(url.pathname==='/api/deals/d_1'&&r.method()==='DELETE')||(url.pathname==='/api/deals/bulk'&&r.method()==='POST')){held=r;notify?.(r);return}
+  return r.continue();
+ });
+ const rendered=()=>page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
+ const navigate=async route=>{await page.evaluate(route=>{history.pushState(null,'',route);window.dispatchEvent(new PopStateEvent('popstate'))},route);await rendered()};
+ const click=async(selector,text)=>{await page.waitForFunction((selector,text)=>[...document.querySelectorAll(selector)].some(e=>e.textContent.trim()===text&&!e.disabled),{},selector,text);await page.evaluate((selector,text)=>[...document.querySelectorAll(selector)].find(e=>e.textContent.trim()===text&&!e.disabled).click(),selector,text);await rendered()};
+ const login=async()=>{await page.waitForSelector('input[type=email]');await page.type('input[type=email]','demo@northwind.dev');await page.type('input[type=password]','Demo1234');await page.click('button[type=submit]');await page.waitForSelector('.app-shell');await rendered()};
+ const logout=async()=>{await page.click('.sidebar__signout-btn');await page.waitForSelector('input[type=email]');await rendered()};
+ const finish=async(request,status,data)=>{await Promise.all([page.waitForResponse(r=>r.request()===request),request.respond({status,contentType:'application/json',body:JSON.stringify(data)})]);held=null;await rendered()};
+ try{
+  for(let i=0;i<100;i++){try{if((await fetch(base+'/api/health')).ok)break}catch{}await new Promise(r=>setTimeout(r,100))}
+  await page.goto(base,{waitUntil:'networkidle2'});await login();
+  const user=await page.evaluate(async()=>(await(await fetch('/api/me')).json()).user);
+  for(const relogin of [false,true]){
+   await navigate('/settings');await page.waitForSelector('#pf-name');
+   await page.$eval('#pf-name',e=>{e.value='Obsolete profile name';e.dispatchEvent(new Event('input',{bubbles:true}))});await rendered();
+   const waiting=waitRequest();await click('.settings-actions button','Save changes');const old=await waiting;
+   await navigate('/contacts');await page.waitForSelector('table');await logout();
+   if(relogin)await login();
+   await finish(old,200,{user:{...user,name:'Obsolete profile name'},token:'obsolete-profile-token'});
+   if(relogin){assert.equal(await page.$eval('.sidebar__user-name',e=>e.textContent),user.name)}
+   else{assert.ok(await page.$('input[type=email]'));assert.equal(await page.$('.app-shell'),null);await login()}
+  }
+  const getDeal=async id=>page.evaluate(async id=>(await(await fetch('/api/deals/'+id)).json()).deal,id);
+  const first=await getDeal('d_1'),second=await getDeal('d_2');
+  for(const status of [200,500])for(const nextDialog of ['confirmation','edit']){
+   await navigate('/deals/d_1');await page.waitForFunction(name=>document.querySelector('.detail-hero__name')?.textContent===name,{},first.title);
+   await click('.detail-hero__actions button','Delete');const waiting=waitRequest();await click('.modal button','Delete');const old=await waiting;
+   await navigate('/deals/d_2');await page.waitForFunction(name=>document.querySelector('.detail-hero__name')?.textContent===name,{},second.title);
+   await click('.detail-hero__actions button',nextDialog==='confirmation'?'Delete':'Edit');await page.waitForSelector('.modal');
+   if(nextDialog==='edit'){await page.$eval('#df-title',e=>{e.value='Keep this newer deal edit';e.dispatchEvent(new Event('input',{bubbles:true}))});await rendered()}
+   await finish(old,status,status===200?{deleted:first.id}:{error:'Old delete failed'});
+   if(nextDialog==='confirmation'){assert.ok(await page.$('.modal[aria-label="Delete deal"]'),'old delete results must not dismiss the newer confirmation');assert.ok(await page.$eval('.modal',(e,title)=>e.textContent.includes(title),second.title))}
+   else assert.equal(await page.$eval('#df-title',e=>e.value),'Keep this newer deal edit','old deletion must not close or clear an unrelated edit form');
+   if(status===200){assert.ok((await page.$eval('body',e=>e.textContent)).includes('Deleted '+first.title));assert.ok(!(await page.$eval('body',e=>e.textContent)).includes('Deleted '+second.title))}
+  }
+  await navigate('/deals');await page.waitForSelector('.deal-card__checkbox');
+  const select=async title=>{await page.evaluate(title=>[...document.querySelectorAll('.deal-card__checkbox')].find(e=>e.getAttribute('aria-label')===title).click(),title);await rendered()};
+  for(const mode of ['move','delete'])for(const status of [200,500])for(const changedSelection of [false,true]){
+   await navigate('/deals');await page.waitForSelector('.deal-card__checkbox');
+   await page.evaluate(()=>document.querySelector('[aria-label="Clear selection"]')?.click());await rendered();await select(first.title);
+   await click('.deals-bulk-bar__actions button',mode==='move'?'Move to stage…':'Delete');
+   const waiting=waitRequest();await click('.modal__actions button',mode==='move'?'Move':'Delete all');const old=await waiting;
+   if(changedSelection){await select(second.title);
+   // Deselect and reselect the submitted record: even the same IDs now represent a newer choice.
+   await select(first.title);await select(first.title)}
+   await finish(old,status,status===200?(mode==='move'?{deal:first}:{deleted:'bulk'}):{error:'Bulk rejected'});
+   await page.waitForSelector('.deal-card__checkbox');
+   assert.equal(await page.evaluate(()=>[...document.querySelectorAll('.deal-card__checkbox[aria-checked="true"]')].length),changedSelection?2:(status===200?0:1),'bulk completion must retain newer choices and failed submissions');
+  }
+  await navigate('/settings');await page.waitForSelector('#pf-name');
+  await page.$eval('#pf-name',e=>{e.value='Confirmed profile name';e.dispatchEvent(new Event('input',{bubbles:true}))});await rendered();
+  const waitingProfile=waitRequest();await click('.settings-actions button','Save changes');const currentProfile=await waitingProfile;
+  await navigate('/contacts');await page.waitForSelector('table');
+  await finish(currentProfile,200,{user:{...user,name:'Confirmed profile name'},token:'cookie-session'});
+  assert.equal(await page.$eval('.sidebar__user-name',e=>e.textContent),'Confirmed profile name','navigation alone must not discard a valid profile response');
+  assert.deepEqual(errors,[]);
+ }finally{if(held&&!held.isInterceptResolutionHandled())await held.abort().catch(()=>{});await page.close();server.kill('SIGTERM');await new Promise(resolve=>{if(server.exitCode!==null)return resolve();server.once('exit',resolve)});fs.rmSync(directory,{recursive:true,force:true})}
+});
+
+
+test('application guidance suggests reviewed next actions and builds editable document requests without losing drafts',async()=>{
+ const row=(id,title,extra={})=>({id,title,status:'Received',complete:false,missing:false,responsible:'Adviser',route:'/cases/case_client#record-tools?tab=documents&document='+id,...extra});
+ const options={stalePlan:true,blockers:{caseNumber:'ECC-001',editable:true,active:true,today:'2026-10-15',owner:'Adviser',items:[],checklist:[row('passport','Passport',{missing:true,dueDate:'2026-10-20'}),row('expired','Bank statement',{expiryDate:'2026-10-01'}),row('correct','CV',{status:'Correction Required'}),row('review','Uploaded transcript'),row('done','Verified diploma',{complete:true})],nextStageGate:{stage:'Submitted',items:[{action:'Review approval',detail:'Manager approval required',route:'/cases/case_client#record-tools?tab=overview&stage=Submitted'}]}}};
+ const {page,calls,errors}=await fixture('workspace',options);
+ try{
+  await page.evaluate(()=>{Object.defineProperty(navigator,'clipboard',{configurable:true,value:{writeText:async text=>window.copiedRequest=text}});const section=document.createElement('section');section.className='application-essentials';section.innerHTML='<crm-work-plan entity="cases" record-id="case_client"></crm-work-plan><crm-application-blockers record-id="case_client"></crm-application-blockers>';document.body.append(section)});
+  await page.waitForSelector('crm-work-plan >>> textarea');
+  await page.waitForSelector('crm-application-blockers >>> .application-guidance');
+  await page.$eval('crm-application-blockers',e=>e.shadowRoot.querySelector('.application-guidance').open=true);
+  const initial=await page.$eval('crm-application-blockers',e=>e.shadowRoot.querySelector('.document-request-draft textarea').value);
+  assert.ok(initial.includes('ECC-001')&&initial.includes('Passport — requested by 2026-10-20')&&initial.includes('Bank statement (updated copy')&&initial.includes('CV (corrected copy)'));
+  assert.ok(!initial.includes('transcript')&&!initial.includes('diploma')&&!initial.includes('Adviser')&&!initial.includes('Manager'));
+  assert.equal(calls.filter(c=>c.method==='PUT').length,0);
+  await page.$eval('crm-work-plan >>> textarea',e=>{e.value='Keep my existing plan';e.dispatchEvent(new Event('input',{bubbles:true}))});
+  await page.$eval('crm-application-blockers',e=>[...e.shadowRoot.querySelectorAll('.application-guidance button')].find(b=>b.textContent==='Review as next action').click());
+  assert.equal(await page.$eval('crm-work-plan >>> textarea',e=>e.value),'Keep my existing plan');
+  await page.waitForSelector('crm-work-plan >>> .suggested-plan button');
+  assert.match(await page.$eval('crm-work-plan >>> .suggested-plan button',e=>e.textContent),/Replace my unsaved/);
+  await page.$eval('crm-work-plan >>> .suggested-plan button',e=>e.click());
+  assert.equal(await page.$eval('crm-work-plan >>> textarea',e=>e.value),'Ask client for Passport');
+  assert.equal(await page.$eval('crm-work-plan >>> input[type=date]',e=>e.value),'2026-10-20');
+  await page.$eval('crm-work-plan >>> form',e=>e.requestSubmit());
+  await page.waitForFunction(()=>document.querySelector('crm-work-plan').shadowRoot.textContent.includes('Record changed'));
+  assert.equal(await page.$eval('crm-work-plan >>> textarea',e=>e.value),'Ask client for Passport');
+  const save=calls.find(c=>c.path==='/api/work-plans/cases/case_client'&&c.method==='PUT');assert.equal(save.headers['if-match'],'plan-version');
+  await page.$eval('crm-application-blockers',e=>{const text=e.shadowRoot.querySelector('.document-request-draft textarea');text.value+='\nPersonal wording';text.dispatchEvent(new Event('input',{bubbles:true}));e.shadowRoot.querySelector('.document-request-draft input').click()});
+  assert.ok((await page.$eval('crm-application-blockers',e=>e.shadowRoot.querySelector('.document-request-draft textarea').value)).includes('Personal wording'));
+  await page.evaluate(()=>window.dispatchEvent(new CustomEvent('crm:record-changed')));
+  assert.ok((await page.$eval('crm-application-blockers',e=>e.shadowRoot.querySelector('.document-request-draft textarea').value)).includes('Personal wording'));
+  await page.$eval('crm-application-blockers',e=>[...e.shadowRoot.querySelectorAll('button')].find(b=>b.textContent==='Rebuild message from selection').click());
+  const rebuilt=await page.$eval('crm-application-blockers',e=>e.shadowRoot.querySelector('.document-request-draft textarea').value);assert.ok(!rebuilt.includes('Passport')&&!rebuilt.includes('Personal wording'));
+  await page.$eval('crm-application-blockers',e=>[...e.shadowRoot.querySelectorAll('button')].find(b=>b.textContent==='Copy document request').click());
+  await page.waitForFunction(()=>!!window.copiedRequest);assert.equal(await page.evaluate(()=>window.copiedRequest),rebuilt);
+  options.blockers={...options.blockers,editable:false,checklist:[row('review','Uploaded transcript')]};
+  await page.$eval('crm-application-blockers',e=>[...e.shadowRoot.querySelectorAll('button')].find(b=>b.textContent==='Discard draft and refresh').click());
+  await page.waitForFunction(()=>document.querySelector('crm-application-blockers').shadowRoot.textContent.includes('No missing, expired'));
+  assert.equal(await page.$eval('crm-application-blockers',e=>e.shadowRoot.querySelector('.application-guidance button')),null);
+  assert.deepEqual(errors,[]);
+ }finally{await page.close()}
+});
+
+
+test('nested application next-action drafts survive requirement refreshes',async()=>{
+ const {page,errors}=await fixture('workspace',{blockers:{active:true,editable:true,items:[],checklist:[{id:'passport',title:'Passport',missing:true,complete:false,status:'Requested',route:'/cases/case_client#record-tools?tab=documents'}]}});
+ try{
+  await page.evaluate(()=>{const panel=document.createElement('crm-application-blockers');panel.setAttribute('record-id','case_client');document.body.append(panel)});
+  await page.waitForSelector('crm-application-blockers >>> crm-work-plan >>> textarea');
+  await page.$eval('crm-application-blockers',e=>e.shadowRoot.querySelector('.application-guidance').open=true);
+  await page.$eval('crm-application-blockers >>> crm-work-plan >>> textarea',e=>{e.value='Keep the nested action draft';e.dispatchEvent(new Event('input',{bubbles:true}))});
+  await page.evaluate(()=>window.dispatchEvent(new CustomEvent('crm:record-changed')));
+  assert.equal(await page.$eval('crm-application-blockers >>> crm-work-plan >>> textarea',e=>e.value),'Keep the nested action draft');
+  await page.$eval('crm-application-blockers',e=>e.shadowRoot.querySelector('button').click());
+  assert.match(await page.$eval('crm-application-blockers',e=>e.shadowRoot.querySelector('[role=status]').textContent),/unsaved entries are kept/);
+  assert.deepEqual(errors,[]);
+ }finally{await page.close()}
 });

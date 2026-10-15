@@ -1,6 +1,7 @@
 module Types exposing (..)
 
 import Browser
+import Frontend.RequestOrder as RequestOrder
 import Administration
 import WorkDashboard
 import ManagementReport
@@ -436,6 +437,11 @@ type alias Form =
     , remember : Bool
     , otp : String
     }
+
+
+type SessionRefreshError
+    = SessionRejected
+    | SessionUnavailable String
 
 
 type alias AuthResponse =
@@ -1483,7 +1489,8 @@ type Theme
 
 
 type alias Model =
-    { workDashboard : WorkDashboard.Model
+    { requests : RequestOrder.State
+    , workDashboard : WorkDashboard.Model
     , managementReport : ManagementReport.Model
     , teamChat : TeamChat.Model
     , administration : Administration.Model
@@ -1504,6 +1511,11 @@ type alias Model =
     , user : Maybe User
     , showPassword : Bool
     , bootstrapping : Bool
+    , sessionGeneration : Int
+    , sessionOwner : Maybe String
+    , logoutPending : Bool
+    , logoutBusy : Bool
+    , logoutMessage : String
     , route : Route
     , workspaceQuery : String
     , contacts : RemoteData ContactsData
@@ -1635,14 +1647,18 @@ type Msg
     | RequestedExport
     | GotExport String (Result String String)
     | GotReports (Result String ReportSummary)
+    | OrderedRead RequestOrder.State (Maybe String) Msg
     | GotAuth (Result String AuthResponse)
     | PollWorkspaceClock
     | RefreshedWorkspaceClock (Result String ( String, Int ))
+    | RetryLogout
+    | LogoutFinished { ok : Bool, message : String }
     | RefreshSession
-    | RefreshedSession (Result String AuthResponse)
+    | RefreshedSession Int (Result SessionRefreshError AuthResponse)
     | UpdatedOTP String
     | GotUser (Result String User)
     | LoggedOut
+    | RecordsChanged String
     | NavigatedTo Route
     | GotContacts (Result String ( List Contact, Int ))
     | UpdatedContactsQuery String
@@ -1660,7 +1676,7 @@ type Msg
     | RequestedDeleteContact Contact
     | CancelledDeleteContact
     | ConfirmedDeleteContact
-    | GotDeletedContact (Result String String)
+    | GotDeletedContact String String (Result String String)
     | GotDeals (Result String DealsData)
     | GotDealsAt Int String Bool (Result String DealsData)
     | LoadMoreDeals
@@ -1682,7 +1698,7 @@ type Msg
     | RequestedDeleteDeal Deal
     | CancelledDeleteDeal
     | ConfirmedDeleteDeal
-    | GotDeletedDeal (Result String String)
+    | GotDeletedDeal String String (Result String String)
     | DraggingDealStarted String
     | DraggingDealEnded
     | DropTargetEntered String
@@ -1743,7 +1759,7 @@ type Msg
     | RequestedDeleteTask Task
     | CancelledDeleteTask
     | ConfirmedDeleteTask
-    | GotDeletedTask (Result String String)
+    | GotDeletedTask String String (Result String String)
     | ContactsPageChanged Int
     | FlushContactsSearch
     | FlushDealsSearch
@@ -1762,7 +1778,7 @@ type Msg
     | RequestedDeleteSchool School
     | CancelledDeleteSchool
     | ConfirmedDeleteSchool
-    | GotDeletedSchool (Result String String)
+    | GotDeletedSchool String String (Result String String)
     | SchoolsPageChanged Int
     | FlushSchoolsSearch
     | GotStudents (Result String ( List Student, Int ))
@@ -1782,7 +1798,7 @@ type Msg
     | RequestedDeleteStudent Student
     | CancelledDeleteStudent
     | ConfirmedDeleteStudent
-    | GotDeletedStudent (Result String String)
+    | GotDeletedStudent String String (Result String String)
     | StudentsPageChanged Int
     | FlushStudentsSearch
     | GotAgents (Result String ( List Agent, Int ))
@@ -1799,7 +1815,7 @@ type Msg
     | RequestedDeleteAgent Agent
     | CancelledDeleteAgent
     | ConfirmedDeleteAgent
-    | GotDeletedAgent (Result String String)
+    | GotDeletedAgent String String (Result String String)
     | AgentsPageChanged Int
     | FlushAgentsSearch
     | GotLeads (Result String ( List Lead, Int ))
@@ -1816,7 +1832,7 @@ type Msg
     | RequestedDeleteLead Lead
     | CancelledDeleteLead
     | ConfirmedDeleteLead
-    | GotDeletedLead (Result String String)
+    | GotDeletedLead String String (Result String String)
     | LeadsPageChanged Int
     | FlushLeadsSearch
     | GotCases (Result String ( List Case, Int ))
@@ -1835,7 +1851,7 @@ type Msg
     | RequestedDeleteCase Case
     | CancelledDeleteCase
     | ConfirmedDeleteCase
-    | GotDeletedCase (Result String String)
+    | GotDeletedCase String String (Result String String)
     | CasesPageChanged Int
     | FlushCasesSearch
     | GotCaseDocuments (Result String (List Document))
@@ -1868,7 +1884,7 @@ type Msg
     | RequestedDeleteInvoice Invoice
     | CancelledDeleteInvoice
     | ConfirmedDeleteInvoice
-    | GotDeletedInvoice (Result String String)
+    | GotDeletedInvoice String String (Result String String)
     | InvoicesPageChanged Int
     | FlushInvoicesSearch
     | GotInvoicePayments (Result String (List Payment))
@@ -1901,7 +1917,7 @@ type Msg
     | RequestedDeletePartner Partner
     | CancelledDeletePartner
     | ConfirmedDeletePartner
-    | GotDeletedPartner (Result String String)
+    | GotDeletedPartner String String (Result String String)
     | PartnersPageChanged Int
     | FlushPartnersSearch
     | FetchedContact (Result String Contact)

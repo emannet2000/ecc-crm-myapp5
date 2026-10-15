@@ -455,8 +455,25 @@ view model =
           else
             []
          )
-            ++ [ if model.bootstrapping then
+            ++ [ if model.logoutPending then
+                    div [ class "ecc-split" ]
+                        [ brandPanel
+                        , div [ class "auth-panel" ]
+                            [ p [ Attr.attribute "role" "status" ] [ text (if model.logoutBusy then "Signing out…" else model.logoutMessage) ]
+                            , if model.logoutBusy then text "" else button [ Attr.type_ "button", Html.Events.onClick RetryLogout ] [ text "Retry sign out" ]
+                            ]
+                        ]
+                 else if model.bootstrapping then
                     loadingView
+
+                 else if model.user == Nothing && model.token /= Nothing then
+                    div [ class "ecc-split" ]
+                        [ brandPanel
+                        , div [ class "card", Attr.attribute "role" "status" ]
+                            [ p [] [ text (model.alert |> Maybe.map .message |> Maybe.withDefault "Could not check your session. Please retry.") ]
+                            , button [ Attr.type_ "button", Html.Events.onClick RefreshSession ] [ text "Retry session check" ]
+                            ]
+                        ]
 
                  else
                     case model.user of

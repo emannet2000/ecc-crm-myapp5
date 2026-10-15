@@ -1,10 +1,18 @@
-module Update.Loaders exposing (fetchForAgentRoute, fetchForCaseRoute, fetchForContactRoute, fetchForDealRoute, fetchForInvoiceRoute, fetchForLeadRoute, fetchForPartnerRoute, fetchForSchoolRoute, fetchForStudentRoute, loadActivities, loadAgents, loadCaseDocuments, loadCases, loadContacts, loadDeals, loadInvoicePayments, loadInvoices, loadLeads, loadPartners, loadSchools, loadStudentDossier, loadStudents, loadTasks, pageSize)
+module Update.Loaders exposing (fetchForAgentRoute, fetchForCaseRoute, fetchForContactRoute, fetchForDealRoute, fetchForInvoiceRoute, fetchForLeadRoute, fetchForPartnerRoute, fetchForSchoolRoute, fetchForStudentRoute, loadActivities, loadAgents, loadCaseDocuments, loadCases, loadContacts, loadDeals, loadInvoicePayments, loadInvoices, loadLeads, loadPartners, loadSchools, loadStudentDossier, loadStudents, loadTasks, pageSize, refresh)
 
 {-| Data-loading commands and route-driven fetches.
 -}
 
 import Api
 import Types exposing (..)
+
+
+-- Retain the query, filters and offset while refreshing existing results.
+refresh : RemoteData a -> RemoteData a
+refresh data =
+    case data of
+        Success _ -> data
+        _ -> Loading
 
 
 pageSize : Int
@@ -51,7 +59,7 @@ loadContacts : Model -> ( Model, Cmd Msg )
 loadContacts model =
     case model.token of
         Just t ->
-            ( { model | contacts = Loading }
+            ( { model | contacts = refresh model.contacts }
             , Api.fetchContacts t (contactsQueryOf model) pageSize (contactsOffsetOf model) GotContacts
             )
 
@@ -84,7 +92,7 @@ loadTasks model =
                         _ ->
                             ( "", "" )
             in
-            ( { model | tasks = Loading }
+            ( { model | tasks = refresh model.tasks }
             , Api.fetchTasksPage t q st model.taskOffset GotTasks
             )
 
@@ -105,7 +113,7 @@ loadSchools model =
                         _ ->
                             ( "", 0 )
             in
-            ( { model | schools = Loading }
+            ( { model | schools = refresh model.schools }
             , Api.fetchSchools t q pageSize offset GotSchools
             )
 
@@ -126,7 +134,7 @@ loadStudents model =
                         _ ->
                             ( "", 0 )
             in
-            ( { model | students = Loading }
+            ( { model | students = refresh model.students }
             , Api.fetchStudents t q pageSize offset GotStudents
             )
 
@@ -159,7 +167,7 @@ loadAgents model =
                         _ ->
                             ( "", 0 )
             in
-            ( { model | agents = Loading }
+            ( { model | agents = refresh model.agents }
             , Api.fetchAgents t q pageSize offset GotAgents
             )
 
@@ -180,7 +188,7 @@ loadLeads model =
                         _ ->
                             ( "", 0 )
             in
-            ( { model | leads = Loading }
+            ( { model | leads = refresh model.leads }
             , Api.fetchLeads t q pageSize offset GotLeads
             )
 
@@ -201,7 +209,7 @@ loadCases model =
                         _ ->
                             ( "", "", 0 )
             in
-            ( { model | cases = Loading }
+            ( { model | cases = refresh model.cases }
             , Api.fetchCases t q st pageSize offset GotCases
             )
 
@@ -222,7 +230,7 @@ loadInvoices model =
                         _ ->
                             ( "", 0 )
             in
-            ( { model | invoices = Loading }
+            ( { model | invoices = refresh model.invoices }
             , Api.fetchInvoices t q pageSize offset GotInvoices
             )
 
@@ -251,7 +259,7 @@ loadPartners model =
                         _ ->
                             ( "", 0 )
             in
-            ( { model | partners = Loading }
+            ( { model | partners = refresh model.partners }
             , Api.fetchPartners t q tp co pageSize offset GotPartners
             )
 

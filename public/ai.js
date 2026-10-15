@@ -3,8 +3,7 @@
 (function () {
   const node=(tag,text,attrs={})=>{const el=document.createElement(tag);if(text!=null)el.textContent=String(text);for(const[k,v]of Object.entries(attrs))el.setAttribute(k,v);return el};
   async function request(path,options={}){
-    let response=await fetch(path,{credentials:'same-origin',...options});
-    if(response.status===401){const refreshed=await fetch('/api/session/refresh',{method:'POST',credentials:'same-origin'});if(refreshed.ok)response=await fetch(path,{credentials:'same-origin',...options});}
+    let response=await window.CRMAuthenticatedFetch(path,{credentials:'same-origin',...options});
     const out=await response.json();if(!response.ok)throw new Error(out.error||'Request failed. Try again.');return out;
   }
   const send=(path,body)=>request(path,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body||{})});
@@ -35,7 +34,7 @@
       launch.onclick=async()=>{if(!this.enabled)return;panel.hidden=false;launch.hidden=true;launch.setAttribute('aria-expanded','true');question.focus();try{const capabilities=await request('/api/assistant/capabilities');if(!this.isConnected)return;this.canAct=capabilities.actions;this.enabled=!!capabilities.enabled;submit.disabled=!capabilities.enabled;notice.textContent=capabilities.enabled?'':'AI is not enabled. Ask an administrator to configure and enable it in Workspace tools → Integrations.';await listHistory()}catch(error){notice.textContent=error.message}};
       form.onsubmit=async event=>{event.preventDefault();if(!this.enabled)return;const generation=++this.generation,text=question.value;submit.disabled=true;fresh.disabled=true;history.disabled=true;notice.textContent='Preparing an answer…';
         const segments=location.pathname.split('/').filter(Boolean);const payload={message:text,threadId:this.threadId,version:this.version};if(!this.threadId&&segments.length===2&&['contacts','students','cases','leads','deals','schools','agents','partners','invoices'].includes(segments[0])){payload.entity=segments[0];payload.id=segments[1]}
-        try{const out=await send('/api/assistant/chat',payload);if(!this.isConnected||generation!==this.generation)return;this.threadId=out.threadId;this.version=out.version;renderMessage('user',text);renderMessage('assistant',out.reply,out.sources,out.actions);question.value='';notice.textContent='';await listHistory()}catch(error){if(generation===this.generation)notice.textContent=error.message}finally{if(generation===this.generation){submit.disabled=false;fresh.disabled=false;history.disabled=false}}
+        try{const out=await send('/api/assistant/chat',payload);if(!this.isConnected||generation!==this.generation)return;window.CRMSessionDrafts?.saved?.(form);this.threadId=out.threadId;this.version=out.version;renderMessage('user',text);renderMessage('assistant',out.reply,out.sources,out.actions);question.value='';notice.textContent='';await listHistory()}catch(error){if(generation===this.generation)notice.textContent=error.message}finally{if(generation===this.generation){submit.disabled=false;fresh.disabled=false;history.disabled=false}}
       };
     }
     disconnectedCallback(){this.generation++;this.threadId='';this.version=0;this.shadowRoot.replaceChildren();}

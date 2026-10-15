@@ -7,11 +7,8 @@
     return element;
   };
   async function request(path, options = {}) {
-    let response = await fetch(path, {credentials: 'same-origin', ...options});
-    if (response.status === 401) {
-      const refresh = await fetch('/api/session/refresh', {method: 'POST', credentials: 'same-origin'});
-      if (refresh.ok) response = await fetch(path, {credentials: 'same-origin', ...options});
-    }
+    let response = await window.CRMAuthenticatedFetch(path, {credentials: 'same-origin', ...options});
+
     const out = await response.json();
     if (!response.ok) { const error=new Error((out.fields ? Object.values(out.fields).join(' ') : '') || out.error || 'Could not load lead work. Refresh and try again.');error.status=response.status;throw error; }
     return out;
@@ -43,8 +40,9 @@
           this.busy = true;
           const buttons = [...root.querySelectorAll('button')]; buttons.forEach(button => { button.disabled = true; });
           try {
-            await request(url, {method, headers: {'Content-Type': 'application/json', 'If-Match': lead._revision}, body: JSON.stringify(data)});
+            const result = await request(url, {method, headers: {'Content-Type': 'application/json', 'If-Match': lead._revision}, body: JSON.stringify(data)});
             if (!this.isConnected || generation !== this.generation) return;
+            window.CRMSessionDrafts?.saved?.(form,result);
             this.offset = 0;
             window.dispatchEvent(new CustomEvent('crm:record-changed', {detail: id}));
             this.load();

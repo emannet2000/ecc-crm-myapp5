@@ -77,6 +77,7 @@ test('daily work, searchable relationships, draft recovery and staff retests on 
   const observations=(await api('/api/usability/feedback')).observations;const observation=JSON.parse(observations[0].data);assert.equal(observation.phase,'retest');assert.equal(observation.issueReference,'OBS-fixture');assert.equal(observation.device,'Phone / Chromium');
   // Browser timings are local evidence, separate from backend benchmark means.
   await page.goto(base,{waitUntil:'domcontentloaded'});await page.waitForFunction(()=>document.querySelector('.daily-work')?.textContent.includes('work items'));
+  await page.waitForFunction(()=>performance.getEntriesByType('resource').some(entry=>entry.name.includes('/api/my-work')));
   const timing=await page.evaluate(()=>({navigationToUsableWorkMs:performance.now(),resources:performance.getEntriesByType('resource').filter(entry=>entry.name.includes('/api/my-work')).map(entry=>({duration:entry.duration,transferSize:entry.transferSize,limit:new URL(entry.name).searchParams.get('limit')}))}));
   fs.mkdirSync(path.join(root,'tests/artifacts'),{recursive:true});fs.writeFileSync(path.join(root,'tests/artifacts/improvements-timing.json'),JSON.stringify(timing,null,2));await page.screenshot({path:path.join(root,'tests/artifacts/improvements-home-phone.png'),fullPage:true});
   assert.equal(timing.resources[0].limit,'10');console.log('Local browser timing:',JSON.stringify(timing));assert.deepEqual(errors,[]);

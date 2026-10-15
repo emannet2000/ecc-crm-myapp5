@@ -146,3 +146,11 @@ UI-readiness waits and foregrounding the keyboard-focus test. The assertions
 for login, focus, stale-save rejection, draft retention and confirmed-save cleanup
 are unchanged. The complete suite is being revalidated against the patched build.
 Changes are prepared on `ci/quality-gate`, keeping production on `main`.
+
+The first hosted PR run passed security, backend race/vet/property checks, Python
+checks and frontend units, then exposed three Puppeteer path fallbacks that did
+not await the asynchronous API, plus browser rendering waits missing from the
+resource-timing, mobile drawer and chat-draft checks. Those harness issues are
+corrected without skipping workflows or removing behavior assertions. The final
+Quality gate failed and the container job was skipped as intended. See PR #1's
+latest checks for the current hosted validation result.

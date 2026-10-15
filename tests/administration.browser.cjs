@@ -26,7 +26,7 @@ test('native Elm administration protects drafts, confirms access changes and ret
       try {if ((await fetch(base+'/api/health')).ok) break} catch {}
       await new Promise(resolve=>setTimeout(resolve,100));
     }
-    browser = await puppeteer.launch({executablePath:process.env.CHROME_PATH||puppeteer.executablePath(),headless:true,pipe:true,args:['--no-sandbox','--disable-dev-shm-usage']});
+    browser = await puppeteer.launch({executablePath:process.env.CHROME_PATH||await puppeteer.executablePath(),headless:true,pipe:true,args:['--no-sandbox','--disable-dev-shm-usage']});
     const page = await browser.newPage();
     page.on('pageerror',error=>errors.push(error.message));
     await page.goto(base,{waitUntil:'domcontentloaded'});

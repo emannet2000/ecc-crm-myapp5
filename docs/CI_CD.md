@@ -96,61 +96,28 @@ Container smoke tests create and remove only their temporary container/volume.
 
 ## Activation status
 
-The workflow and local checks are repository changes. GitHub branch protection
-and Render settings must be activated in their dashboards by an authorized
-account. No production deployment or external configuration change has been
-performed from this workspace. Hosted Actions and actual Docker execution must
-pass before this gate is considered proven. Automated tests reduce risk; they
-do not prove the absence of bugs or establish real provider delivery.
+Changes are on `ci/quality-gate` in
+[PR #1](https://github.com/emannet2000/ecc-crm-myapp5/pull/1). Check that PR's
+latest **Quality gate** result before merging; an earlier local pass does not
+replace verification of the current commit.
 
-### Initial local security result
+Local validation has passed the full gate (58 browser checks, 40 frontend checks,
+12 Python checks, backend race/vet/property checks and production compilation).
+The automatic lead-reference tests also passed with race detection, and the
+read-only lead form was verified in Chrome 152. Hosted runs exposed additional
+browser synchronization issues; the tests now wait for refreshed forms and use
+the staff-facing document upload action. Assertions remain enabled.
 
-The initial scan with the project's Go 1.26.0 toolchain exited nonzero and
-reported **40 reachable vulnerabilities** across the standard library and two
-modules: `github.com/go-jose/go-jose/v4@v4.0.5` and
-`github.com/russellhaering/goxmldsig@v1.4.0`. Scanner-reported fixes include
-Go 1.26.9, go-jose v4.1.4 and goxmldsig v1.6.0. Review compatibility and run the
-full gate after updating; those upgrades are not part of this pipeline change.
-The security job retains its full scanner output as `security-artifacts`, even
-when it fails. Local output is in `tests/artifacts/security/govulncheck.txt`.
-Do not disable the security requirement to obtain a green release. npm audit
-reported zero vulnerabilities and Go module checksum verification passed.
+Security remediation is included: Go 1.26.9, go-jose v4.1.4 and goxmldsig v1.6.0.
+The updated scanner reported zero reachable vulnerabilities; npm audit and Go
+module checksum verification passed. Security reports are retained as Actions
+artifacts, including after a failed scan.
 
-### Initial local verification result
+The connected GitHub integration cannot administer branch protection. `main`
+was last verified as unprotected. Render is not connected, so its deployment
+settings and production health have not been changed or verified. An owner must
+activate the settings above before this is an enforced production deployment
+gate. Do not merge merely because the workflow exists.
 
-Workflow lint (`actionlint` v1.7.7), source checks, production Elm/Go build,
-backend race tests and `go vet`, five property fuzz targets, 12 Python tests,
-and all 40 frontend unit checks passed. Backend statement coverage was 58.3%.
-The browser run completed with **55 passed, 3 failed, no skipped tests**:
-
-- `tests/browser.test.cjs:253`: live login/native workflows/mobile test timed out.
-- `tests/browser.test.cjs:1087`: recovered-draft rejected-save test timed out.
-- `tests/consolidation.browser.cjs:12`: login email input was not found.
-
-`npm run test:all` therefore exited 1. These browser failures require diagnosis;
-they have not been disabled or declared harmless. The full local log is
-`tests/artifacts/quality-gate-local.log`. Actual Docker execution was unavailable
-because Docker is not installed. No hosted workflow run, branch protection change,
-Render setting change or production deployment was performed.
-
-### Follow-up remediation
-
-The backend now requires Go 1.26.9; Docker uses the same patched version.
-go-jose was updated to v4.1.4 and goxmldsig to v1.6.0, with their required
-etree/clockwork updates. A new `govulncheck` run completed successfully with
-**zero reachable vulnerabilities** (one advisory remains in a required module
-whose affected code is not called).
-
-The three failed browser workflows all passed a focused retest after adding
-UI-readiness waits and foregrounding the keyboard-focus test. The assertions
-for login, focus, stale-save rejection, draft retention and confirmed-save cleanup
-are unchanged. The complete suite is being revalidated against the patched build.
-Changes are prepared on `ci/quality-gate`, keeping production on `main`.
-
-The first hosted PR run passed security, backend race/vet/property checks, Python
-checks and frontend units, then exposed three Puppeteer path fallbacks that did
-not await the asynchronous API, plus browser rendering waits missing from the
-resource-timing, mobile drawer and chat-draft checks. Those harness issues are
-corrected without skipping workflows or removing behavior assertions. The final
-Quality gate failed and the container job was skipped as intended. See PR #1's
-latest checks for the current hosted validation result.
+Automated tests reduce risk; they do not prove the absence of bugs or establish
+real provider delivery.

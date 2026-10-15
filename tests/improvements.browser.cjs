@@ -61,8 +61,12 @@ test('daily work, searchable relationships, draft recovery and staff retests on 
   await page.waitForFunction(form=>form.textContent.includes('Concurrent saved action'),{},form);
   await form.evaluate(form=>{const check=form.querySelector('input[type=checkbox]:not([name])');check.checked=true;check.dispatchEvent(new Event('change'));[...form.querySelectorAll('button')].find(button=>button.textContent==='Use reviewed version for retry').click();[...form.querySelectorAll('button')].find(button=>button.textContent==='Retry save').click()});
   await page.waitForFunction(()=>document.querySelector('crm-workspace').shadowRoot.querySelector('#notice').textContent.includes('Saved'));
+  // The save notice precedes the asynchronous refresh. Use the refreshed form.
+  await page.waitForFunction(form=>!form.isConnected,{},form);
   const saved=(await api('/api/records/cases/'+application.id)).record;assert.equal(saved.partnerId,partner.id);assert.equal(saved.parentCaseId,parent.id);assert.equal(saved.nextAction,'Concurrent saved action');
-  form=await toolForm('Application checklist & deadlines');await choose(form,'id',application.caseNumber,application.id);assert.equal(await form.evaluate(form=>form.querySelector('[name=partnerId]').value),partner.id);
+  form=await toolForm('Application checklist & deadlines');await choose(form,'id',application.caseNumber,application.id);
+  await page.waitForFunction((form,id)=>form.isConnected&&form.querySelector('[name=partnerId]').value===id,{},form,partner.id);
+  assert.equal(await form.evaluate(form=>form.querySelector('[name=partnerId]').value),partner.id);
   // Search and choose using the keyboard; retain a selection when searches fail.
   const picker=await form.$('[name=parentCaseId]');
   // Nested shadow selectors are exercised through the picker host itself.

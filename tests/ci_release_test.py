@@ -3,9 +3,31 @@ import os
 from pathlib import Path
 import subprocess
 import tempfile
+import textwrap
 import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
+
+
+class QualityGateChecks(unittest.TestCase):
+    def test_gate_rejects_failed_cancelled_and_skipped_dependencies(self):
+        workflow = (ROOT / '.github/workflows/verify.yml').read_text()
+        gate = workflow.split('  quality-gate:\n', 1)[1]
+        self.assertIn('    if: always()\n', gate)
+        self.assertIn('    needs: [verify, security, container]\n', gate)
+        code = textwrap.dedent(gate.split("python3 - <<'PYTHON'\n", 1)[1]
+                               .split('          PYTHON', 1)[0])
+        for job in ('verify', 'security', 'container'):
+            for status in ('success', 'failure', 'cancelled', 'skipped'):
+                with self.subTest(job=job, status=status):
+                    results = {name: {'result': 'success'}
+                               for name in ('verify', 'security', 'container')}
+                    results[job]['result'] = status
+                    result = subprocess.run(
+                        ['python3', '-c', code], capture_output=True, text=True,
+                        env=dict(os.environ, RESULTS=json.dumps(results)), timeout=5)
+                    self.assertEqual(result.returncode, 0 if status == 'success' else 1,
+                                     result.stderr)
 
 FAKE_COMMAND = '''#!/usr/bin/env python3
 import json, os, pathlib, sys

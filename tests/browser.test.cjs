@@ -254,6 +254,7 @@ test('live app login, native record workflows, reporting and mobile layout', {sk
  const directory=fs.mkdtempSync(path.join(os.tmpdir(),'ecc-crm-browser-')),port='17001';
  const server=spawn(path.join(__dirname,'../build/ecc-crm'),[],{cwd:path.join(__dirname,'..'),env:{...process.env,SEED_DEMO_DATA:'true',PORT:port,DATABASE_PATH:path.join(directory,'crm.sqlite3'),JWT_SECRET:'browser-test-secret-only',APP_URL:'http://localhost:'+port,ALLOW_SIGNUP:'false',GRAPH_ORG_ID:'',WHATSAPP_ORG_ID:''},stdio:'pipe'});
  const page=await browser.newPage();let output='';server.stderr.on('data',data=>output+=data);server.stdout.on('data',data=>output+=data);
+ await page.bringToFront();
  await page.setRequestInterception(true);page.on('request',request=>{if(new URL(request.url()).origin==='http://localhost:'+port)request.continue();else request.abort()});
  try{
   for(let i=0;i<100;i++){try{const response=await fetch('http://localhost:'+port+'/api/health');if(response.ok)break}catch{}await new Promise(resolve=>setTimeout(resolve,100))}
@@ -290,6 +291,7 @@ test('live app login, native record workflows, reporting and mobile layout', {sk
   await page.goto('http://localhost:'+port+'/administration',{waitUntil:'networkidle2'});
   await page.waitForFunction(()=>document.querySelector('.administration-elm table'));
   await page.evaluate(()=>[...document.querySelector('.administration-elm').querySelectorAll('button')].find(b=>b.textContent==='Add user').click());
+  await page.waitForSelector('.administration-elm [name=email]');
   await page.evaluate(()=>{const root=document.querySelector('.administration-elm');for(const [name,value] of Object.entries({name:'Browser Viewer',email:'browser-viewer@example.com',role:'viewer',password:'BrowserViewerPassword!'})){const field=root.querySelector('[name='+name+']');field.value=value;field.dispatchEvent(new Event('input',{bubbles:true}));}root.querySelector('form').requestSubmit()});
   await page.waitForFunction(()=>document.querySelector('.administration-elm').textContent.includes('browser-viewer@example.com'));
   await page.evaluate(()=>[...document.querySelector('.administration-elm').querySelectorAll('nav button')].find(b=>b.textContent==='Access levels').click());
@@ -1093,6 +1095,7 @@ test('recovered workspace drafts survive a rejected save and clear after confirm
   await page.$eval('crm-work-plan >>> textarea',e=>{e.value='Recovered action draft';e.dispatchEvent(new Event('input',{bubbles:true}))});
   await page.evaluate(()=>{window.CRMSessionDrafts.capture('u_manager');const old=document.querySelector('crm-work-plan'),next=old.cloneNode();old.replaceWith(next)});
   await page.waitForSelector('crm-work-plan >>> [data-session-recovery]');
+  await page.waitForFunction(()=>!document.querySelector('crm-work-plan').shadowRoot.querySelector('button[type=submit]').disabled);
   await page.$eval('crm-work-plan >>> [data-session-recovery] button',e=>e.click());
   await page.$eval('crm-work-plan >>> [data-session-recovery] input[type=checkbox]',e=>{e.checked=true;e.dispatchEvent(new Event('change',{bubbles:true}))});
   await page.$eval('crm-work-plan >>> form',e=>e.requestSubmit());

@@ -9,7 +9,7 @@ RUN elm make src/Account.elm --optimize --output=public/account-elm.js
 RUN elm make src/RecordBrowser.elm --optimize --output=public/record-browser-elm.js
 RUN elm make src/WorkDashboard.elm --optimize --output=public/work-dashboard-elm.js
 
-FROM golang:1.26-bookworm AS backend
+FROM golang:1.26.9-bookworm AS backend
 WORKDIR /app/golang-backend
 COPY golang-backend/go.mod golang-backend/go.sum ./
 RUN go mod download

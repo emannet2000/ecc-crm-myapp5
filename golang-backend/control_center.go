@@ -367,8 +367,14 @@ func (state *runtimeStore) handleAcceptInvite(w http.ResponseWriter, r *http.Req
 	state.mu.Lock()
 	state.users[strings.ToLower(user.Email)] = user
 	state.mu.Unlock()
-	storeDB(r).Exec("UPDATE auth_tokens SET used_at=? WHERE hash=?", utcNow(), hashSecret(req.Token))
-	securityEvent(r, user, "invite.accepted")
+	if _, err := storeDB(r).Exec("UPDATE auth_tokens SET used_at=? WHERE hash=?", utcNow(), hashSecret(req.Token)); err != nil {
+		writeError(w, 500, "Could not invalidate invitation")
+		return
+	}
+	if err := securityEvent(r, user, "invite.accepted"); err != nil {
+		writeError(w, 500, "Could not record invitation acceptance")
+		return
+	}
 	writeJSON(w, 200, map[string]string{"message": "Invitation accepted. Sign in to your workspace."})
 }
 

@@ -1,6 +1,10 @@
 module Types exposing (..)
 
 import Browser
+import Administration
+import WorkDashboard
+import ManagementReport
+import TeamChat
 import Dict exposing (Dict)
 import Browser.Navigation as Nav
 import Set exposing (Set)
@@ -1479,7 +1483,11 @@ type Theme
 
 
 type alias Model =
-    { mode : Mode
+    { workDashboard : WorkDashboard.Model
+    , managementReport : ManagementReport.Model
+    , teamChat : TeamChat.Model
+    , administration : Administration.Model
+    , mode : Mode
     , theme : Theme
     , reports : RemoteData ReportSummary
     , globalQuery : String
@@ -1607,7 +1615,11 @@ emptyForm =
 
 
 type Msg
-    = UpdatedField Field String
+    = WorkDashboardMsg WorkDashboard.Msg
+    | ManagementReportMsg ManagementReport.Msg
+    | TeamChatMsg TeamChat.Msg
+    | AdministrationMsg Administration.Msg
+    | UpdatedField Field String
     | ToggledTheme
     | ToggledRemember Bool
     | ToggledShowPassword

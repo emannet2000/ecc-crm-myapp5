@@ -140,11 +140,12 @@ func (state *runtimeStore) createAgentHandler(w http.ResponseWriter, r *http.Req
 	}
 
 	now := time.Now().Format("2006-01-02")
+	recordID := newID("ag")
 	newAgent := Agent{
 		RecordScope:      newRecordScope(r),
-		ID:               newID("ag"),
+		ID:               recordID,
 		Name:             strings.TrimSpace(req.Name),
-		AgentCode:        strings.TrimSpace(req.AgentCode),
+		AgentCode:        automaticReference(req.AgentCode, "AG", recordID),
 		CountryCode:      strings.TrimSpace(strings.ToUpper(req.CountryCode)),
 		ContractStatus:   strings.TrimSpace(req.ContractStatus),
 		AgentStatus:      strings.TrimSpace(req.AgentStatus),
@@ -197,7 +198,7 @@ func (state *runtimeStore) updateAgentHandler(w http.ResponseWriter, r *http.Req
 
 	updated := state.agents[idx]
 	updated.Name = strings.TrimSpace(req.Name)
-	updated.AgentCode = strings.TrimSpace(req.AgentCode)
+	updated.AgentCode = referenceOnUpdate(req.AgentCode, updated.AgentCode, "AG", updated.ID)
 	updated.CountryCode = strings.TrimSpace(strings.ToUpper(req.CountryCode))
 	updated.ContractStatus = strings.TrimSpace(req.ContractStatus)
 	updated.AgentStatus = strings.TrimSpace(req.AgentStatus)

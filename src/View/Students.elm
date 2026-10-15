@@ -876,7 +876,7 @@ studentFormView model sf isEdit =
                 text ""
         , div [ class "form-grid" ]
             [ studentRichField sf "name" "Student full name" "text"
-            , studentRichField sf "studentCode" "Student ID code" "text"
+            , if isEdit then studentRichField sf "studentCode" "Student reference" "text" else p [ class "ecc-field__message" ] [ text "Student reference is generated automatically when you save." ]
             , studentRichField sf "countryCode" "Country code (e.g. PH)" "text"
             , studentSchoolSelect model sf
             , studentAgentSelect model sf

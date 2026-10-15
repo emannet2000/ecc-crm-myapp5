@@ -578,7 +578,10 @@ func (state *runtimeStore) handleForgotPassword(w http.ResponseWriter, r *http.R
 	email := strings.ToLower(strings.TrimSpace(req.Email))
 	if user, exists := state.findUserByEmail(email); exists && !user.Disabled {
 		secret := randomSecret()
-		storeDB(r).Exec("UPDATE auth_tokens SET used_at=? WHERE user_id=? AND purpose='reset' AND used_at IS NULL", utcNow(), user.ID)
+		if _, err := storeDB(r).Exec("UPDATE auth_tokens SET used_at=? WHERE user_id=? AND purpose='reset' AND used_at IS NULL", utcNow(), user.ID); err != nil {
+			writeError(w, 500, "Could not replace recovery links")
+			return
+		}
 		_, err := storeDB(r).Exec("INSERT INTO auth_tokens(hash,user_id,purpose,expires_at) VALUES(?,?,'reset',?)", hashSecret(secret), user.ID, time.Now().Add(30*time.Minute).UTC().Format(time.RFC3339))
 		if err != nil {
 			writeError(w, 500, "Could not process recovery request")
@@ -588,7 +591,10 @@ func (state *runtimeStore) handleForgotPassword(w http.ResponseWriter, r *http.R
 			writeError(w, 500, "Could not queue recovery email")
 			return
 		}
-		securityEvent(r, user, "password_reset.requested")
+		if err := securityEvent(r, user, "password_reset.requested"); err != nil {
+			writeError(w, 500, "Could not record recovery request")
+			return
+		}
 	}
 	writeJSON(w, 200, map[string]string{"message": "If an active account exists, a recovery email will be sent. Contact your administrator if it does not arrive."})
 }
@@ -638,8 +644,14 @@ func (state *runtimeStore) handleResetPassword(w http.ResponseWriter, r *http.Re
 	state.mu.Lock()
 	state.users[strings.ToLower(user.Email)] = user
 	state.mu.Unlock()
-	storeDB(r).Exec("UPDATE auth_tokens SET used_at=? WHERE user_id=? AND purpose='reset' AND used_at IS NULL", utcNow(), user.ID)
-	securityEvent(r, user, "password_reset.completed")
+	if _, err := storeDB(r).Exec("UPDATE auth_tokens SET used_at=? WHERE user_id=? AND purpose='reset' AND used_at IS NULL", utcNow(), user.ID); err != nil {
+		writeError(w, 500, "Could not invalidate recovery links")
+		return
+	}
+	if err := securityEvent(r, user, "password_reset.completed"); err != nil {
+		writeError(w, 500, "Could not record password change")
+		return
+	}
 	clearSessionCookies(w, r)
 	writeJSON(w, 200, map[string]string{"message": "Password changed. Sign in with your new password."})
 }

@@ -1,0 +1,1024 @@
+# Backend function coverage
+
+Statement coverage: **57.3%**. Functions: **922**; untouched: **294**; fully statement-covered: **271**.
+
+Coverage shows executed statements, not assertion quality, all input combinations, or browser/provider acceptance. Untouched functions remain explicit testing gaps.
+
+| File | Functions | Untouched | Fully statement-covered |
+| --- | ---: | ---: | ---: |
+| ecc-crm/backend/access.go | 29 | 4 | 17 |
+| ecc-crm/backend/activities.go | 9 | 0 | 5 |
+| ecc-crm/backend/administration.go | 17 | 2 | 10 |
+| ecc-crm/backend/agents.go | 13 | 4 | 6 |
+| ecc-crm/backend/ai_actions.go | 9 | 4 | 1 |
+| ecc-crm/backend/ai_advice.go | 3 | 2 | 1 |
+| ecc-crm/backend/ai_agent.go | 10 | 1 | 5 |
+| ecc-crm/backend/ai_insights.go | 7 | 3 | 0 |
+| ecc-crm/backend/ai_knowledge.go | 12 | 4 | 2 |
+| ecc-crm/backend/ai_store.go | 11 | 1 | 5 |
+| ecc-crm/backend/ai_tools.go | 11 | 4 | 3 |
+| ecc-crm/backend/ai_voice.go | 9 | 9 | 0 |
+| ecc-crm/backend/application_blockers.go | 2 | 0 | 0 |
+| ecc-crm/backend/application_readiness.go | 2 | 0 | 0 |
+| ecc-crm/backend/assignment_review.go | 3 | 0 | 1 |
+| ecc-crm/backend/assistant.go | 19 | 2 | 8 |
+| ecc-crm/backend/assistant_chat.go | 9 | 5 | 1 |
+| ecc-crm/backend/auth.go | 21 | 12 | 5 |
+| ecc-crm/backend/automation.go | 13 | 9 | 1 |
+| ecc-crm/backend/bulk_revision.go | 2 | 0 | 1 |
+| ecc-crm/backend/cases.go | 18 | 8 | 5 |
+| ecc-crm/backend/cmd/vapid/main.go | 1 | 1 | 0 |
+| ecc-crm/backend/communication.go | 18 | 9 | 1 |
+| ecc-crm/backend/consolidated_workspace.go | 5 | 0 | 1 |
+| ecc-crm/backend/contacts.go | 13 | 4 | 5 |
+| ecc-crm/backend/control_center.go | 18 | 6 | 5 |
+| ecc-crm/backend/conversations.go | 24 | 13 | 4 |
+| ecc-crm/backend/daily_overview.go | 1 | 0 | 0 |
+| ecc-crm/backend/daily_work.go | 10 | 0 | 3 |
+| ecc-crm/backend/dashboard_overview.go | 11 | 0 | 4 |
+| ecc-crm/backend/data_tools.go | 23 | 6 | 13 |
+| ecc-crm/backend/database.go | 9 | 0 | 1 |
+| ecc-crm/backend/deal_board.go | 4 | 0 | 2 |
+| ecc-crm/backend/deals.go | 17 | 13 | 1 |
+| ecc-crm/backend/document_files.go | 11 | 3 | 5 |
+| ecc-crm/backend/document_review.go | 1 | 0 | 0 |
+| ecc-crm/backend/documents.go | 16 | 10 | 2 |
+| ecc-crm/backend/escalations.go | 3 | 0 | 1 |
+| ecc-crm/backend/everyday_work.go | 24 | 21 | 1 |
+| ecc-crm/backend/exception_queues.go | 1 | 0 | 0 |
+| ecc-crm/backend/expansion.go | 16 | 0 | 5 |
+| ecc-crm/backend/expansion_workers.go | 2 | 1 | 1 |
+| ecc-crm/backend/finance.go | 21 | 15 | 3 |
+| ecc-crm/backend/followups.go | 32 | 8 | 9 |
+| ecc-crm/backend/handoff_reminders.go | 1 | 0 | 0 |
+| ecc-crm/backend/handoffs.go | 5 | 0 | 1 |
+| ecc-crm/backend/http_security.go | 1 | 0 | 0 |
+| ecc-crm/backend/identity_providers.go | 15 | 5 | 3 |
+| ecc-crm/backend/insights.go | 11 | 0 | 2 |
+| ecc-crm/backend/integration_health.go | 5 | 1 | 0 |
+| ecc-crm/backend/lead_intake.go | 3 | 0 | 0 |
+| ecc-crm/backend/lead_pipeline.go | 1 | 0 | 0 |
+| ecc-crm/backend/lead_work.go | 12 | 0 | 7 |
+| ecc-crm/backend/leads.go | 13 | 4 | 3 |
+| ecc-crm/backend/mailbox_sync.go | 5 | 4 | 1 |
+| ecc-crm/backend/main.go | 7 | 2 | 2 |
+| ecc-crm/backend/operational_attention.go | 1 | 0 | 0 |
+| ecc-crm/backend/operations.go | 5 | 4 | 0 |
+| ecc-crm/backend/partners.go | 12 | 11 | 0 |
+| ecc-crm/backend/payment_gateway.go | 11 | 0 | 4 |
+| ecc-crm/backend/persistence.go | 8 | 0 | 7 |
+| ecc-crm/backend/portal.go | 28 | 12 | 6 |
+| ecc-crm/backend/productivity_documents.go | 2 | 0 | 0 |
+| ecc-crm/backend/productivity_reminders.go | 3 | 0 | 0 |
+| ecc-crm/backend/productivity_reporting.go | 1 | 0 | 0 |
+| ecc-crm/backend/productivity_templates.go | 7 | 6 | 1 |
+| ecc-crm/backend/receipt_controls.go | 6 | 0 | 3 |
+| ecc-crm/backend/reconciliation.go | 6 | 0 | 2 |
+| ecc-crm/backend/record_audit.go | 1 | 0 | 0 |
+| ecc-crm/backend/record_photos.go | 13 | 1 | 6 |
+| ecc-crm/backend/record_productivity.go | 10 | 0 | 5 |
+| ecc-crm/backend/reports.go | 1 | 0 | 0 |
+| ecc-crm/backend/repository.go | 9 | 0 | 5 |
+| ecc-crm/backend/requirement_plan.go | 3 | 0 | 0 |
+| ecc-crm/backend/runtime_store.go | 10 | 0 | 6 |
+| ecc-crm/backend/schools.go | 12 | 4 | 3 |
+| ecc-crm/backend/session_security.go | 42 | 3 | 20 |
+| ecc-crm/backend/staff_options.go | 3 | 1 | 0 |
+| ecc-crm/backend/stage_gates.go | 13 | 0 | 4 |
+| ecc-crm/backend/store.go | 51 | 30 | 17 |
+| ecc-crm/backend/students.go | 17 | 10 | 2 |
+| ecc-crm/backend/targeted_writes.go | 1 | 0 | 0 |
+| ecc-crm/backend/tasks.go | 15 | 4 | 6 |
+| ecc-crm/backend/team_chat.go | 3 | 0 | 1 |
+| ecc-crm/backend/trash_retention.go | 8 | 0 | 1 |
+| ecc-crm/backend/usability.go | 1 | 0 | 0 |
+| ecc-crm/backend/validation.go | 3 | 0 | 1 |
+| ecc-crm/backend/workflows.go | 17 | 8 | 5 |
+| ecc-crm/backend/workspace.go | 10 | 0 | 3 |
+
+## Every measured function
+
+| Location | Function | Statement coverage |
+| --- | --- | ---: |
+| ecc-crm/backend/access.go:80 | `withScope` | 0% |
+| ecc-crm/backend/access.go:487 | `publicError` | 0% |
+| ecc-crm/backend/access.go:497 | `computedOnly` | 0% |
+| ecc-crm/backend/access.go:549 | `filterProjectedStatus` | 0% |
+| ecc-crm/backend/administration.go:61 | `adminTarget` | 0% |
+| ecc-crm/backend/administration.go:136 | `invalidateUserSessions` | 0% |
+| ecc-crm/backend/agents.go:73 | `listAgentsHandler` | 0% |
+| ecc-crm/backend/agents.go:99 | `listAgentsHandler` | 0% |
+| ecc-crm/backend/agents.go:105 | `getAgentHandler` | 0% |
+| ecc-crm/backend/agents.go:117 | `getAgentHandler` | 0% |
+| ecc-crm/backend/ai_actions.go:53 | `validAIDate` | 0% |
+| ecc-crm/backend/ai_actions.go:362 | `handleAIReject` | 0% |
+| ecc-crm/backend/ai_actions.go:375 | `handleAIMeeting` | 0% |
+| ecc-crm/backend/ai_actions.go:400 | `handleAICalendar` | 0% |
+| ecc-crm/backend/ai_advice.go:10 | `handleAIAdvice` | 0% |
+| ecc-crm/backend/ai_advice.go:37 | `processAIAdvice` | 0% |
+| ecc-crm/backend/ai_agent.go:208 | `tool` | 0% |
+| ecc-crm/backend/ai_insights.go:42 | `documentCompletenessFor` | 0% |
+| ecc-crm/backend/ai_insights.go:221 | `applyCaseDocuments` | 0% |
+| ecc-crm/backend/ai_insights.go:231 | `sortInsights` | 0% |
+| ecc-crm/backend/ai_knowledge.go:90 | `handleKnowledgeList` | 0% |
+| ecc-crm/backend/ai_knowledge.go:280 | `searchTerms` | 0% |
+| ecc-crm/backend/ai_knowledge.go:296 | `searchKnowledge` | 0% |
+| ecc-crm/backend/ai_knowledge.go:428 | `existingDocumentText` | 0% |
+| ecc-crm/backend/ai_store.go:154 | `handleAIAdministration` | 0% |
+| ecc-crm/backend/ai_tools.go:22 | `minimizedRecord` | 0% |
+| ecc-crm/backend/ai_tools.go:31 | `search` | 0% |
+| ecc-crm/backend/ai_tools.go:104 | `readRecord` | 0% |
+| ecc-crm/backend/ai_tools.go:152 | `analyze` | 0% |
+| ecc-crm/backend/ai_voice.go:26 | `loadAIVoice` | 0% |
+| ecc-crm/backend/ai_voice.go:37 | `handleAIVoice` | 0% |
+| ecc-crm/backend/ai_voice.go:206 | `validVoiceCallID` | 0% |
+| ecc-crm/backend/ai_voice.go:217 | `hangupAICall` | 0% |
+| ecc-crm/backend/ai_voice.go:233 | `stopAIVoice` | 0% |
+| ecc-crm/backend/ai_voice.go:250 | `handleAIStopVoice` | 0% |
+| ecc-crm/backend/ai_voice.go:262 | `handleAIVoiceTool` | 0% |
+| ecc-crm/backend/ai_voice.go:330 | `handleAIVoiceTranscript` | 0% |
+| ecc-crm/backend/ai_voice.go:385 | `expireAIVoice` | 0% |
+| ecc-crm/backend/assistant.go:486 | `handleAssistantJobs` | 0% |
+| ecc-crm/backend/assistant.go:508 | `handleAssistantJobs` | 0% |
+| ecc-crm/backend/assistant_chat.go:63 | `handleAICapabilities` | 0% |
+| ecc-crm/backend/assistant_chat.go:67 | `loadAIThread` | 0% |
+| ecc-crm/backend/assistant_chat.go:111 | `handleAIThreads` | 0% |
+| ecc-crm/backend/assistant_chat.go:154 | `handleAIThread` | 0% |
+| ecc-crm/backend/assistant_chat.go:172 | `handleAIDeleteThread` | 0% |
+| ecc-crm/backend/auth.go:21 | `initSecret` | 0% |
+| ecc-crm/backend/auth.go:147 | `isTokenRevoked` | 0% |
+| ecc-crm/backend/auth.go:160 | `isTokenRevoked` | 0% |
+| ecc-crm/backend/auth.go:175 | `revokeToken` | 0% |
+| ecc-crm/backend/auth.go:181 | `handleLogin` | 0% |
+| ecc-crm/backend/auth.go:206 | `handleLogin` | 0% |
+| ecc-crm/backend/auth.go:212 | `handleRegister` | 0% |
+| ecc-crm/backend/auth.go:258 | `handleRegister` | 0% |
+| ecc-crm/backend/auth.go:284 | `handleUpdateMe` | 0% |
+| ecc-crm/backend/auth.go:380 | `handleUpdateMe` | 0% |
+| ecc-crm/backend/auth.go:386 | `handleChangePassword` | 0% |
+| ecc-crm/backend/auth.go:441 | `handleChangePassword` | 0% |
+| ecc-crm/backend/automation.go:22 | `notification` | 0% |
+| ecc-crm/backend/automation.go:197 | `webhookClient` | 0% |
+| ecc-crm/backend/automation.go:218 | `handleWebhookSettings` | 0% |
+| ecc-crm/backend/automation.go:242 | `deliverWebhooks` | 0% |
+| ecc-crm/backend/automation.go:310 | `handlePushSubscription` | 0% |
+| ecc-crm/backend/automation.go:326 | `deliverPushNotifications` | 0% |
+| ecc-crm/backend/automation.go:371 | `handleNotificationPreferences` | 0% |
+| ecc-crm/backend/automation.go:389 | `handleManageWebhook` | 0% |
+| ecc-crm/backend/automation.go:409 | `handleRetryWebhook` | 0% |
+| ecc-crm/backend/cases.go:122 | `listCasesHandler` | 0% |
+| ecc-crm/backend/cases.go:156 | `listCasesHandler` | 0% |
+| ecc-crm/backend/cases.go:162 | `getCaseHandler` | 0% |
+| ecc-crm/backend/cases.go:175 | `getCaseHandler` | 0% |
+| ecc-crm/backend/cases.go:181 | `createCaseHandler` | 0% |
+| ecc-crm/backend/cases.go:253 | `createCaseHandler` | 0% |
+| ecc-crm/backend/cases.go:389 | `deleteCaseHandler` | 0% |
+| ecc-crm/backend/cases.go:420 | `deleteCaseHandler` | 0% |
+| ecc-crm/backend/cmd/vapid/main.go:9 | `main` | 0% |
+| ecc-crm/backend/communication.go:32 | `handleComposeMail` | 0% |
+| ecc-crm/backend/communication.go:87 | `handleComposeMail` | 0% |
+| ecc-crm/backend/communication.go:92 | `handleRetryMail` | 0% |
+| ecc-crm/backend/communication.go:106 | `handleReadNotification` | 0% |
+| ecc-crm/backend/communication.go:142 | `queueChangeEvents` | 0% |
+| ecc-crm/backend/communication.go:179 | `deliverSMTP` | 0% |
+| ecc-crm/backend/communication.go:267 | `markWorkerRun` | 0% |
+| ecc-crm/backend/communication.go:275 | `startWorkers` | 0% |
+| ecc-crm/backend/communication.go:371 | `handleSMTPSettings` | 0% |
+| ecc-crm/backend/contacts.go:82 | `listContacts` | 0% |
+| ecc-crm/backend/contacts.go:108 | `listContacts` | 0% |
+| ecc-crm/backend/contacts.go:114 | `getContact` | 0% |
+| ecc-crm/backend/contacts.go:129 | `getContact` | 0% |
+| ecc-crm/backend/control_center.go:80 | `handleControlCenter` | 0% |
+| ecc-crm/backend/control_center.go:156 | `handleControlCenter` | 0% |
+| ecc-crm/backend/control_center.go:161 | `handleCreateTeam` | 0% |
+| ecc-crm/backend/control_center.go:386 | `handleOrganizationSettings` | 0% |
+| ecc-crm/backend/control_center.go:519 | `setRecordScope` | 0% |
+| ecc-crm/backend/control_center.go:525 | `handleWorkspaceClock` | 0% |
+| ecc-crm/backend/conversations.go:38 | `conversationContact` | 0% |
+| ecc-crm/backend/conversations.go:141 | `findInboundContact` | 0% |
+| ecc-crm/backend/conversations.go:209 | `attachInbound` | 0% |
+| ecc-crm/backend/conversations.go:252 | `handleUnmatched` | 0% |
+| ecc-crm/backend/conversations.go:264 | `handleLinkMessage` | 0% |
+| ecc-crm/backend/conversations.go:297 | `handleLinkMessage` | 0% |
+| ecc-crm/backend/conversations.go:302 | `handleWhatsAppChallenge` | 0% |
+| ecc-crm/backend/conversations.go:311 | `handleWhatsAppWebhook` | 0% |
+| ecc-crm/backend/conversations.go:374 | `handleWhatsAppWebhook` | 0% |
+| ecc-crm/backend/conversations.go:379 | `handleWhatsAppSend` | 0% |
+| ecc-crm/backend/conversations.go:420 | `handleWhatsAppSend` | 0% |
+| ecc-crm/backend/conversations.go:425 | `processWhatsApp` | 0% |
+| ecc-crm/backend/conversations.go:478 | `whatsAppTime` | 0% |
+| ecc-crm/backend/data_tools.go:69 | `validateIPAllowlist` | 0% |
+| ecc-crm/backend/data_tools.go:248 | `handleDuplicates` | 0% |
+| ecc-crm/backend/data_tools.go:268 | `handleDuplicates` | 0% |
+| ecc-crm/backend/data_tools.go:273 | `handleMergeContacts` | 0% |
+| ecc-crm/backend/data_tools.go:347 | `handleMergeContacts` | 0% |
+| ecc-crm/backend/data_tools.go:460 | `pdfExport` | 0% |
+| ecc-crm/backend/deals.go:46 | `findContactByID` | 0% |
+| ecc-crm/backend/deals.go:92 | `listDeals` | 0% |
+| ecc-crm/backend/deals.go:121 | `listDeals` | 0% |
+| ecc-crm/backend/deals.go:127 | `getDeal` | 0% |
+| ecc-crm/backend/deals.go:142 | `getDeal` | 0% |
+| ecc-crm/backend/deals.go:148 | `createDeal` | 0% |
+| ecc-crm/backend/deals.go:201 | `createDeal` | 0% |
+| ecc-crm/backend/deals.go:207 | `updateDeal` | 0% |
+| ecc-crm/backend/deals.go:285 | `updateDeal` | 0% |
+| ecc-crm/backend/deals.go:291 | `updateDealStage` | 0% |
+| ecc-crm/backend/deals.go:329 | `updateDealStage` | 0% |
+| ecc-crm/backend/deals.go:335 | `deleteDeal` | 0% |
+| ecc-crm/backend/deals.go:366 | `deleteDeal` | 0% |
+| ecc-crm/backend/document_files.go:35 | `visibleDocument` | 0% |
+| ecc-crm/backend/document_files.go:41 | `handleFileVersions` | 0% |
+| ecc-crm/backend/document_files.go:54 | `handleFileVersions` | 0% |
+| ecc-crm/backend/documents.go:94 | `listDocumentsHandler` | 0% |
+| ecc-crm/backend/documents.go:125 | `listDocumentsHandler` | 0% |
+| ecc-crm/backend/documents.go:131 | `getDocumentHandler` | 0% |
+| ecc-crm/backend/documents.go:144 | `getDocumentHandler` | 0% |
+| ecc-crm/backend/documents.go:150 | `createDocumentHandler` | 0% |
+| ecc-crm/backend/documents.go:212 | `createDocumentHandler` | 0% |
+| ecc-crm/backend/documents.go:218 | `updateDocumentHandler` | 0% |
+| ecc-crm/backend/documents.go:278 | `updateDocumentHandler` | 0% |
+| ecc-crm/backend/documents.go:335 | `deleteDocumentHandler` | 0% |
+| ecc-crm/backend/documents.go:357 | `deleteDocumentHandler` | 0% |
+| ecc-crm/backend/everyday_work.go:40 | `saveWorkflowValue` | 0% |
+| ecc-crm/backend/everyday_work.go:48 | `workflowRevision` | 0% |
+| ecc-crm/backend/everyday_work.go:60 | `writableWorkflowRecord` | 0% |
+| ecc-crm/backend/everyday_work.go:73 | `accessibleMessage` | 0% |
+| ecc-crm/backend/everyday_work.go:96 | `handleMessageHandling` | 0% |
+| ecc-crm/backend/everyday_work.go:169 | `handlePortalReply` | 0% |
+| ecc-crm/backend/everyday_work.go:199 | `canonicalProfile` | 0% |
+| ecc-crm/backend/everyday_work.go:240 | `handleClientProfile` | 0% |
+| ecc-crm/backend/everyday_work.go:340 | `handleFinanceCapabilities` | 0% |
+| ecc-crm/backend/everyday_work.go:399 | `contactAllowed` | 0% |
+| ecc-crm/backend/everyday_work.go:421 | `consultationData` | 0% |
+| ecc-crm/backend/everyday_work.go:431 | `handleConsultation` | 0% |
+| ecc-crm/backend/everyday_work.go:529 | `consultationText` | 0% |
+| ecc-crm/backend/everyday_work.go:532 | `calendarEscape` | 0% |
+| ecc-crm/backend/everyday_work.go:535 | `consultationCalendar` | 0% |
+| ecc-crm/backend/everyday_work.go:556 | `handleConsultationICS` | 0% |
+| ecc-crm/backend/everyday_work.go:572 | `portalAdviser` | 0% |
+| ecc-crm/backend/everyday_work.go:583 | `handleWorkOutcomes` | 0% |
+| ecc-crm/backend/everyday_work.go:622 | `portalClientTask` | 0% |
+| ecc-crm/backend/everyday_work.go:629 | `handleClientTask` | 0% |
+| ecc-crm/backend/everyday_work.go:666 | `generateConsultationReminders` | 0% |
+| ecc-crm/backend/expansion_workers.go:16 | `startExpansionWorkers` | 0% |
+| ecc-crm/backend/finance.go:50 | `isValidPaymentMilestone` | 0% |
+| ecc-crm/backend/finance.go:102 | `listInvoicesHandler` | 0% |
+| ecc-crm/backend/finance.go:134 | `listInvoicesHandler` | 0% |
+| ecc-crm/backend/finance.go:140 | `getInvoiceHandler` | 0% |
+| ecc-crm/backend/finance.go:153 | `getInvoiceHandler` | 0% |
+| ecc-crm/backend/finance.go:159 | `createInvoiceHandler` | 0% |
+| ecc-crm/backend/finance.go:233 | `createInvoiceHandler` | 0% |
+| ecc-crm/backend/finance.go:239 | `updateInvoiceHandler` | 0% |
+| ecc-crm/backend/finance.go:311 | `updateInvoiceHandler` | 0% |
+| ecc-crm/backend/finance.go:317 | `requestRefundHandler` | 0% |
+| ecc-crm/backend/finance.go:366 | `requestRefundHandler` | 0% |
+| ecc-crm/backend/finance.go:372 | `deleteInvoiceHandler` | 0% |
+| ecc-crm/backend/finance.go:400 | `deleteInvoiceHandler` | 0% |
+| ecc-crm/backend/finance.go:408 | `listPaymentsHandler` | 0% |
+| ecc-crm/backend/finance.go:430 | `listPaymentsHandler` | 0% |
+| ecc-crm/backend/followups.go:312 | `listFollowupRules` | 0% |
+| ecc-crm/backend/followups.go:335 | `listFollowupRules` | 0% |
+| ecc-crm/backend/followups.go:341 | `refreshFollowupPreview` | 0% |
+| ecc-crm/backend/followups.go:375 | `refreshFollowupPreview` | 0% |
+| ecc-crm/backend/followups.go:506 | `caseStageHistory` | 0% |
+| ecc-crm/backend/followups.go:528 | `caseStageHistory` | 0% |
+| ecc-crm/backend/followups.go:534 | `studentApplicationHistory` | 0% |
+| ecc-crm/backend/followups.go:563 | `studentApplicationHistory` | 0% |
+| ecc-crm/backend/identity_providers.go:83 | `finishIdentity` | 0% |
+| ecc-crm/backend/identity_providers.go:193 | `CreateSession` | 0% |
+| ecc-crm/backend/identity_providers.go:229 | `DeleteSession` | 0% |
+| ecc-crm/backend/identity_providers.go:233 | `GetSession` | 0% |
+| ecc-crm/backend/identity_providers.go:284 | `handleSAML` | 0% |
+| ecc-crm/backend/integration_health.go:108 | `testSMTPConnection` | 0% |
+| ecc-crm/backend/leads.go:93 | `listLeadsHandler` | 0% |
+| ecc-crm/backend/leads.go:119 | `listLeadsHandler` | 0% |
+| ecc-crm/backend/leads.go:125 | `getLeadHandler` | 0% |
+| ecc-crm/backend/leads.go:135 | `getLeadHandler` | 0% |
+| ecc-crm/backend/mailbox_sync.go:19 | `graphToken` | 0% |
+| ecc-crm/backend/mailbox_sync.go:61 | `setSyncStatus` | 0% |
+| ecc-crm/backend/mailbox_sync.go:64 | `handleMailboxStatus` | 0% |
+| ecc-crm/backend/mailbox_sync.go:82 | `syncMailbox` | 0% |
+| ecc-crm/backend/main.go:18 | `main` | 0% |
+| ecc-crm/backend/main.go:282 | `isAllowedStaticFile` | 0% |
+| ecc-crm/backend/operations.go:22 | `WriteHeader` | 0% |
+| ecc-crm/backend/operations.go:28 | `Write` | 0% |
+| ecc-crm/backend/operations.go:34 | `observeHTTP` | 0% |
+| ecc-crm/backend/operations.go:50 | `handleMetrics` | 0% |
+| ecc-crm/backend/partners.go:38 | `isValidPartnerType` | 0% |
+| ecc-crm/backend/partners.go:78 | `listPartnersHandler` | 0% |
+| ecc-crm/backend/partners.go:111 | `listPartnersHandler` | 0% |
+| ecc-crm/backend/partners.go:117 | `getPartnerHandler` | 0% |
+| ecc-crm/backend/partners.go:130 | `getPartnerHandler` | 0% |
+| ecc-crm/backend/partners.go:136 | `createPartnerHandler` | 0% |
+| ecc-crm/backend/partners.go:190 | `createPartnerHandler` | 0% |
+| ecc-crm/backend/partners.go:196 | `updatePartnerHandler` | 0% |
+| ecc-crm/backend/partners.go:250 | `updatePartnerHandler` | 0% |
+| ecc-crm/backend/partners.go:256 | `deletePartnerHandler` | 0% |
+| ecc-crm/backend/partners.go:278 | `deletePartnerHandler` | 0% |
+| ecc-crm/backend/portal.go:92 | `handlePortalInvites` | 0% |
+| ecc-crm/backend/portal.go:181 | `portalCases` | 0% |
+| ecc-crm/backend/portal.go:198 | `portalDocument` | 0% |
+| ecc-crm/backend/portal.go:203 | `portalInvoice` | 0% |
+| ecc-crm/backend/portal.go:215 | `portalInvoice` | 0% |
+| ecc-crm/backend/portal.go:300 | `portalStaffRequest` | 0% |
+| ecc-crm/backend/portal.go:332 | `handlePortalDownload` | 0% |
+| ecc-crm/backend/portal.go:341 | `handlePortalDownload` | 0% |
+| ecc-crm/backend/portal.go:346 | `handlePortalInvoice` | 0% |
+| ecc-crm/backend/portal.go:363 | `handlePortalInvoice` | 0% |
+| ecc-crm/backend/portal.go:368 | `handlePortalLogout` | 0% |
+| ecc-crm/backend/portal.go:379 | `portalNotify` | 0% |
+| ecc-crm/backend/productivity_templates.go:18 | `builtinFollowupTemplates` | 0% |
+| ecc-crm/backend/productivity_templates.go:30 | `handleFollowupTemplates` | 0% |
+| ecc-crm/backend/productivity_templates.go:60 | `handleSaveFollowupTemplate` | 0% |
+| ecc-crm/backend/productivity_templates.go:86 | `handleDeleteFollowupTemplate` | 0% |
+| ecc-crm/backend/productivity_templates.go:103 | `handleLeadConversionPreview` | 0% |
+| ecc-crm/backend/productivity_templates.go:126 | `recordVersion` | 0% |
+| ecc-crm/backend/record_photos.go:100 | `recordPhotoScope` | 0% |
+| ecc-crm/backend/schools.go:57 | `listSchoolsHandler` | 0% |
+| ecc-crm/backend/schools.go:83 | `listSchoolsHandler` | 0% |
+| ecc-crm/backend/schools.go:89 | `getSchoolHandler` | 0% |
+| ecc-crm/backend/schools.go:101 | `getSchoolHandler` | 0% |
+| ecc-crm/backend/session_security.go:253 | `handleRevokeSession` | 0% |
+| ecc-crm/backend/session_security.go:618 | `consumeAuthToken` | 0% |
+| ecc-crm/backend/session_security.go:664 | `initializePersistentSecret` | 0% |
+| ecc-crm/backend/staff_options.go:64 | `handleStaffDirectory` | 0% |
+| ecc-crm/backend/store.go:952 | `listSchools` | 0% |
+| ecc-crm/backend/store.go:960 | `listSchools` | 0% |
+| ecc-crm/backend/store.go:977 | `getSchoolByID` | 0% |
+| ecc-crm/backend/store.go:985 | `listStudents` | 0% |
+| ecc-crm/backend/store.go:993 | `listStudents` | 0% |
+| ecc-crm/backend/store.go:999 | `getStudentByID` | 0% |
+| ecc-crm/backend/store.go:1010 | `getStudentByID` | 0% |
+| ecc-crm/backend/store.go:1018 | `listAgents` | 0% |
+| ecc-crm/backend/store.go:1026 | `listAgents` | 0% |
+| ecc-crm/backend/store.go:1043 | `getAgentByID` | 0% |
+| ecc-crm/backend/store.go:1051 | `listLeads` | 0% |
+| ecc-crm/backend/store.go:1059 | `listLeads` | 0% |
+| ecc-crm/backend/store.go:1084 | `listCases` | 0% |
+| ecc-crm/backend/store.go:1092 | `listCases` | 0% |
+| ecc-crm/backend/store.go:1098 | `getCaseByID` | 0% |
+| ecc-crm/backend/store.go:1109 | `getCaseByID` | 0% |
+| ecc-crm/backend/store.go:1117 | `listDocuments` | 0% |
+| ecc-crm/backend/store.go:1125 | `listDocuments` | 0% |
+| ecc-crm/backend/store.go:1131 | `getDocumentByID` | 0% |
+| ecc-crm/backend/store.go:1142 | `getDocumentByID` | 0% |
+| ecc-crm/backend/store.go:1150 | `listInvoices` | 0% |
+| ecc-crm/backend/store.go:1158 | `listInvoices` | 0% |
+| ecc-crm/backend/store.go:1164 | `getInvoiceByID` | 0% |
+| ecc-crm/backend/store.go:1175 | `getInvoiceByID` | 0% |
+| ecc-crm/backend/store.go:1183 | `listPayments` | 0% |
+| ecc-crm/backend/store.go:1191 | `listPayments` | 0% |
+| ecc-crm/backend/store.go:1199 | `listPartners` | 0% |
+| ecc-crm/backend/store.go:1207 | `listPartners` | 0% |
+| ecc-crm/backend/store.go:1213 | `getPartnerByID` | 0% |
+| ecc-crm/backend/store.go:1224 | `getPartnerByID` | 0% |
+| ecc-crm/backend/students.go:27 | `linkedStudentCounts` | 0% |
+| ecc-crm/backend/students.go:40 | `linkedStudentCounts` | 0% |
+| ecc-crm/backend/students.go:128 | `listStudentsHandler` | 0% |
+| ecc-crm/backend/students.go:159 | `listStudentsHandler` | 0% |
+| ecc-crm/backend/students.go:165 | `getStudentHandler` | 0% |
+| ecc-crm/backend/students.go:175 | `getStudentHandler` | 0% |
+| ecc-crm/backend/students.go:249 | `updateStudentHandler` | 0% |
+| ecc-crm/backend/students.go:311 | `updateStudentHandler` | 0% |
+| ecc-crm/backend/students.go:317 | `deleteStudentHandler` | 0% |
+| ecc-crm/backend/students.go:339 | `deleteStudentHandler` | 0% |
+| ecc-crm/backend/tasks.go:61 | `listTasks` | 0% |
+| ecc-crm/backend/tasks.go:87 | `listTasks` | 0% |
+| ecc-crm/backend/tasks.go:93 | `getTask` | 0% |
+| ecc-crm/backend/tasks.go:106 | `getTask` | 0% |
+| ecc-crm/backend/workflows.go:82 | `recomputeInvoiceLocked` | 0% |
+| ecc-crm/backend/workflows.go:87 | `handleWorkflowOverview` | 0% |
+| ecc-crm/backend/workflows.go:106 | `handleWorkflowOverview` | 0% |
+| ecc-crm/backend/workflows.go:695 | `handleInvoiceEmail` | 0% |
+| ecc-crm/backend/workflows.go:723 | `handleInvoiceEmail` | 0% |
+| ecc-crm/backend/workflows.go:728 | `handleSaveView` | 0% |
+| ecc-crm/backend/workflows.go:751 | `handleDeleteView` | 0% |
+| ecc-crm/backend/workflows.go:857 | `sortRecords` | 0% |
+| ecc-crm/backend/identity_providers.go:236 | `samlConfiguration` | 6.7% |
+| ecc-crm/backend/assistant_chat.go:80 | `aiThreadMessages` | 21.7% |
+| ecc-crm/backend/portal.go:304 | `handlePortalUpload` | 25% |
+| ecc-crm/backend/session_security.go:100 | `ipAllowed` | 25% |
+| ecc-crm/backend/escalations.go:21 | `handleEscalationRules` | 26.7% |
+| ecc-crm/backend/http_security.go:18 | `protectHTTP` | 26.7% |
+| ecc-crm/backend/ai_knowledge.go:260 | `handleKnowledgeDelete` | 28.6% |
+| ecc-crm/backend/portal.go:265 | `handlePortalMessage` | 31.8% |
+| ecc-crm/backend/ai_tools.go:295 | `aiReferencesAllowed` | 35.7% |
+| ecc-crm/backend/ai_actions.go:64 | `prepareAIAction` | 36.4% |
+| ecc-crm/backend/ai_knowledge.go:124 | `handleKnowledgeSave` | 36.5% |
+| ecc-crm/backend/ai_insights.go:73 | `workspaceInsights` | 37.3% |
+| ecc-crm/backend/conversations.go:500 | `deliveryExplanation` | 42.9% |
+| ecc-crm/backend/workspace.go:29 | `requestActor` | 42.9% |
+| ecc-crm/backend/workflows.go:119 | `handleWorkflow` | 43.6% |
+| ecc-crm/backend/portal.go:27 | `handlePortalInvite` | 43.9% |
+| ecc-crm/backend/ai_knowledge.go:357 | `extractKnowledgeText` | 44.7% |
+| ecc-crm/backend/identity_providers.go:61 | `finishIdentity` | 46.7% |
+| ecc-crm/backend/trash_retention.go:28 | `handleTrashPolicy` | 47.1% |
+| ecc-crm/backend/ai_actions.go:210 | `handleAIConfirm` | 48.2% |
+| ecc-crm/backend/integration_health.go:152 | `probeIntegration` | 48.4% |
+| ecc-crm/backend/ai_store.go:178 | `aiOrigin` | 50% |
+| ecc-crm/backend/documents.go:48 | `validateDocument` | 50% |
+| ecc-crm/backend/followups.go:456 | `deleteFollowupRule` | 50% |
+| ecc-crm/backend/portal.go:104 | `handlePortalRevoke` | 50% |
+| ecc-crm/backend/staff_options.go:8 | `handleStaffOptions` | 50% |
+| ecc-crm/backend/trash_retention.go:84 | `handleTrashPreview` | 50% |
+| ecc-crm/backend/runtime_store.go:75 | `workerRuntime` | 52.2% |
+| ecc-crm/backend/followups.go:429 | `editFollowupRule` | 52.6% |
+| ecc-crm/backend/ai_store.go:48 | `saveAISettings` | 52.9% |
+| ecc-crm/backend/database.go:237 | `readDatabase` | 53.3% |
+| ecc-crm/backend/stage_gates.go:232 | `handleGateApproval` | 53.3% |
+| ecc-crm/backend/ai_agent.go:167 | `run` | 53.6% |
+| ecc-crm/backend/communication.go:299 | `deliverMailOutbox` | 53.8% |
+| ecc-crm/backend/record_photos.go:240 | `handleRecordPhotoDelete` | 53.8% |
+| ecc-crm/backend/followups.go:57 | `validateFollowupRule` | 54.5% |
+| ecc-crm/backend/insights.go:13 | `sqlWorkspace` | 55.2% |
+| ecc-crm/backend/session_security.go:483 | `handleTwoFactor` | 55.2% |
+| ecc-crm/backend/auth.go:264 | `handleMe` | 55.6% |
+| ecc-crm/backend/everyday_work.go:27 | `workflowValue` | 55.6% |
+| ecc-crm/backend/expansion.go:284 | `handleTrash` | 55.6% |
+| ecc-crm/backend/operations.go:62 | `handleOperations` | 55.8% |
+| ecc-crm/backend/insights.go:60 | `sqlSummaryWorkspace` | 57.1% |
+| ecc-crm/backend/session_security.go:348 | `handleSecureRegister` | 57.5% |
+| ecc-crm/backend/assistant.go:227 | `handleProductivityBrief` | 58.1% |
+| ecc-crm/backend/followups.go:88 | `ruleAuditTouches` | 58.1% |
+| ecc-crm/backend/dashboard_overview.go:113 | `dashboardSnapshot` | 58.3% |
+| ecc-crm/backend/assignment_review.go:82 | `handleAssignmentMapping` | 58.5% |
+| ecc-crm/backend/control_center.go:420 | `handleRecordAccess` | 58.6% |
+| ecc-crm/backend/insights.go:94 | `sqlPriorityWorkspace` | 58.8% |
+| ecc-crm/backend/data_tools.go:352 | `handleBulkContacts` | 59% |
+| ecc-crm/backend/followups.go:274 | `saveFollowupRule` | 59.1% |
+| ecc-crm/backend/assistant.go:275 | `handleAssistantRequest` | 59.5% |
+| ecc-crm/backend/access.go:479 | `decodeRequest` | 60% |
+| ecc-crm/backend/administration.go:142 | `handleAdminRevokeSessions` | 60% |
+| ecc-crm/backend/assistant.go:383 | `handleAssistantJob` | 60% |
+| ecc-crm/backend/daily_work.go:587 | `dailyOrigin` | 60% |
+| ecc-crm/backend/finance.go:60 | `validateInvoice` | 60% |
+| ecc-crm/backend/followups.go:246 | `previewFollowupRule` | 60% |
+| ecc-crm/backend/main.go:293 | `serveFileIfExists` | 60% |
+| ecc-crm/backend/session_security.go:47 | `passwordError` | 60% |
+| ecc-crm/backend/followups.go:381 | `toggleFollowupRule` | 60.7% |
+| ecc-crm/backend/deals.go:53 | `validateDeal` | 61.1% |
+| ecc-crm/backend/partners.go:47 | `validatePartner` | 61.1% |
+| ecc-crm/backend/record_photos.go:186 | `handleRecordPhotoUpload` | 61.1% |
+| ecc-crm/backend/communication.go:159 | `smtpConfiguration` | 61.5% |
+| ecc-crm/backend/administration.go:211 | `issueAdminAccessLink` | 61.9% |
+| ecc-crm/backend/record_photos.go:30 | `handleQRDecode` | 62.2% |
+| ecc-crm/backend/stage_gates.go:122 | `handleGatePolicies` | 62.5% |
+| ecc-crm/backend/daily_work.go:500 | `formQuality` | 62.9% |
+| ecc-crm/backend/stage_gates.go:202 | `handleCaseGates` | 63.2% |
+| ecc-crm/backend/expansion.go:316 | `handleRestoreTrash` | 63.6% |
+| ecc-crm/backend/integration_health.go:201 | `handleIntegrationTest` | 64% |
+| ecc-crm/backend/lead_intake.go:12 | `handleLeadCVReview` | 64.2% |
+| ecc-crm/backend/followups.go:164 | `followupMatches` | 64.3% |
+| ecc-crm/backend/trash_retention.go:96 | `purgeTrash` | 64.3% |
+| ecc-crm/backend/conversations.go:223 | `handleInboundEmail` | 64.7% |
+| ecc-crm/backend/record_photos.go:115 | `handleRecordQR` | 65.5% |
+| ecc-crm/backend/validation.go:35 | `normalizeRequest` | 65.7% |
+| ecc-crm/backend/activities.go:103 | `createActivity` | 65.8% |
+| ecc-crm/backend/reconciliation.go:179 | `handleReconciliationMatch` | 66% |
+| ecc-crm/backend/ai_insights.go:31 | `validInsightsTopic` | 66.7% |
+| ecc-crm/backend/ai_insights.go:243 | `insightAnswer` | 66.7% |
+| ecc-crm/backend/ai_knowledge.go:351 | `Write` | 66.7% |
+| ecc-crm/backend/ai_tools.go:245 | `aiPlural` | 66.7% |
+| ecc-crm/backend/automation.go:28 | `notificationWithDB` | 66.7% |
+| ecc-crm/backend/consolidated_workspace.go:13 | `consolidatedReadSnapshot` | 66.7% |
+| ecc-crm/backend/control_center.go:189 | `handleCreateWorkspaceUser` | 66.7% |
+| ecc-crm/backend/database.go:336 | `saveDatabase` | 66.7% |
+| ecc-crm/backend/insights.go:193 | `withinCohort` | 66.7% |
+| ecc-crm/backend/lead_work.go:150 | `handleLeadTimeline` | 66.7% |
+| ecc-crm/backend/payment_gateway.go:52 | `currencyMinor` | 66.7% |
+| ecc-crm/backend/record_productivity.go:721 | `actionOrDefault` | 66.7% |
+| ecc-crm/backend/automation.go:34 | `generateReminders` | 67.3% |
+| ecc-crm/backend/communication.go:182 | `deliverSMTPAttachment` | 67.3% |
+| ecc-crm/backend/payment_gateway.go:127 | `handleStripeWebhook` | 67.3% |
+| ecc-crm/backend/control_center.go:464 | `setRecordScope` | 67.7% |
+| ecc-crm/backend/stage_gates.go:176 | `loadGateCase` | 68.4% |
+| ecc-crm/backend/access.go:422 | `migrateWorkspace` | 68.8% |
+| ecc-crm/backend/receipt_controls.go:108 | `handleInvoiceFinanceStatus` | 68.8% |
+| ecc-crm/backend/record_productivity.go:161 | `handleClientHistory` | 68.9% |
+| ecc-crm/backend/ai_knowledge.go:70 | `saveKnowledge` | 69.2% |
+| ecc-crm/backend/communication.go:120 | `queueChangeEvents` | 69.2% |
+| ecc-crm/backend/portal.go:220 | `handlePortalMe` | 69.2% |
+| ecc-crm/backend/record_photos.go:78 | `recordPhotoScope` | 69.2% |
+| ecc-crm/backend/workspace.go:97 | `handleAudit` | 69.7% |
+| ecc-crm/backend/document_files.go:97 | `handleFileUpload` | 69.8% |
+| ecc-crm/backend/database.go:180 | `readIdentityDatabase` | 70% |
+| ecc-crm/backend/assistant_chat.go:215 | `handleAssistantChat` | 70.2% |
+| ecc-crm/backend/conversations.go:146 | `attachInbound` | 70.5% |
+| ecc-crm/backend/identity_providers.go:88 | `handleSSOCallback` | 70.5% |
+| ecc-crm/backend/database.go:284 | `syncRows` | 70.6% |
+| ecc-crm/backend/portal.go:121 | `handlePortalExchange` | 70.6% |
+| ecc-crm/backend/assistant.go:424 | `processAssistantJobs` | 70.7% |
+| ecc-crm/backend/database.go:19 | `openDatabase` | 70.7% |
+| ecc-crm/backend/handoffs.go:87 | `handleProposeHandoff` | 70.9% |
+| ecc-crm/backend/ai_agent.go:262 | `aiStillAuthorized` | 71.4% |
+| ecc-crm/backend/ai_store.go:112 | `reserveAI` | 71.4% |
+| ecc-crm/backend/cases.go:349 | `updateCaseStageHandler` | 71.4% |
+| ecc-crm/backend/communication.go:253 | `wrapBase64` | 71.4% |
+| ecc-crm/backend/runtime_store.go:127 | `claimDelivery` | 71.4% |
+| ecc-crm/backend/tasks.go:34 | `validateTask` | 71.4% |
+| ecc-crm/backend/bulk_revision.go:17 | `handleBulkDeals` | 71.7% |
+| ecc-crm/backend/handoffs.go:156 | `handleResolveHandoff` | 71.7% |
+| ecc-crm/backend/requirement_plan.go:124 | `handleRequirementPlan` | 72.2% |
+| ecc-crm/backend/lead_work.go:107 | `handleLeadTimelineLog` | 72.4% |
+| ecc-crm/backend/everyday_work.go:323 | `financeCapability` | 72.7% |
+| ecc-crm/backend/followups.go:230 | `decodeFollowupRule` | 72.7% |
+| ecc-crm/backend/session_security.go:83 | `requestIP` | 72.7% |
+| ecc-crm/backend/session_security.go:409 | `encryptSecret` | 72.7% |
+| ecc-crm/backend/trash_retention.go:189 | `collectPurgedFiles` | 72.7% |
+| ecc-crm/backend/payment_gateway.go:302 | `stripeGet` | 73.3% |
+| ecc-crm/backend/team_chat.go:15 | `handleChatPeople` | 73.3% |
+| ecc-crm/backend/contacts.go:135 | `createContact` | 73.7% |
+| ecc-crm/backend/daily_work.go:42 | `dailySnapshot` | 73.7% |
+| ecc-crm/backend/workspace.go:155 | `handleSearch` | 73.7% |
+| ecc-crm/backend/productivity_documents.go:29 | `dailyDocumentItems` | 73.9% |
+| ecc-crm/backend/daily_work.go:68 | `sqlDailyWorkload` | 74.1% |
+| ecc-crm/backend/database.go:351 | `saveDatabaseTx` | 74.4% |
+| ecc-crm/backend/access.go:72 | `scopeOf` | 75% |
+| ecc-crm/backend/application_readiness.go:57 | `handleApplicationReadiness` | 75% |
+| ecc-crm/backend/assistant.go:83 | `productivityWorkload` | 75% |
+| ecc-crm/backend/cases.go:57 | `isValidCasePriority` | 75% |
+| ecc-crm/backend/cases.go:67 | `findCaseByID` | 75% |
+| ecc-crm/backend/communication.go:25 | `queueMail` | 75% |
+| ecc-crm/backend/communication.go:415 | `integrationStatusFor` | 75% |
+| ecc-crm/backend/conversations.go:29 | `conversationContact` | 75% |
+| ecc-crm/backend/dashboard_overview.go:212 | `containsStage` | 75% |
+| ecc-crm/backend/deals.go:27 | `isValidDealStage` | 75% |
+| ecc-crm/backend/deals.go:37 | `findContactByID` | 75% |
+| ecc-crm/backend/document_files.go:180 | `handleFileDownload` | 75% |
+| ecc-crm/backend/documents.go:38 | `isValidDocumentStatus` | 75% |
+| ecc-crm/backend/documents.go:284 | `updateDocumentStatusHandler` | 75% |
+| ecc-crm/backend/lead_intake.go:212 | `handleLeadCVUpload` | 75% |
+| ecc-crm/backend/leads.go:39 | `isValidLeadSource` | 75% |
+| ecc-crm/backend/leads.go:48 | `isValidLeadStatus` | 75% |
+| ecc-crm/backend/schools.go:23 | `isValidContractStatus` | 75% |
+| ecc-crm/backend/session_security.go:32 | `randomSecret` | 75% |
+| ecc-crm/backend/session_security.go:573 | `handleForgotPassword` | 75% |
+| ecc-crm/backend/store.go:342 | `newID` | 75% |
+| ecc-crm/backend/students.go:46 | `isValidAcceptanceStatus` | 75% |
+| ecc-crm/backend/students.go:55 | `isValidVisaStatus` | 75% |
+| ecc-crm/backend/students.go:64 | `isValidInvoiceStatus` | 75% |
+| ecc-crm/backend/trash_retention.go:119 | `handleTrashPurge` | 75% |
+| ecc-crm/backend/workflows.go:111 | `visibleRecordID` | 75% |
+| ecc-crm/backend/team_chat.go:54 | `handleTeamChat` | 75.4% |
+| ecc-crm/backend/productivity_reminders.go:63 | `remindProductivity` | 75.5% |
+| ecc-crm/backend/application_blockers.go:44 | `handleApplicationBlockers` | 75.6% |
+| ecc-crm/backend/integration_health.go:38 | `integrationConfiguration` | 75.7% |
+| ecc-crm/backend/ai_agent.go:43 | `requestAI` | 76.1% |
+| ecc-crm/backend/lead_intake.go:88 | `convertLead` | 76.1% |
+| ecc-crm/backend/tasks.go:112 | `createTask` | 76.2% |
+| ecc-crm/backend/escalations.go:110 | `runEscalations` | 76.4% |
+| ecc-crm/backend/agents.go:217 | `deleteAgentHandler` | 76.5% |
+| ecc-crm/backend/stage_gates.go:277 | `handleCaseTransition` | 76.5% |
+| ecc-crm/backend/finance.go:436 | `createPaymentHandler` | 76.7% |
+| ecc-crm/backend/ai_knowledge.go:36 | `loadKnowledge` | 76.9% |
+| ecc-crm/backend/deal_board.go:28 | `dealBoardPredicate` | 76.9% |
+| ecc-crm/backend/workspace.go:204 | `csvValue` | 76.9% |
+| ecc-crm/backend/session_security.go:294 | `handleSecureLogin` | 77.1% |
+| ecc-crm/backend/leads.go:57 | `validateLead` | 77.3% |
+| ecc-crm/backend/payment_gateway.go:58 | `handleCheckout` | 77.3% |
+| ecc-crm/backend/session_security.go:210 | `handleSessionRefresh` | 77.3% |
+| ecc-crm/backend/main.go:202 | `mountStatic` | 77.4% |
+| ecc-crm/backend/targeted_writes.go:13 | `targetedContactWrite` | 77.6% |
+| ecc-crm/backend/assistant.go:59 | `dateDistance` | 77.8% |
+| ecc-crm/backend/conversations.go:125 | `findInboundContact` | 77.8% |
+| ecc-crm/backend/data_tools.go:94 | `handleInvoicePDF` | 77.8% |
+| ecc-crm/backend/documents.go:363 | `documentTransition` | 77.8% |
+| ecc-crm/backend/receipt_controls.go:48 | `handleReceiptReview` | 77.8% |
+| ecc-crm/backend/session_security.go:69 | `validOrigin` | 77.8% |
+| ecc-crm/backend/conversations.go:43 | `handleConversations` | 78% |
+| ecc-crm/backend/control_center.go:253 | `handleManageWorkspaceUser` | 78.2% |
+| ecc-crm/backend/reconciliation.go:149 | `handleReconciliationImport` | 78.3% |
+| ecc-crm/backend/usability.go:23 | `handleUsabilityFeedback` | 78.4% |
+| ecc-crm/backend/database.go:159 | `readRows` | 78.6% |
+| ecc-crm/backend/handoffs.go:31 | `handoffHistory` | 78.6% |
+| ecc-crm/backend/insights.go:132 | `decodeScopedRows` | 78.6% |
+| ecc-crm/backend/schools.go:32 | `validateSchool` | 78.6% |
+| ecc-crm/backend/reconciliation.go:104 | `parseStatement` | 78.8% |
+| ecc-crm/backend/dashboard_overview.go:131 | `dashboardWorkspace` | 78.9% |
+| ecc-crm/backend/followups.go:480 | `listFollowupHistory` | 78.9% |
+| ecc-crm/backend/payment_gateway.go:26 | `stripeRequest` | 78.9% |
+| ecc-crm/backend/followups.go:614 | `runFollowupRules` | 79% |
+| ecc-crm/backend/expansion.go:175 | `sqlRecord` | 79.2% |
+| ecc-crm/backend/control_center.go:342 | `handleAcceptInvite` | 79.3% |
+| ecc-crm/backend/workspace.go:228 | `handleExport` | 79.4% |
+| ecc-crm/backend/data_tools.go:124 | `handleContactImport` | 79.5% |
+| ecc-crm/backend/access.go:196 | `recordOrg` | 80% |
+| ecc-crm/backend/ai_store.go:76 | `migrateAI` | 80% |
+| ecc-crm/backend/assistant.go:74 | `compactWorkText` | 80% |
+| ecc-crm/backend/assistant.go:403 | `generateAssistant` | 80% |
+| ecc-crm/backend/auth.go:166 | `revokeToken` | 80% |
+| ecc-crm/backend/automation.go:302 | `allowedPush` | 80% |
+| ecc-crm/backend/daily_work.go:557 | `handleFormQuality` | 80% |
+| ecc-crm/backend/document_files.go:59 | `validatedFile` | 80% |
+| ecc-crm/backend/exception_queues.go:8 | `overdueHandoffPriorities` | 80% |
+| ecc-crm/backend/identity_providers.go:276 | `handleSAMLStart` | 80% |
+| ecc-crm/backend/insights.go:177 | `parseReportDates` | 80% |
+| ecc-crm/backend/insights.go:379 | `trackCaseStages` | 80% |
+| ecc-crm/backend/portal.go:171 | `portalCases` | 80% |
+| ecc-crm/backend/record_productivity.go:57 | `handleSaveWorkPlan` | 80% |
+| ecc-crm/backend/repository.go:156 | `handleRepositoryRead` | 80% |
+| ecc-crm/backend/session_security.go:453 | `validTOTP` | 80% |
+| ecc-crm/backend/stage_gates.go:57 | `gateFingerprint` | 80% |
+| ecc-crm/backend/students.go:73 | `validateStudent` | 80% |
+| ecc-crm/backend/workflows.go:60 | `recomputeInvoiceLocked` | 80% |
+| ecc-crm/backend/productivity_reporting.go:34 | `operationalReport` | 80.2% |
+| ecc-crm/backend/document_review.go:5 | `handleDocumentReview` | 80.6% |
+| ecc-crm/backend/handoffs.go:51 | `handleApplicationHandoffs` | 80.8% |
+| ecc-crm/backend/tasks.go:204 | `updateTaskStatus` | 81% |
+| ecc-crm/backend/control_center.go:13 | `registerWorkspaceRoutes` | 81.2% |
+| ecc-crm/backend/finance.go:546 | `deletePaymentHandler` | 81.2% |
+| ecc-crm/backend/leads.go:210 | `updateLeadHandler` | 81.2% |
+| ecc-crm/backend/lead_work.go:309 | `remindLeadFollowUps` | 81.5% |
+| ecc-crm/backend/payment_gateway.go:207 | `handleGatewayRefund` | 81.5% |
+| ecc-crm/backend/session_security.go:623 | `handleResetPassword` | 81.5% |
+| ecc-crm/backend/administration.go:170 | `handleAdminInvitation` | 81.8% |
+| ecc-crm/backend/auth.go:99 | `authMiddleware` | 81.8% |
+| ecc-crm/backend/dashboard_overview.go:232 | `workspaceTeams` | 81.8% |
+| ecc-crm/backend/trash_retention.go:52 | `trashPreview` | 81.8% |
+| ecc-crm/backend/tasks.go:153 | `updateTask` | 82.4% |
+| ecc-crm/backend/stage_gates.go:63 | `evaluateStageGate` | 82.5% |
+| ecc-crm/backend/control_center.go:48 | `queryObjects` | 82.6% |
+| ecc-crm/backend/operational_attention.go:13 | `handleOperationalAttention` | 82.6% |
+| ecc-crm/backend/repository.go:269 | `saveStoreDeltaTx` | 82.8% |
+| ecc-crm/backend/activities.go:52 | `normalizeDate` | 83.3% |
+| ecc-crm/backend/ai_insights.go:62 | `insight` | 83.3% |
+| ecc-crm/backend/communication.go:147 | `organizationToday` | 83.3% |
+| ecc-crm/backend/dashboard_overview.go:185 | `mergePaymentBucket` | 83.3% |
+| ecc-crm/backend/dashboard_overview.go:196 | `sortedPaymentBuckets` | 83.3% |
+| ecc-crm/backend/expansion.go:214 | `handleSQLRecord` | 83.3% |
+| ecc-crm/backend/followups.go:153 | `dayAge` | 83.3% |
+| ecc-crm/backend/followups.go:700 | `organizationTodayForOrg` | 83.3% |
+| ecc-crm/backend/repository.go:82 | `repositoryPredicate` | 83.3% |
+| ecc-crm/backend/runtime_store.go:105 | `todayForOrgDB` | 83.3% |
+| ecc-crm/backend/session_security.go:56 | `appURL` | 83.3% |
+| ecc-crm/backend/session_security.go:139 | `authorizeWorkspaceRequest` | 83.3% |
+| ecc-crm/backend/session_security.go:185 | `cookieIdentity` | 83.3% |
+| ecc-crm/backend/store.go:966 | `getSchoolByID` | 83.3% |
+| ecc-crm/backend/store.go:1032 | `getAgentByID` | 83.3% |
+| ecc-crm/backend/workspace.go:62 | `recordLabel` | 83.3% |
+| ecc-crm/backend/database.go:83 | `loadStore` | 83.6% |
+| ecc-crm/backend/assistant.go:104 | `collectWorkload` | 83.7% |
+| ecc-crm/backend/insights.go:268 | `handleInsights` | 83.8% |
+| ecc-crm/backend/expansion.go:238 | `archiveDeleted` | 83.9% |
+| ecc-crm/backend/handoff_reminders.go:9 | `remindPendingHandoffs` | 84.1% |
+| ecc-crm/backend/reconciliation.go:43 | `handleReconciliation` | 84.1% |
+| ecc-crm/backend/application_blockers.go:19 | `readCaseRows` | 84.2% |
+| ecc-crm/backend/requirement_plan.go:36 | `requirementPeople` | 84.2% |
+| ecc-crm/backend/activities.go:185 | `deleteActivity` | 84.6% |
+| ecc-crm/backend/expansion.go:297 | `replaceSavedRecord` | 84.6% |
+| ecc-crm/backend/identity_providers.go:44 | `handleSSOStart` | 84.6% |
+| ecc-crm/backend/schools.go:203 | `deleteSchoolHandler` | 84.6% |
+| ecc-crm/backend/session_security.go:462 | `verifySecondFactor` | 84.6% |
+| ecc-crm/backend/tasks.go:239 | `deleteTask` | 84.6% |
+| ecc-crm/backend/consolidated_workspace.go:29 | `handleCommunicationWorkspace` | 84.7% |
+| ecc-crm/backend/followups.go:720 | `handleDataQuality` | 84.7% |
+| ecc-crm/backend/cases.go:83 | `validateCase` | 85% |
+| ecc-crm/backend/access.go:207 | `scopedHandler` | 85.1% |
+| ecc-crm/backend/record_productivity.go:569 | `handleWorkspacePriorities` | 85.3% |
+| ecc-crm/backend/cases.go:259 | `updateCaseHandler` | 85.5% |
+| ecc-crm/backend/administration.go:124 | `invalidateUserSessions` | 85.7% |
+| ecc-crm/backend/agents.go:170 | `updateAgentHandler` | 85.7% |
+| ecc-crm/backend/conversations.go:486 | `subjectCaseReference` | 85.7% |
+| ecc-crm/backend/expansion.go:47 | `migrateExpansion` | 85.7% |
+| ecc-crm/backend/leads.go:141 | `createLeadHandler` | 85.7% |
+| ecc-crm/backend/persistence.go:110 | `persistMutations` | 85.7% |
+| ecc-crm/backend/portal.go:147 | `portalMiddleware` | 85.7% |
+| ecc-crm/backend/portal.go:186 | `portalDocument` | 85.7% |
+| ecc-crm/backend/productivity_documents.go:6 | `documentIssue` | 85.7% |
+| ecc-crm/backend/receipt_controls.go:28 | `pendingInvoiceReceiptCounts` | 85.7% |
+| ecc-crm/backend/students.go:181 | `createStudentHandler` | 85.7% |
+| ecc-crm/backend/schools.go:155 | `updateSchoolHandler` | 86.2% |
+| ecc-crm/backend/validation.go:89 | `scopeForRelatedRequest` | 86.4% |
+| ecc-crm/backend/auth.go:447 | `handleLogoutAll` | 86.7% |
+| ecc-crm/backend/integration_health.go:87 | `handleIntegrationHealth` | 86.7% |
+| ecc-crm/backend/ai_tools.go:262 | `aiAttentionScoped` | 87% |
+| ecc-crm/backend/consolidated_workspace.go:118 | `handleWorkspaceCalendar` | 87% |
+| ecc-crm/backend/identity_providers.go:153 | `handleSSOFinish` | 87% |
+| ecc-crm/backend/lead_work.go:237 | `trackLeadTimeline` | 87% |
+| ecc-crm/backend/ai_tools.go:91 | `sanitizedRecord` | 87.5% |
+| ecc-crm/backend/identity_providers.go:32 | `oidcConfiguration` | 87.5% |
+| ecc-crm/backend/lead_work.go:33 | `leadDuplicateCandidates` | 87.5% |
+| ecc-crm/backend/record_photos.go:159 | `handleRecordPhoto` | 87.5% |
+| ecc-crm/backend/stage_gates.go:27 | `gatePolicy` | 87.5% |
+| ecc-crm/backend/workspace.go:324 | `auditScope` | 87.5% |
+| ecc-crm/backend/deal_board.go:61 | `boardTotals` | 87.7% |
+| ecc-crm/backend/contacts.go:25 | `validateContact` | 88% |
+| ecc-crm/backend/consolidated_workspace.go:222 | `handleReferralDirectory` | 88.1% |
+| ecc-crm/backend/contacts.go:188 | `updateContact` | 88.2% |
+| ecc-crm/backend/expansion.go:98 | `withRecordVersions` | 88.2% |
+| ecc-crm/backend/staff_options.go:37 | `normalizeStaffAssignment` | 88.2% |
+| ecc-crm/backend/trash_retention.go:152 | `processTrashRetention` | 88.5% |
+| ecc-crm/backend/administration.go:67 | `handleSystemAdministration` | 88.9% |
+| ecc-crm/backend/agents.go:123 | `createAgentHandler` | 88.9% |
+| ecc-crm/backend/ai_agent.go:102 | `aiText` | 88.9% |
+| ecc-crm/backend/ai_store.go:141 | `finish` | 88.9% |
+| ecc-crm/backend/assistant_chat.go:200 | `validateChatMessages` | 88.9% |
+| ecc-crm/backend/expansion.go:126 | `checkRecordVersion` | 88.9% |
+| ecc-crm/backend/expansion.go:367 | `validRestoredRelations` | 88.9% |
+| ecc-crm/backend/leads.go:281 | `deleteLeadHandler` | 88.9% |
+| ecc-crm/backend/schools.go:107 | `createSchoolHandler` | 88.9% |
+| ecc-crm/backend/productivity_reminders.go:22 | `documentResponsible` | 89.3% |
+| ecc-crm/backend/repository.go:118 | `enrichRepositoryRecords` | 89.3% |
+| ecc-crm/backend/stage_gates.go:374 | `enforceApplicationGates` | 89.3% |
+| ecc-crm/backend/application_readiness.go:40 | `submissionTarget` | 90% |
+| ecc-crm/backend/record_productivity.go:29 | `handleWorkPlan` | 90% |
+| ecc-crm/backend/session_security.go:425 | `decryptSecret` | 90% |
+| ecc-crm/backend/store.go:350 | `parseLimitOffset` | 90% |
+| ecc-crm/backend/assignment_review.go:22 | `handleAssignmentReview` | 90.7% |
+| ecc-crm/backend/ai_actions.go:37 | `aiEditableFields` | 90.9% |
+| ecc-crm/backend/ai_actions.go:194 | `loadAIAction` | 90.9% |
+| ecc-crm/backend/productivity_reminders.go:5 | `responsibleRecipient` | 90.9% |
+| ecc-crm/backend/session_security.go:439 | `totpCode` | 90.9% |
+| ecc-crm/backend/dashboard_overview.go:249 | `handleDashboardOverview` | 91.6% |
+| ecc-crm/backend/access.go:93 | `mergeRecords` | 91.7% |
+| ecc-crm/backend/activities.go:31 | `validateActivity` | 91.7% |
+| ecc-crm/backend/expansion.go:384 | `committedUser` | 91.7% |
+| ecc-crm/backend/followups.go:569 | `applicationActionQueue` | 91.7% |
+| ecc-crm/backend/main.go:251 | `findProjectRoot` | 91.7% |
+| ecc-crm/backend/payment_gateway.go:93 | `stripeSignatureValid` | 91.7% |
+| ecc-crm/backend/portal.go:12 | `registerPortalRoutes` | 91.7% |
+| ecc-crm/backend/reports.go:42 | `handleReports` | 92% |
+| ecc-crm/backend/lead_pipeline.go:22 | `leadPipelineMetrics` | 92.1% |
+| ecc-crm/backend/contacts.go:247 | `deleteContact` | 92.6% |
+| ecc-crm/backend/data_tools.go:420 | `xlsxExport` | 93.1% |
+| ecc-crm/backend/workflows.go:764 | `applyComputedData` | 93.2% |
+| ecc-crm/backend/daily_work.go:109 | `handleMyWork` | 93.6% |
+| ecc-crm/backend/daily_work.go:407 | `handleStudentJourney` | 94.1% |
+| ecc-crm/backend/insights.go:199 | `cohortMetrics` | 94.2% |
+| ecc-crm/backend/access.go:515 | `danglingDeletedRelations` | 95.2% |
+| ecc-crm/backend/requirement_plan.go:64 | `documentChecklist` | 95.3% |
+| ecc-crm/backend/runtime_store.go:139 | `cloneStoreValue` | 96.2% |
+| ecc-crm/backend/access.go:368 | `normalizeWorkspaceData` | 97.4% |
+| ecc-crm/backend/daily_overview.go:11 | `dailyOverview` | 98.2% |
+| ecc-crm/backend/record_audit.go:8 | `extendedRecordAudit` | 98.3% |
+| ecc-crm/backend/access.go:44 | `storeDB` | 100% |
+| ecc-crm/backend/access.go:50 | `currentUser` | 100% |
+| ecc-crm/backend/access.go:54 | `metadata` | 100% |
+| ecc-crm/backend/access.go:58 | `validRole` | 100% |
+| ecc-crm/backend/access.go:61 | `isAdmin` | 100% |
+| ecc-crm/backend/access.go:62 | `isManager` | 100% |
+| ecc-crm/backend/access.go:63 | `canRead` | 100% |
+| ecc-crm/backend/access.go:69 | `canWrite` | 100% |
+| ecc-crm/backend/access.go:79 | `idOf` | 100% |
+| ecc-crm/backend/access.go:84 | `visibleRecords` | 100% |
+| ecc-crm/backend/access.go:127 | `projectedStore` | 100% |
+| ecc-crm/backend/access.go:171 | `mergeStores` | 100% |
+| ecc-crm/backend/access.go:187 | `cloneStore` | 100% |
+| ecc-crm/backend/access.go:191 | `cloneStore` | 100% |
+| ecc-crm/backend/access.go:363 | `scopeSQL` | 100% |
+| ecc-crm/backend/access.go:472 | `requireAdmin` | 100% |
+| ecc-crm/backend/access.go:489 | `newRecordScope` | 100% |
+| ecc-crm/backend/activities.go:21 | `isValidActivityKind` | 100% |
+| ecc-crm/backend/activities.go:63 | `listActivities` | 100% |
+| ecc-crm/backend/activities.go:97 | `listActivities` | 100% |
+| ecc-crm/backend/activities.go:179 | `createActivity` | 100% |
+| ecc-crm/backend/activities.go:207 | `deleteActivity` | 100% |
+| ecc-crm/backend/administration.go:12 | `registerAdministrationRoutes` | 100% |
+| ecc-crm/backend/administration.go:37 | `userAccessVersion` | 100% |
+| ecc-crm/backend/administration.go:41 | `checkUserAccessVersion` | 100% |
+| ecc-crm/backend/administration.go:49 | `adminTarget` | 100% |
+| ecc-crm/backend/administration.go:118 | `handleSystemAdministration` | 100% |
+| ecc-crm/backend/administration.go:158 | `handleAdminRevokeSessions` | 100% |
+| ecc-crm/backend/administration.go:164 | `pendingUserInvitation` | 100% |
+| ecc-crm/backend/administration.go:187 | `handleAdminInvitation` | 100% |
+| ecc-crm/backend/administration.go:193 | `handleAdminPasswordReset` | 100% |
+| ecc-crm/backend/administration.go:205 | `handleAdminPasswordReset` | 100% |
+| ecc-crm/backend/agents.go:23 | `isValidAgentContractStatus` | 100% |
+| ecc-crm/backend/agents.go:32 | `isValidAgentStatus` | 100% |
+| ecc-crm/backend/agents.go:41 | `validateAgent` | 100% |
+| ecc-crm/backend/agents.go:164 | `createAgentHandler` | 100% |
+| ecc-crm/backend/agents.go:211 | `updateAgentHandler` | 100% |
+| ecc-crm/backend/agents.go:247 | `deleteAgentHandler` | 100% |
+| ecc-crm/backend/ai_actions.go:32 | `aiUpdate` | 100% |
+| ecc-crm/backend/ai_advice.go:107 | `aiAttentionReferences` | 100% |
+| ecc-crm/backend/ai_agent.go:117 | `aiFunction` | 100% |
+| ecc-crm/backend/ai_agent.go:124 | `aiString` | 100% |
+| ecc-crm/backend/ai_agent.go:127 | `agentTools` | 100% |
+| ecc-crm/backend/ai_agent.go:157 | `addSource` | 100% |
+| ecc-crm/backend/ai_agent.go:254 | `aiSourceIDs` | 100% |
+| ecc-crm/backend/ai_knowledge.go:55 | `knowledgeChunks` | 100% |
+| ecc-crm/backend/ai_knowledge.go:116 | `handleKnowledgeRead` | 100% |
+| ecc-crm/backend/ai_store.go:37 | `defaultAISettings` | 100% |
+| ecc-crm/backend/ai_store.go:40 | `loadAISettings` | 100% |
+| ecc-crm/backend/ai_store.go:72 | `finiteNonnegative` | 100% |
+| ecc-crm/backend/ai_store.go:174 | `independentAI` | 100% |
+| ecc-crm/backend/ai_store.go:185 | `aiUserRequest` | 100% |
+| ecc-crm/backend/ai_tools.go:12 | `aiRecordURL` | 100% |
+| ecc-crm/backend/ai_tools.go:19 | `recordReference` | 100% |
+| ecc-crm/backend/ai_tools.go:258 | `aiAttention` | 100% |
+| ecc-crm/backend/assignment_review.go:163 | `recordMap` | 100% |
+| ecc-crm/backend/assistant.go:20 | `registerAssistantRoutes` | 100% |
+| ecc-crm/backend/assistant.go:28 | `assistantEnabled` | 100% |
+| ecc-crm/backend/assistant.go:32 | `handleAssistantSettings` | 100% |
+| ecc-crm/backend/assistant.go:91 | `workAssigned` | 100% |
+| ecc-crm/backend/assistant.go:269 | `handleProductivityBrief` | 100% |
+| ecc-crm/backend/assistant.go:378 | `handleAssistantRequest` | 100% |
+| ecc-crm/backend/assistant.go:398 | `handleAssistantJob` | 100% |
+| ecc-crm/backend/assistant.go:514 | `documentNeedsReview` | 100% |
+| ecc-crm/backend/assistant_chat.go:35 | `registerAIFirstRoutes` | 100% |
+| ecc-crm/backend/auth.go:74 | `writeJSON` | 100% |
+| ecc-crm/backend/auth.go:81 | `writeError` | 100% |
+| ecc-crm/backend/auth.go:85 | `issueToken` | 100% |
+| ecc-crm/backend/auth.go:278 | `handleMe` | 100% |
+| ecc-crm/backend/auth.go:471 | `handleLogoutAll` | 100% |
+| ecc-crm/backend/automation.go:193 | `publicURL` | 100% |
+| ecc-crm/backend/bulk_revision.go:5 | `checkBulkRevision` | 100% |
+| ecc-crm/backend/cases.go:48 | `isValidCaseStage` | 100% |
+| ecc-crm/backend/cases.go:76 | `findCaseByID` | 100% |
+| ecc-crm/backend/cases.go:116 | `validateCase` | 100% |
+| ecc-crm/backend/cases.go:343 | `updateCaseHandler` | 100% |
+| ecc-crm/backend/cases.go:383 | `updateCaseStageHandler` | 100% |
+| ecc-crm/backend/communication.go:22 | `integrationStatus` | 100% |
+| ecc-crm/backend/consolidated_workspace.go:22 | `registerConsolidatedRoutes` | 100% |
+| ecc-crm/backend/contacts.go:67 | `validateContact` | 100% |
+| ecc-crm/backend/contacts.go:73 | `writeFieldErrors` | 100% |
+| ecc-crm/backend/contacts.go:182 | `createContact` | 100% |
+| ecc-crm/backend/contacts.go:241 | `updateContact` | 100% |
+| ecc-crm/backend/contacts.go:293 | `deleteContact` | 100% |
+| ecc-crm/backend/control_center.go:181 | `teamInOrganization` | 100% |
+| ecc-crm/backend/control_center.go:248 | `handleCreateWorkspaceUser` | 100% |
+| ecc-crm/backend/control_center.go:337 | `handleManageWorkspaceUser` | 100% |
+| ecc-crm/backend/control_center.go:381 | `handleAcceptInvite` | 100% |
+| ecc-crm/backend/control_center.go:459 | `handleRecordAccess` | 100% |
+| ecc-crm/backend/conversations.go:19 | `registerConversationRoutes` | 100% |
+| ecc-crm/backend/conversations.go:109 | `handleConversations` | 100% |
+| ecc-crm/backend/conversations.go:214 | `signedInbound` | 100% |
+| ecc-crm/backend/conversations.go:247 | `handleInboundEmail` | 100% |
+| ecc-crm/backend/daily_work.go:14 | `independentDailyRead` | 100% |
+| ecc-crm/backend/daily_work.go:18 | `registerDailyRoutes` | 100% |
+| ecc-crm/backend/daily_work.go:499 | `qualityKey` | 100% |
+| ecc-crm/backend/dashboard_overview.go:104 | `allows` | 100% |
+| ecc-crm/backend/dashboard_overview.go:163 | `resolveDashboardFilter` | 100% |
+| ecc-crm/backend/dashboard_overview.go:205 | `severityFor` | 100% |
+| ecc-crm/backend/dashboard_overview.go:221 | `teamName` | 100% |
+| ecc-crm/backend/data_tools.go:23 | `newPDF` | 100% |
+| ecc-crm/backend/data_tools.go:36 | `invoicePDF` | 100% |
+| ecc-crm/backend/data_tools.go:54 | `validCurrency` | 100% |
+| ecc-crm/backend/data_tools.go:62 | `currencyOf` | 100% |
+| ecc-crm/backend/data_tools.go:68 | `money` | 100% |
+| ecc-crm/backend/data_tools.go:86 | `registerDataRoutes` | 100% |
+| ecc-crm/backend/data_tools.go:119 | `handleInvoicePDF` | 100% |
+| ecc-crm/backend/data_tools.go:224 | `handleContactImport` | 100% |
+| ecc-crm/backend/data_tools.go:229 | `normalizePhone` | 100% |
+| ecc-crm/backend/data_tools.go:232 | `validPhone` | 100% |
+| ecc-crm/backend/data_tools.go:414 | `handleBulkContacts` | 100% |
+| ecc-crm/backend/data_tools.go:419 | `xmlText` | 100% |
+| ecc-crm/backend/data_tools.go:477 | `mustJSON` | 100% |
+| ecc-crm/backend/database.go:335 | `saveStore` | 100% |
+| ecc-crm/backend/deal_board.go:46 | `validBoardDates` | 100% |
+| ecc-crm/backend/deal_board.go:132 | `boardSnapshot` | 100% |
+| ecc-crm/backend/deals.go:86 | `validateDeal` | 100% |
+| ecc-crm/backend/document_files.go:17 | `registerDocumentRoutes` | 100% |
+| ecc-crm/backend/document_files.go:24 | `visibleDocument` | 100% |
+| ecc-crm/backend/document_files.go:40 | `uploadRoot` | 100% |
+| ecc-crm/backend/document_files.go:175 | `handleFileUpload` | 100% |
+| ecc-crm/backend/document_files.go:221 | `handleFileDownload` | 100% |
+| ecc-crm/backend/documents.go:88 | `validateDocument` | 100% |
+| ecc-crm/backend/documents.go:329 | `updateDocumentStatusHandler` | 100% |
+| ecc-crm/backend/escalations.go:266 | `fmtInt` | 100% |
+| ecc-crm/backend/everyday_work.go:12 | `registerEverydayRoutes` | 100% |
+| ecc-crm/backend/expansion.go:18 | `independentRead` | 100% |
+| ecc-crm/backend/expansion.go:25 | `registerExpansionRoutes` | 100% |
+| ecc-crm/backend/expansion.go:80 | `validEntity` | 100% |
+| ecc-crm/backend/expansion.go:88 | `versionOf` | 100% |
+| ecc-crm/backend/expansion.go:362 | `handleRestoreTrash` | 100% |
+| ecc-crm/backend/expansion_workers.go:11 | `httpRequestForWorker` | 100% |
+| ecc-crm/backend/finance.go:94 | `validateInvoice` | 100% |
+| ecc-crm/backend/finance.go:540 | `createPaymentHandler` | 100% |
+| ecc-crm/backend/finance.go:595 | `deletePaymentHandler` | 100% |
+| ecc-crm/backend/followups.go:42 | `registerFollowupRoutes` | 100% |
+| ecc-crm/backend/followups.go:81 | `newerDate` | 100% |
+| ecc-crm/backend/followups.go:212 | `followupPreviewToken` | 100% |
+| ecc-crm/backend/followups.go:225 | `followupPreviewFresh` | 100% |
+| ecc-crm/backend/followups.go:268 | `previewFollowupRule` | 100% |
+| ecc-crm/backend/followups.go:306 | `saveFollowupRule` | 100% |
+| ecc-crm/backend/followups.go:423 | `toggleFollowupRule` | 100% |
+| ecc-crm/backend/followups.go:606 | `applicationActionQueue` | 100% |
+| ecc-crm/backend/followups.go:904 | `handleDataQuality` | 100% |
+| ecc-crm/backend/handoffs.go:26 | `registerHandoffRoutes` | 100% |
+| ecc-crm/backend/identity_providers.go:21 | `registerIdentityRoutes` | 100% |
+| ecc-crm/backend/identity_providers.go:148 | `handleSSOCallback` | 100% |
+| ecc-crm/backend/identity_providers.go:185 | `handleSSOFinish` | 100% |
+| ecc-crm/backend/insights.go:122 | `readVisibleReportRows` | 100% |
+| ecc-crm/backend/insights.go:127 | `readScopedRows` | 100% |
+| ecc-crm/backend/lead_work.go:12 | `leadNextAction` | 100% |
+| ecc-crm/backend/lead_work.go:18 | `openLead` | 100% |
+| ecc-crm/backend/lead_work.go:21 | `phoneIdentity` | 100% |
+| ecc-crm/backend/lead_work.go:70 | `checkLeadDuplicates` | 100% |
+| ecc-crm/backend/lead_work.go:92 | `appendLeadEvent` | 100% |
+| ecc-crm/backend/lead_work.go:102 | `registerLeadWorkRoutes` | 100% |
+| ecc-crm/backend/lead_work.go:230 | `leadMap` | 100% |
+| ecc-crm/backend/leads.go:204 | `createLeadHandler` | 100% |
+| ecc-crm/backend/leads.go:275 | `updateLeadHandler` | 100% |
+| ecc-crm/backend/leads.go:310 | `deleteLeadHandler` | 100% |
+| ecc-crm/backend/mailbox_sync.go:57 | `validGraphLink` | 100% |
+| ecc-crm/backend/main.go:272 | `fileExists` | 100% |
+| ecc-crm/backend/main.go:277 | `hasStaticExtension` | 100% |
+| ecc-crm/backend/payment_gateway.go:18 | `registerPaymentRoutes` | 100% |
+| ecc-crm/backend/payment_gateway.go:88 | `handleCheckout` | 100% |
+| ecc-crm/backend/payment_gateway.go:202 | `handleStripeWebhook` | 100% |
+| ecc-crm/backend/payment_gateway.go:296 | `handleGatewayRefund` | 100% |
+| ecc-crm/backend/persistence.go:43 | `snapshot` | 100% |
+| ecc-crm/backend/persistence.go:55 | `snapshot` | 100% |
+| ecc-crm/backend/persistence.go:61 | `restoreStore` | 100% |
+| ecc-crm/backend/persistence.go:85 | `restoreStore` | 100% |
+| ecc-crm/backend/persistence.go:97 | `Header` | 100% |
+| ecc-crm/backend/persistence.go:98 | `WriteHeader` | 100% |
+| ecc-crm/backend/persistence.go:103 | `Write` | 100% |
+| ecc-crm/backend/portal.go:87 | `handlePortalInvite` | 100% |
+| ecc-crm/backend/portal.go:167 | `portalIdentity` | 100% |
+| ecc-crm/backend/portal.go:259 | `handlePortalMe` | 100% |
+| ecc-crm/backend/portal.go:264 | `fmtString` | 100% |
+| ecc-crm/backend/portal.go:295 | `handlePortalMessage` | 100% |
+| ecc-crm/backend/portal.go:327 | `handlePortalUpload` | 100% |
+| ecc-crm/backend/productivity_templates.go:25 | `registerFollowupTemplateRoutes` | 100% |
+| ecc-crm/backend/receipt_controls.go:9 | `receiptActive` | 100% |
+| ecc-crm/backend/receipt_controls.go:12 | `receiptRisk` | 100% |
+| ecc-crm/backend/receipt_controls.go:26 | `pendingReceipt` | 100% |
+| ecc-crm/backend/reconciliation.go:31 | `registerReconciliationRoutes` | 100% |
+| ecc-crm/backend/reconciliation.go:36 | `financeReviewer` | 100% |
+| ecc-crm/backend/record_photos.go:22 | `registerRecordPhotoRoutes` | 100% |
+| ecc-crm/backend/record_photos.go:106 | `auditRecordPhoto` | 100% |
+| ecc-crm/backend/record_photos.go:153 | `handleRecordQR` | 100% |
+| ecc-crm/backend/record_photos.go:180 | `handleRecordPhoto` | 100% |
+| ecc-crm/backend/record_photos.go:234 | `handleRecordPhotoUpload` | 100% |
+| ecc-crm/backend/record_photos.go:260 | `handleRecordPhotoDelete` | 100% |
+| ecc-crm/backend/record_productivity.go:12 | `registerProductivityRoutes` | 100% |
+| ecc-crm/backend/record_productivity.go:23 | `workPlanEntity` | 100% |
+| ecc-crm/backend/record_productivity.go:26 | `recordScopeMap` | 100% |
+| ecc-crm/backend/record_productivity.go:556 | `formatMoney` | 100% |
+| ecc-crm/backend/record_productivity.go:717 | `activeApplication` | 100% |
+| ecc-crm/backend/repository.go:16 | `repositoryRoute` | 100% |
+| ecc-crm/backend/repository.go:30 | `repositoryFields` | 100% |
+| ecc-crm/backend/repository.go:52 | `repositoryVisibility` | 100% |
+| ecc-crm/backend/repository.go:372 | `idOfValue` | 100% |
+| ecc-crm/backend/repository.go:374 | `withDBTransaction` | 100% |
+| ecc-crm/backend/runtime_store.go:37 | `runtimeForCall` | 100% |
+| ecc-crm/backend/runtime_store.go:52 | `publishLegacyRuntime` | 100% |
+| ecc-crm/backend/runtime_store.go:62 | `attachRuntime` | 100% |
+| ecc-crm/backend/runtime_store.go:68 | `lockSQLWriter` | 100% |
+| ecc-crm/backend/runtime_store.go:115 | `legacyRuntimeView` | 100% |
+| ecc-crm/backend/runtime_store.go:118 | `runtimeForReadCall` | 100% |
+| ecc-crm/backend/schools.go:149 | `createSchoolHandler` | 100% |
+| ecc-crm/backend/schools.go:197 | `updateSchoolHandler` | 100% |
+| ecc-crm/backend/schools.go:225 | `deleteSchoolHandler` | 100% |
+| ecc-crm/backend/session_security.go:31 | `utcNow` | 100% |
+| ecc-crm/backend/session_security.go:39 | `hashSecret` | 100% |
+| ecc-crm/backend/session_security.go:43 | `validEmail` | 100% |
+| ecc-crm/backend/session_security.go:66 | `secureCookie` | 100% |
+| ecc-crm/backend/session_security.go:123 | `findUserByID` | 100% |
+| ecc-crm/backend/session_security.go:134 | `findUserByID` | 100% |
+| ecc-crm/backend/session_security.go:155 | `setSessionCookies` | 100% |
+| ecc-crm/backend/session_security.go:165 | `clearSessionCookies` | 100% |
+| ecc-crm/backend/session_security.go:170 | `mintSession` | 100% |
+| ecc-crm/backend/session_security.go:238 | `handleSessionRefresh` | 100% |
+| ecc-crm/backend/session_security.go:243 | `handleSessionLogout` | 100% |
+| ecc-crm/backend/session_security.go:271 | `securityEvent` | 100% |
+| ecc-crm/backend/session_security.go:275 | `loginLocked` | 100% |
+| ecc-crm/backend/session_security.go:284 | `failedLogin` | 100% |
+| ecc-crm/backend/session_security.go:343 | `handleSecureLogin` | 100% |
+| ecc-crm/backend/session_security.go:404 | `handleSecureRegister` | 100% |
+| ecc-crm/backend/session_security.go:568 | `handleTwoFactor` | 100% |
+| ecc-crm/backend/session_security.go:602 | `handleForgotPassword` | 100% |
+| ecc-crm/backend/session_security.go:607 | `consumeAuthToken` | 100% |
+| ecc-crm/backend/session_security.go:659 | `handleResetPassword` | 100% |
+| ecc-crm/backend/stage_gates.go:13 | `Error` | 100% |
+| ecc-crm/backend/stage_gates.go:39 | `gateDocuments` | 100% |
+| ecc-crm/backend/stage_gates.go:228 | `gateEntry` | 100% |
+| ecc-crm/backend/stage_gates.go:335 | `applicationStageFollowUp` | 100% |
+| ecc-crm/backend/store.go:368 | `slicePage` | 100% |
+| ecc-crm/backend/store.go:379 | `seedData` | 100% |
+| ecc-crm/backend/store.go:479 | `seedDeals` | 100% |
+| ecc-crm/backend/store.go:527 | `seedActivities` | 100% |
+| ecc-crm/backend/store.go:575 | `seedTasks` | 100% |
+| ecc-crm/backend/store.go:587 | `seedSchools` | 100% |
+| ecc-crm/backend/store.go:645 | `seedStudents` | 100% |
+| ecc-crm/backend/store.go:687 | `seedAgents` | 100% |
+| ecc-crm/backend/store.go:721 | `seedLeads` | 100% |
+| ecc-crm/backend/store.go:777 | `seedCases` | 100% |
+| ecc-crm/backend/store.go:824 | `seedDocuments` | 100% |
+| ecc-crm/backend/store.go:861 | `seedFinance` | 100% |
+| ecc-crm/backend/store.go:896 | `seedPartners` | 100% |
+| ecc-crm/backend/store.go:937 | `findUserByEmail` | 100% |
+| ecc-crm/backend/store.go:944 | `findUserByEmail` | 100% |
+| ecc-crm/backend/store.go:1065 | `getLeadByID` | 100% |
+| ecc-crm/backend/store.go:1076 | `getLeadByID` | 100% |
+| ecc-crm/backend/students.go:122 | `validateStudent` | 100% |
+| ecc-crm/backend/students.go:243 | `createStudentHandler` | 100% |
+| ecc-crm/backend/tasks.go:25 | `isValidTaskStatus` | 100% |
+| ecc-crm/backend/tasks.go:55 | `validateTask` | 100% |
+| ecc-crm/backend/tasks.go:147 | `createTask` | 100% |
+| ecc-crm/backend/tasks.go:198 | `updateTask` | 100% |
+| ecc-crm/backend/tasks.go:233 | `updateTaskStatus` | 100% |
+| ecc-crm/backend/tasks.go:258 | `deleteTask` | 100% |
+| ecc-crm/backend/team_chat.go:10 | `registerTeamChatRoutes` | 100% |
+| ecc-crm/backend/trash_retention.go:18 | `loadTrashPolicy` | 100% |
+| ecc-crm/backend/validation.go:16 | `normalizedCountry` | 100% |
+| ecc-crm/backend/workflows.go:36 | `registerWorkflowRoutes` | 100% |
+| ecc-crm/backend/workflows.go:43 | `entry` | 100% |
+| ecc-crm/backend/workflows.go:52 | `invoiceTotal` | 100% |
+| ecc-crm/backend/workflows.go:690 | `handleWorkflow` | 100% |
+| ecc-crm/backend/workflows.go:852 | `applyComputedData` | 100% |
+| ecc-crm/backend/workspace.go:41 | `recordsOf` | 100% |
+| ecc-crm/backend/workspace.go:72 | `changesBetween` | 100% |
+| ecc-crm/backend/workspace.go:318 | `handleExport` | 100% |

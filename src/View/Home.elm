@@ -5,6 +5,7 @@ donut, win-rate gauge, pipeline-value bar chart, contribution
 heatmap, priority alerts, and board activity.
 -}
 
+import WorkDashboard
 import Dict
 import Html exposing (..)
 import Html.Attributes as Attr exposing (class)
@@ -283,8 +284,7 @@ homeView model user =
                     model.today ++ " · Review your priorities and choose the next action."
                 )
             ]
-        , Html.node "crm-my-work" [] []
-        , Html.node "crm-dashboard-overview" [] []
+        , Html.map WorkDashboardMsg (WorkDashboard.view model.workDashboard)
         , details [ class "home-secondary" ]
             [ summary [] [ text "Messages and overdue work summary" ]
             , Html.node "crm-work-outcomes" [ Attr.attribute "attention-only" "" ] []

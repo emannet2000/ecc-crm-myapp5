@@ -2,7 +2,7 @@
 // Session-only recovery for record modals. Consent, files and passwords are never restored.
 (function(){
  const attached=new WeakMap();let pending=null,candidate=null;
- const user=()=>document.querySelector('crm-nav-focus')?.getAttribute('user-id');
+ const user=()=>document.querySelector('#workspace-navigation')?.getAttribute('data-user-id');
  const controls=form=>[...form.querySelectorAll('input,textarea,select,crm-staff-picker,crm-record-picker')].filter(e=>!['password','file','checkbox','radio','hidden','submit'].includes(e.type));
  const snapshot=form=>controls(form).map((e,index)=>({key:e.id||e.name||e.tagName+':'+index,value:e.value??e.getAttribute('value')??''}));
  function attach(){if(!user())return;for(const form of document.querySelectorAll('.modal form,form.modal,[role=dialog] form')){

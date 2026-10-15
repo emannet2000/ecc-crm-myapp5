@@ -471,7 +471,7 @@ agentFormView af isEdit =
                 text ""
         , div [ class "form-grid" ]
             [ agentRichField af "name" "Agent full name" "text"
-            , agentRichField af "agentCode" "Agent ID code" "text"
+            , if isEdit then agentRichField af "agentCode" "Agent reference" "text" else p [ class "ecc-field__message" ] [ text "Agent reference is generated automatically when you save." ]
             , agentRichField af "countryCode" "Country code (e.g. IN)" "text"
             ]
         , agentStatusPills "Contract status"

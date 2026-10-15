@@ -31,19 +31,6 @@
     form.append(wrapper);
     return input;
   }
-  const settingsKey = () => {
-    const nav = document.querySelector('crm-nav-focus');
-    return 'ecc-optional-tools:' + (nav?.getAttribute('org-id') || '') + ':' + (nav?.getAttribute('user-id') || '');
-  };
-  function preferences() {
-    try { return JSON.parse(localStorage.getItem(settingsKey()) || '{}'); } catch { return {}; }
-  }
-  function savePreferences(value) {
-    try { localStorage.setItem(settingsKey(), JSON.stringify(value)); } catch {}
-    document.documentElement.dataset.showDeals = String(!!value.deals);
-    window.dispatchEvent(new CustomEvent('crm:optional-tools-changed'));
-  }
-
   function communication(main, options) {
     const {request, context, features, editable, manager, portalTools} = options;
     const section = node('section', null, {class: 'communication-workspace'});
@@ -348,5 +335,5 @@
     form.onsubmit = event => event.preventDefault();
     selection(); Promise.resolve().then(() => { if (card.isConnected) load(0); }); return card;
   }
-  window.CRMConsolidation = {communication, calendar, directory, bulkContacts, preferences, savePreferences};
+  window.CRMConsolidation = {communication, calendar, directory, bulkContacts};
 })();

@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"strings"
 	"time"
@@ -192,18 +191,15 @@ func (state *runtimeStore) createInvoiceHandler(w http.ResponseWriter, r *http.R
 	}
 
 	now := time.Now().Format("2006-01-02")
-	invNumber := strings.TrimSpace(req.InvoiceNumber)
-	if invNumber == "" {
-		invNumber = fmt.Sprintf("ECC-INV-%d-%05d",
-			time.Now().Year(), time.Now().UnixNano()%100000)
-	}
+	recordID := newID("inv")
+	invNumber := automaticReference(req.InvoiceNumber, "INV", recordID)
 
 	totalDue := req.TotalFee + req.GovernmentFee + req.SchoolPartnerFee
 	balance := totalDue - req.AmountReceived
 
 	newInv := Invoice{
 		RecordScope:           newRecordScope(r),
-		ID:                    newID("inv"),
+		ID:                    recordID,
 		InvoiceNumber:         invNumber,
 		ClientID:              clientID,
 		ClientName:            clientName,
@@ -281,7 +277,7 @@ func (state *runtimeStore) updateInvoiceHandler(w http.ResponseWriter, r *http.R
 	balance := totalDue - req.AmountReceived
 
 	updated := state.invoices[idx]
-	updated.InvoiceNumber = strings.TrimSpace(req.InvoiceNumber)
+	updated.InvoiceNumber = referenceOnUpdate(req.InvoiceNumber, updated.InvoiceNumber, "INV", updated.ID)
 	updated.ClientID = clientID
 	updated.ClientName = clientName
 	updated.CaseID = caseID

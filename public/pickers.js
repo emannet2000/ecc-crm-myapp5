@@ -58,7 +58,7 @@
 
 (()=>{
  let directory,directoryKey;
- const staff=()=>{const focus=document.querySelector('crm-nav-focus');const key=(focus?.getAttribute('org-id')||'')+':'+(focus?.getAttribute('user-id')||'');if(key!==directoryKey){directory=null;directoryKey=key}if(!directory)directory=fetch('/api/staff-directory',{credentials:'same-origin'}).then(async response=>{if(!response.ok)throw new Error('Staff directory unavailable');return (await response.json()).staff||[]}).catch(error=>{directory=null;throw error});return directory};
+ const staff=()=>{const focus=document.querySelector('#workspace-navigation');const key=(focus?.getAttribute('data-org-id')||'')+':'+(focus?.getAttribute('data-user-id')||'');if(key!==directoryKey){directory=null;directoryKey=key}if(!directory)directory=fetch('/api/staff-directory',{credentials:'same-origin'}).then(async response=>{if(!response.ok)throw new Error('Staff directory unavailable');return (await response.json()).staff||[]}).catch(error=>{directory=null;throw error});return directory};
  window.addEventListener('crm:record-changed',()=>{directory=null});
  class StaffName extends HTMLElement{
   static get observedAttributes(){return ['value']}

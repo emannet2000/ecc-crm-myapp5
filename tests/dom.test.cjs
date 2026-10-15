@@ -68,20 +68,6 @@ test('unconfigured email keeps history available without offering a send action'
  }finally{app.cleanup()}
 });
 
-test('empty daily work offers assignment recovery and workflow links',async()=>{
- const app=await mount('insights');try{
-  const work=app.document.createElement('crm-my-work');app.document.body.append(work);
-  await new Promise(resolve=>setTimeout(resolve,20));
-  const root=work.shadowRoot;
-  assert.equal(root.querySelector('a[href="/leads"]').textContent,'Create your first lead');
-  assert.ok(root.querySelector('a[href="/invoices"]'));
-  const all=[...root.querySelectorAll('button')].find(b=>b.textContent==='Check all accessible work');all.onclick();
-  await new Promise(resolve=>setTimeout(resolve,20));
-  assert.ok(app.calls.some(c=>c.url.startsWith('/api/my-work?')&&c.url.includes('scope=all')));
-  work.remove();
- }finally{app.cleanup()}
-});
-
 test('unconfigured AI work brief remains hidden without offering a provider action',async()=>{
  const app=await mount('insights');try{
   const wrapper=app.document.createElement('details');wrapper.setAttribute('data-ai-brief','');wrapper.hidden=true;

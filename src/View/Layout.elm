@@ -130,7 +130,7 @@ sidebar model user =
             else
                 "sidebar"
     in
-    aside [ class cls, Attr.id "workspace-navigation", Attr.attribute "aria-label" "Workspace navigation" ]
+    aside [ class cls, Attr.id "workspace-navigation", Attr.attribute "data-user-id" user.id, Attr.attribute "aria-label" "Workspace navigation" ]
         [ div [ class "sidebar__brand" ]
             [ img
                 [ class "sidebar-brand-logo"
@@ -146,42 +146,24 @@ sidebar model user =
                 [ class "sidebar__close", type_ "button", onClick ToggledSideBar, Attr.attribute "aria-label" "Close navigation" ]
                 [ text "×" ]
             ]
-        , Html.node "crm-nav-focus"
-            [ Attr.attribute "user-id" user.id
-            , Attr.attribute "default-focus" (if user.role == "admin" || user.role == "manager" then "management" else "adviser")
-            ] []
         , nav [ class "sidebar__nav", Attr.attribute "aria-label" "Daily work" ]
             [ navItem effectiveRoute Home "My work today" iconHome
             , navItem effectiveRoute Chat "Chat" iconChat
             , navItem effectiveRoute Leads "Leads" iconLead
-            , div [ class "nav-preset nav-preset--adviser" ]
-                [ navItem effectiveRoute Students "Students" iconStudent
-                , navItem effectiveRoute Cases "Applications" iconTasks
-                , navItem effectiveRoute Tasks "Tasks" iconTasks
-                ]
-            , div [ class "nav-preset nav-preset--finance" ]
-                [ navItem effectiveRoute Invoices "Invoices & payments" iconDeals
-                , navItem effectiveRoute Reports "Reports" iconReports
-                , navItem effectiveRoute Tasks "Tasks" iconTasks
-                ]
-            , div [ class "nav-preset nav-preset--management" ]
-                [ navItem effectiveRoute Reports "Reports" iconReports
-                , navItem effectiveRoute Cases "Applications" iconTasks
-                ]
+            , navItem effectiveRoute Students "Students" iconStudent
+            , navItem effectiveRoute Cases "Applications" iconTasks
+            , navItem effectiveRoute Tasks "Tasks" iconTasks
+            , navItem effectiveRoute Invoices "Invoices & payments" iconDeals
+            , navItem effectiveRoute Reports "Reports" iconReports
             , details [ class "navigation-more", Attr.property "open" (Json.Encode.bool (List.member effectiveRoute [ Contacts, Schools, Agents, Partners, Deals ])) ]
                 [ summary [] [ text "All modules" ]
                 , navItem effectiveRoute Contacts "Contacts" iconContacts
-                , navItem effectiveRoute Students "Students" iconStudent
-                , navItem effectiveRoute Cases "Applications" iconTasks
-                , navItem effectiveRoute Tasks "Tasks" iconTasks
                 , navItem effectiveRoute Schools "Schools" iconSchool
                 , a [ class "nav-item", Attr.href "/workspace?tab=directory" ]
                     [ span [ class "nav-item__icon" ] [ iconAgent ]
                     , span [ class "nav-item__label" ] [ text "Agents & partners" ]
                     ]
                 , navItem effectiveRoute Deals "Deals" iconDeals
-                , navItem effectiveRoute Invoices "Invoices & payments" iconDeals
-                , navItem effectiveRoute Reports "Reports" iconReports
                 ]
             ]
         , nav [ class "sidebar__nav sidebar__nav--bottom" ]

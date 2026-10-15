@@ -52,7 +52,12 @@ func invoicePDF(inv Invoice) ([]byte, error) {
 	return b.Bytes(), err
 }
 func validCurrency(s string) bool {
-	return strings.Contains("|USD|EUR|GBP|CAD|AUD|NZD|PHP|SGD|INR|JPY|CNY|AED|HKD|CHF|KRW|MYR|THB|IDR|", "|"+s+"|") && s != ""
+	switch s {
+	case "USD", "EUR", "GBP", "CAD", "AUD", "NZD", "PHP", "SGD", "INR", "JPY", "CNY", "AED", "HKD", "CHF", "KRW", "MYR", "THB", "IDR":
+		return true
+	default:
+		return false
+	}
 }
 func currencyOf(s string) string {
 	if s == "" {

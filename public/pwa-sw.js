@@ -1,6 +1,6 @@
 'use strict';
 
-const CACHE_NAME = 'ecc-crm-shell-v12';
+const CACHE_NAME = 'ecc-crm-shell-v15';
 importScripts('/public/offline-worker.js');
 const APP_SHELL = [
   '/',
@@ -12,7 +12,7 @@ const APP_SHELL = [
   '/public/mobile.css',
   '/public/center.css',
   '/public/components.css',
-  '/public/administration.css',
+  '/public/administration-elm.css',
   '/public/record-versions.js',
   '/public/draft-recovery.js',
   '/public/workspace-interactions.js',
@@ -21,13 +21,12 @@ const APP_SHELL = [
   '/public/consolidation.js', '/public/everyday.js',
   '/public/workspace-secondary.js',
   '/public/center.js',
-  '/public/dashboard-overview.js',
+  '/public/work-dashboard-elm.css',
   '/public/followup-templates.js',
   '/public/lead-work.js',
   '/public/assignment-review.js',
   '/public/components.js',
-  '/public/administration.js',
-  '/public/reports.js', '/public/team-chat.js', '/public/mobile.js',
+  '/public/record-browser-elm.js', '/public/record-browser-elm.css', '/public/management-report-elm.css', '/public/team-chat-elm.css', '/public/mobile.js',
   '/public/offline.js',
   '/public/offline-worker.js',
   '/public/usability.js',

@@ -13,7 +13,7 @@ unnecessarily.
 
 | Layer | Technology | Entry points |
 | --- | --- | --- |
-| Frontend | Elm 0.19.1, compiled with `--optimize` to `elm.js` | `src/Main.elm`, `build.sh` |
+| Frontend | Elm 0.19.2, compiled with `--optimize` to `elm.js` | `src/Main.elm`, `build.sh` |
 | Enhancement UI | ~25 vanilla-JS web components mounted into the Elm DOM | `public/*.js`, loaded in `index.html` |
 | API | Go 1.26, `net/http` `ServeMux`, single `package main` (~32k LOC, 117 files) | `golang-backend/main.go` |
 | Database | SQLite (WAL, `synchronous=FULL`, `MaxOpenConns(1)`), JSON-in-SQL rows | `golang-backend/database.go` |

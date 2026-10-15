@@ -1,10 +1,21 @@
-name: Verify CRM
+name: Verify and release CRM
 on:
   push:
   pull_request:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 21 * * *'
+permissions:
+  contents: read
+concurrency:
+  group: crm-verify-${{ github.ref }}-${{ github.event_name }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 jobs:
   verify:
     runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      ECC_FUZZ_TIME: ${{ github.event_name == 'schedule' && '60s' || '5s' }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v5
@@ -14,21 +25,74 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
-      - run: npm install -g elm@0.19.1-6
+      - run: npm install -g elm@0.19.2-0
       - run: npm install
-      - run: ./build.sh
-      - run: go test -race ./... && go vet ./...
-        working-directory: golang-backend
-      - run: python3 -m unittest discover -s tests -p '*_test.py'
-      - run: npm test
-      - run: npm run test:browser
-      - run: npm run test:improvements
-      - run: npm run test:reports
-      - run: npm run test:mobile-chat
-      - run: npm run test:workspace-next
-      - run: npm run test:live
+      - name: QR and PDF test dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y qrencode zbar-tools poppler-utils
+      - name: Build, unit, race, property and browser regressions
+        run: npm run test:all
       - uses: actions/upload-artifact@v4
-        if: failure()
+        if: always()
         with:
-          name: browser-artifacts
+          name: test-artifacts
           path: tests/artifacts
+          retention-days: 14
+  container:
+    needs: verify
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v'))
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      packages: write
+    outputs:
+      image: ${{ steps.image.outputs.name }}
+      digest: ${{ steps.publish.outputs.digest }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Container image name
+        id: image
+        env:
+          REPOSITORY: ${{ github.repository }}
+        run: echo "name=ghcr.io/${REPOSITORY,,}" >> "$GITHUB_OUTPUT"
+      - name: Authenticate to GitHub Container Registry
+        uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Container tags and labels
+        id: meta
+        uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
+        with:
+          images: ${{ steps.image.outputs.name }}
+          tags: |
+            type=sha,format=long
+            type=ref,event=branch
+            type=ref,event=tag
+      - name: Build release image
+        uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
+        with:
+          context: .
+          load: true
+          push: false
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+      - name: Verify packaged application
+        env:
+          CRM_IMAGE: ${{ steps.image.outputs.name }}:sha-${{ github.sha }}
+        run: ./scripts/test-container.sh
+      - name: Publish the tested image
+        id: publish
+        env:
+          CRM_IMAGE: ${{ steps.image.outputs.name }}:sha-${{ github.sha }}
+          CRM_TAGS: ${{ steps.meta.outputs.tags }}
+        run: |
+          while IFS= read -r image_tag; do
+            if [ -n "$image_tag" ]; then docker push "$image_tag"; fi
+          done <<< "$CRM_TAGS"
+          digest="$(docker inspect --format='{{index .RepoDigests 0}}' "$CRM_IMAGE")"
+          echo "digest=${digest#*@}" >> "$GITHUB_OUTPUT"
+          printf 'Published `%s`\n\nDigest: `%s`\n' "$CRM_IMAGE" "$digest" >> "$GITHUB_STEP_SUMMARY"

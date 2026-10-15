@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"strings"
 	"time"
@@ -213,15 +212,12 @@ func (state *runtimeStore) createCaseHandler(w http.ResponseWriter, r *http.Requ
 	}
 
 	now := time.Now().Format("2006-01-02")
-	caseNumber := strings.TrimSpace(req.CaseNumber)
-	if caseNumber == "" {
-		caseNumber = fmt.Sprintf("ECC-CASE-%d-%05d",
-			time.Now().Year(), time.Now().UnixNano()%100000)
-	}
+	recordID := newID("case")
+	caseNumber := automaticReference(req.CaseNumber, "CASE", recordID)
 
 	newCase := Case{
 		RecordScope:        newRecordScope(r),
-		ID:                 newID("case"),
+		ID:                 recordID,
 		CaseNumber:         caseNumber,
 		ClientID:           clientID,
 		ClientName:         clientName,
@@ -315,7 +311,7 @@ func (state *runtimeStore) updateCaseHandler(w http.ResponseWriter, r *http.Requ
 	}
 
 	updated := state.cases[idx]
-	updated.CaseNumber = strings.TrimSpace(req.CaseNumber)
+	updated.CaseNumber = referenceOnUpdate(req.CaseNumber, updated.CaseNumber, "CASE", updated.ID)
 	updated.ClientID = clientID
 	updated.ClientName = clientName
 	updated.ServiceCategory = strings.TrimSpace(req.ServiceCategory)

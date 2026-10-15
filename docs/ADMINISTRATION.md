@@ -19,6 +19,17 @@ specified team; organization visibility allows every user in that workspace.
 These are the four supported access levels, with a permission guide under
 **Access levels**. Custom roles and per-module permission overrides are not included.
 
+## Unsaved forms
+
+Administration is rendered by Elm. Switching sections, refreshing this screen,
+opening another account, creating a user, closing an edit, following a link or
+signing out prompts with **Save**, **Discard** and **Stay** when the form changed.
+Save continues only after the server accepts the change. Account-access changes
+still require their confirmation. Validation, network and stale-version failures
+keep entered values on the screen. Forms are held in memory; passwords are not
+written to browser storage. Closing or reloading the browser uses its native unsaved-change warning through
+a small port adapter; it does not use the Elm Save/Discard/Stay prompt.
+
 ## Manage accounts
 
 1. Under **Users**, choose **Add user**, enter their name and email, and select

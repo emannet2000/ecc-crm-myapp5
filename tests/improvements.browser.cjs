@@ -12,7 +12,7 @@ test('daily work, searchable relationships, draft recovery and staff retests on 
  const directory=fs.mkdtempSync(path.join(os.tmpdir(),'ecc-improvements-'));
  const probe=net.createServer();await new Promise(resolve=>probe.listen(0,'127.0.0.1',resolve));const port=probe.address().port;await new Promise(resolve=>probe.close(resolve));
  const base='http://127.0.0.1:'+port;
- const server=spawn(path.join(root,'build/ecc-crm'),[],{cwd:root,env:{...process.env,PORT:String(port),DATABASE_PATH:path.join(directory,'crm.sqlite3'),JWT_SECRET:'improvements-fixture-secret',APP_URL:base,ALLOW_SIGNUP:'false',SMTP_HOST:'',OPENAI_API_KEY:'',STRIPE_SECRET_KEY:'',WHATSAPP_ORG_ID:'',GRAPH_ORG_ID:''},stdio:'pipe'});
+ const server=spawn(path.join(root,'build/ecc-crm'),[],{cwd:root,env:{...process.env,SEED_DEMO_DATA:'true',PORT:String(port),DATABASE_PATH:path.join(directory,'crm.sqlite3'),JWT_SECRET:'improvements-fixture-secret',APP_URL:base,ALLOW_SIGNUP:'false',SMTP_HOST:'',OPENAI_API_KEY:'',STRIPE_SECRET_KEY:'',WHATSAPP_ORG_ID:'',GRAPH_ORG_ID:''},stdio:'pipe'});
  let log='',browser;server.stderr.on('data',data=>log+=data);const errors=[];
  try{
   for(let i=0;i<100;i++){try{if((await fetch(base+'/api/health')).ok)break}catch{}if(i===99)throw new Error(log);await new Promise(resolve=>setTimeout(resolve,100))}
@@ -27,7 +27,7 @@ test('daily work, searchable relationships, draft recovery and staff retests on 
    await page.waitForFunction((form,name,id)=>[...form.querySelector('[name="'+name+'"]').shadowRoot.querySelectorAll('.results button')].some(button=>button.textContent.includes(id)),{},form,name,id);
    await form.evaluate((form,{name,id})=>[...form.querySelector('[name="'+name+'"]').shadowRoot.querySelectorAll('.results button')].find(button=>button.textContent.includes(id)).click(),{name,id});
   };
-  await page.waitForFunction(()=>document.querySelector('crm-my-work')?.shadowRoot.textContent.includes('work items'));
+  await page.waitForFunction(()=>document.querySelector('.daily-work')?.textContent.includes('work items'));
   await page.waitForFunction(()=>[...document.querySelectorAll('.home-secondary > summary')].filter(summary=>!summary.textContent.includes('Recent workspace')).every(summary=>!summary.textContent.includes('Loading')&&summary.textContent.includes(' · ')));
   assert.ok(await page.$eval('.home-secondary',section=>!section.open));
   const totals=await api('/api/work-outcomes');
@@ -76,7 +76,7 @@ test('daily work, searchable relationships, draft recovery and staff retests on 
   await page.waitForFunction(()=>document.querySelector('crm-workspace').shadowRoot.querySelector('crm-usability').shadowRoot.textContent.includes('Observation saved'));
   const observations=(await api('/api/usability/feedback')).observations;const observation=JSON.parse(observations[0].data);assert.equal(observation.phase,'retest');assert.equal(observation.issueReference,'OBS-fixture');assert.equal(observation.device,'Phone / Chromium');
   // Browser timings are local evidence, separate from backend benchmark means.
-  await page.goto(base,{waitUntil:'domcontentloaded'});await page.waitForFunction(()=>document.querySelector('crm-my-work')?.shadowRoot.textContent.includes('work items'));
+  await page.goto(base,{waitUntil:'domcontentloaded'});await page.waitForFunction(()=>document.querySelector('.daily-work')?.textContent.includes('work items'));
   const timing=await page.evaluate(()=>({navigationToUsableWorkMs:performance.now(),resources:performance.getEntriesByType('resource').filter(entry=>entry.name.includes('/api/my-work')).map(entry=>({duration:entry.duration,transferSize:entry.transferSize,limit:new URL(entry.name).searchParams.get('limit')}))}));
   fs.mkdirSync(path.join(root,'tests/artifacts'),{recursive:true});fs.writeFileSync(path.join(root,'tests/artifacts/improvements-timing.json'),JSON.stringify(timing,null,2));await page.screenshot({path:path.join(root,'tests/artifacts/improvements-home-phone.png'),fullPage:true});
   assert.equal(timing.resources[0].limit,'10');console.log('Local browser timing:',JSON.stringify(timing));assert.deepEqual(errors,[]);

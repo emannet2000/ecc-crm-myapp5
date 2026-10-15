@@ -11,7 +11,7 @@ const root=path.join(__dirname,'..');
 test('live stage policies, audited override, unified timeline, escalation rules and progressive board',{timeout:180000},async()=>{
  const directory=fs.mkdtempSync(path.join(os.tmpdir(),'ecc-workflow-live-'));
  const probe=net.createServer();await new Promise(resolve=>probe.listen(0,'127.0.0.1',resolve));const port=probe.address().port;await new Promise(resolve=>probe.close(resolve));const base='http://localhost:'+port;
- const server=spawn(path.join(root,'build/ecc-crm'),[],{cwd:root,env:{...process.env,PORT:String(port),DATABASE_PATH:path.join(directory,'crm.sqlite3'),JWT_SECRET:'workflow-test-only',APP_URL:base,ALLOW_SIGNUP:'false',GRAPH_ORG_ID:'',WHATSAPP_ORG_ID:''},stdio:'pipe'});let output='';server.stderr.on('data',data=>output+=data);
+ const server=spawn(path.join(root,'build/ecc-crm'),[],{cwd:root,env:{...process.env,SEED_DEMO_DATA:'true',PORT:String(port),DATABASE_PATH:path.join(directory,'crm.sqlite3'),JWT_SECRET:'workflow-test-only',APP_URL:base,ALLOW_SIGNUP:'false',GRAPH_ORG_ID:'',WHATSAPP_ORG_ID:''},stdio:'pipe'});let output='';server.stderr.on('data',data=>output+=data);
  let browser;
  try{
   for(let i=0;i<100;i++){try{if((await fetch(base+'/api/health')).ok)break}catch{}await new Promise(resolve=>setTimeout(resolve,100));if(i===99)throw new Error('Server failed: '+output)}

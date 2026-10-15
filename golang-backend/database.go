@@ -129,7 +129,9 @@ func loadStore(path string) error {
 			restoreStore(saved)
 		} else if os.IsNotExist(readErr) {
 			restoreStore(diskStore{Users: map[string]storedUser{}})
-			seedData()
+			if os.Getenv("SEED_DEMO_DATA") == "true" {
+				seedData()
+			}
 		} else {
 			return readErr
 		}

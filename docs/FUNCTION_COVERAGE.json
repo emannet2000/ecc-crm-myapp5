@@ -1,0 +1,5543 @@
+{
+  "summary": {
+    "statement_coverage": 57.3,
+    "functions": 922,
+    "untouched_functions": 294,
+    "fully_statement_covered_functions": 271,
+    "partially_statement_covered_functions": 357
+  },
+  "functions": [
+    {
+      "file": "ecc-crm/backend/access.go",
+      "line": 44,
+      "name": "storeDB",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/access.go",
+      "line": 50,
+      "name": "currentUser",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/access.go",
+      "line": 54,
+      "name": "metadata",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/access.go",
+      "line": 58,
+      "name": "validRole",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/access.go",
+      "line": 61,
+      "name": "isAdmin",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/access.go",
+      "line": 62,
+      "name": "isManager",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/access.go",
+      "line": 63,
+      "name": "canRead",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/access.go",
+      "line": 69,
+      "name": "canWrite",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/access.go",
+      "line": 72,
+      "name": "scopeOf",
+      "statement_coverage": 75.0
+    },
+    {
+      "file": "ecc-crm/backend/access.go",
+      "line": 79,
+      "name": "idOf",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/access.go",
+      "line": 80,
+      "name": "withScope",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/access.go",
+      "line": 84,
+      "name": "visibleRecords",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/access.go",
+      "line": 93,
+      "name": "mergeRecords",
+      "statement_coverage": 91.7
+    },
+    {
+      "file": "ecc-crm/backend/access.go",
+      "line": 127,
+      "name": "projectedStore",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/access.go",
+      "line": 171,
+      "name": "mergeStores",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/access.go",
+      "line": 187,
+      "name": "cloneStore",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/access.go",
+      "line": 191,
+      "name": "cloneStore",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/access.go",
+      "line": 196,
+      "name": "recordOrg",
+      "statement_coverage": 80.0
+    },
+    {
+      "file": "ecc-crm/backend/access.go",
+      "line": 207,
+      "name": "scopedHandler",
+      "statement_coverage": 85.1
+    },
+    {
+      "file": "ecc-crm/backend/access.go",
+      "line": 363,
+      "name": "scopeSQL",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/access.go",
+      "line": 368,
+      "name": "normalizeWorkspaceData",
+      "statement_coverage": 97.4
+    },
+    {
+      "file": "ecc-crm/backend/access.go",
+      "line": 422,
+      "name": "migrateWorkspace",
+      "statement_coverage": 68.8
+    },
+    {
+      "file": "ecc-crm/backend/access.go",
+      "line": 472,
+      "name": "requireAdmin",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/access.go",
+      "line": 479,
+      "name": "decodeRequest",
+      "statement_coverage": 60.0
+    },
+    {
+      "file": "ecc-crm/backend/access.go",
+      "line": 487,
+      "name": "publicError",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/access.go",
+      "line": 489,
+      "name": "newRecordScope",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/access.go",
+      "line": 497,
+      "name": "computedOnly",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/access.go",
+      "line": 515,
+      "name": "danglingDeletedRelations",
+      "statement_coverage": 95.2
+    },
+    {
+      "file": "ecc-crm/backend/access.go",
+      "line": 549,
+      "name": "filterProjectedStatus",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/activities.go",
+      "line": 21,
+      "name": "isValidActivityKind",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/activities.go",
+      "line": 31,
+      "name": "validateActivity",
+      "statement_coverage": 91.7
+    },
+    {
+      "file": "ecc-crm/backend/activities.go",
+      "line": 52,
+      "name": "normalizeDate",
+      "statement_coverage": 83.3
+    },
+    {
+      "file": "ecc-crm/backend/activities.go",
+      "line": 63,
+      "name": "listActivities",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/activities.go",
+      "line": 97,
+      "name": "listActivities",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/activities.go",
+      "line": 103,
+      "name": "createActivity",
+      "statement_coverage": 65.8
+    },
+    {
+      "file": "ecc-crm/backend/activities.go",
+      "line": 179,
+      "name": "createActivity",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/activities.go",
+      "line": 185,
+      "name": "deleteActivity",
+      "statement_coverage": 84.6
+    },
+    {
+      "file": "ecc-crm/backend/activities.go",
+      "line": 207,
+      "name": "deleteActivity",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/administration.go",
+      "line": 12,
+      "name": "registerAdministrationRoutes",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/administration.go",
+      "line": 37,
+      "name": "userAccessVersion",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/administration.go",
+      "line": 41,
+      "name": "checkUserAccessVersion",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/administration.go",
+      "line": 49,
+      "name": "adminTarget",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/administration.go",
+      "line": 61,
+      "name": "adminTarget",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/administration.go",
+      "line": 67,
+      "name": "handleSystemAdministration",
+      "statement_coverage": 88.9
+    },
+    {
+      "file": "ecc-crm/backend/administration.go",
+      "line": 118,
+      "name": "handleSystemAdministration",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/administration.go",
+      "line": 124,
+      "name": "invalidateUserSessions",
+      "statement_coverage": 85.7
+    },
+    {
+      "file": "ecc-crm/backend/administration.go",
+      "line": 136,
+      "name": "invalidateUserSessions",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/administration.go",
+      "line": 142,
+      "name": "handleAdminRevokeSessions",
+      "statement_coverage": 60.0
+    },
+    {
+      "file": "ecc-crm/backend/administration.go",
+      "line": 158,
+      "name": "handleAdminRevokeSessions",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/administration.go",
+      "line": 164,
+      "name": "pendingUserInvitation",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/administration.go",
+      "line": 170,
+      "name": "handleAdminInvitation",
+      "statement_coverage": 81.8
+    },
+    {
+      "file": "ecc-crm/backend/administration.go",
+      "line": 187,
+      "name": "handleAdminInvitation",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/administration.go",
+      "line": 193,
+      "name": "handleAdminPasswordReset",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/administration.go",
+      "line": 205,
+      "name": "handleAdminPasswordReset",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/administration.go",
+      "line": 211,
+      "name": "issueAdminAccessLink",
+      "statement_coverage": 61.9
+    },
+    {
+      "file": "ecc-crm/backend/agents.go",
+      "line": 23,
+      "name": "isValidAgentContractStatus",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/agents.go",
+      "line": 32,
+      "name": "isValidAgentStatus",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/agents.go",
+      "line": 41,
+      "name": "validateAgent",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/agents.go",
+      "line": 73,
+      "name": "listAgentsHandler",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/agents.go",
+      "line": 99,
+      "name": "listAgentsHandler",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/agents.go",
+      "line": 105,
+      "name": "getAgentHandler",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/agents.go",
+      "line": 117,
+      "name": "getAgentHandler",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/agents.go",
+      "line": 123,
+      "name": "createAgentHandler",
+      "statement_coverage": 88.9
+    },
+    {
+      "file": "ecc-crm/backend/agents.go",
+      "line": 164,
+      "name": "createAgentHandler",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/agents.go",
+      "line": 170,
+      "name": "updateAgentHandler",
+      "statement_coverage": 85.7
+    },
+    {
+      "file": "ecc-crm/backend/agents.go",
+      "line": 211,
+      "name": "updateAgentHandler",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/agents.go",
+      "line": 217,
+      "name": "deleteAgentHandler",
+      "statement_coverage": 76.5
+    },
+    {
+      "file": "ecc-crm/backend/agents.go",
+      "line": 247,
+      "name": "deleteAgentHandler",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/ai_actions.go",
+      "line": 32,
+      "name": "aiUpdate",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/ai_actions.go",
+      "line": 37,
+      "name": "aiEditableFields",
+      "statement_coverage": 90.9
+    },
+    {
+      "file": "ecc-crm/backend/ai_actions.go",
+      "line": 53,
+      "name": "validAIDate",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/ai_actions.go",
+      "line": 64,
+      "name": "prepareAIAction",
+      "statement_coverage": 36.4
+    },
+    {
+      "file": "ecc-crm/backend/ai_actions.go",
+      "line": 194,
+      "name": "loadAIAction",
+      "statement_coverage": 90.9
+    },
+    {
+      "file": "ecc-crm/backend/ai_actions.go",
+      "line": 210,
+      "name": "handleAIConfirm",
+      "statement_coverage": 48.2
+    },
+    {
+      "file": "ecc-crm/backend/ai_actions.go",
+      "line": 362,
+      "name": "handleAIReject",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/ai_actions.go",
+      "line": 375,
+      "name": "handleAIMeeting",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/ai_actions.go",
+      "line": 400,
+      "name": "handleAICalendar",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/ai_advice.go",
+      "line": 10,
+      "name": "handleAIAdvice",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/ai_advice.go",
+      "line": 37,
+      "name": "processAIAdvice",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/ai_advice.go",
+      "line": 107,
+      "name": "aiAttentionReferences",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/ai_agent.go",
+      "line": 43,
+      "name": "requestAI",
+      "statement_coverage": 76.1
+    },
+    {
+      "file": "ecc-crm/backend/ai_agent.go",
+      "line": 102,
+      "name": "aiText",
+      "statement_coverage": 88.9
+    },
+    {
+      "file": "ecc-crm/backend/ai_agent.go",
+      "line": 117,
+      "name": "aiFunction",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/ai_agent.go",
+      "line": 124,
+      "name": "aiString",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/ai_agent.go",
+      "line": 127,
+      "name": "agentTools",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/ai_agent.go",
+      "line": 157,
+      "name": "addSource",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/ai_agent.go",
+      "line": 167,
+      "name": "run",
+      "statement_coverage": 53.6
+    },
+    {
+      "file": "ecc-crm/backend/ai_agent.go",
+      "line": 208,
+      "name": "tool",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/ai_agent.go",
+      "line": 254,
+      "name": "aiSourceIDs",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/ai_agent.go",
+      "line": 262,
+      "name": "aiStillAuthorized",
+      "statement_coverage": 71.4
+    },
+    {
+      "file": "ecc-crm/backend/ai_insights.go",
+      "line": 31,
+      "name": "validInsightsTopic",
+      "statement_coverage": 66.7
+    },
+    {
+      "file": "ecc-crm/backend/ai_insights.go",
+      "line": 42,
+      "name": "documentCompletenessFor",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/ai_insights.go",
+      "line": 62,
+      "name": "insight",
+      "statement_coverage": 83.3
+    },
+    {
+      "file": "ecc-crm/backend/ai_insights.go",
+      "line": 73,
+      "name": "workspaceInsights",
+      "statement_coverage": 37.3
+    },
+    {
+      "file": "ecc-crm/backend/ai_insights.go",
+      "line": 221,
+      "name": "applyCaseDocuments",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/ai_insights.go",
+      "line": 231,
+      "name": "sortInsights",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/ai_insights.go",
+      "line": 243,
+      "name": "insightAnswer",
+      "statement_coverage": 66.7
+    },
+    {
+      "file": "ecc-crm/backend/ai_knowledge.go",
+      "line": 36,
+      "name": "loadKnowledge",
+      "statement_coverage": 76.9
+    },
+    {
+      "file": "ecc-crm/backend/ai_knowledge.go",
+      "line": 55,
+      "name": "knowledgeChunks",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/ai_knowledge.go",
+      "line": 70,
+      "name": "saveKnowledge",
+      "statement_coverage": 69.2
+    },
+    {
+      "file": "ecc-crm/backend/ai_knowledge.go",
+      "line": 90,
+      "name": "handleKnowledgeList",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/ai_knowledge.go",
+      "line": 116,
+      "name": "handleKnowledgeRead",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/ai_knowledge.go",
+      "line": 124,
+      "name": "handleKnowledgeSave",
+      "statement_coverage": 36.5
+    },
+    {
+      "file": "ecc-crm/backend/ai_knowledge.go",
+      "line": 260,
+      "name": "handleKnowledgeDelete",
+      "statement_coverage": 28.6
+    },
+    {
+      "file": "ecc-crm/backend/ai_knowledge.go",
+      "line": 280,
+      "name": "searchTerms",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/ai_knowledge.go",
+      "line": 296,
+      "name": "searchKnowledge",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/ai_knowledge.go",
+      "line": 351,
+      "name": "Write",
+      "statement_coverage": 66.7
+    },
+    {
+      "file": "ecc-crm/backend/ai_knowledge.go",
+      "line": 357,
+      "name": "extractKnowledgeText",
+      "statement_coverage": 44.7
+    },
+    {
+      "file": "ecc-crm/backend/ai_knowledge.go",
+      "line": 428,
+      "name": "existingDocumentText",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/ai_store.go",
+      "line": 37,
+      "name": "defaultAISettings",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/ai_store.go",
+      "line": 40,
+      "name": "loadAISettings",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/ai_store.go",
+      "line": 48,
+      "name": "saveAISettings",
+      "statement_coverage": 52.9
+    },
+    {
+      "file": "ecc-crm/backend/ai_store.go",
+      "line": 72,
+      "name": "finiteNonnegative",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/ai_store.go",
+      "line": 76,
+      "name": "migrateAI",
+      "statement_coverage": 80.0
+    },
+    {
+      "file": "ecc-crm/backend/ai_store.go",
+      "line": 112,
+      "name": "reserveAI",
+      "statement_coverage": 71.4
+    },
+    {
+      "file": "ecc-crm/backend/ai_store.go",
+      "line": 141,
+      "name": "finish",
+      "statement_coverage": 88.9
+    },
+    {
+      "file": "ecc-crm/backend/ai_store.go",
+      "line": 154,
+      "name": "handleAIAdministration",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/ai_store.go",
+      "line": 174,
+      "name": "independentAI",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/ai_store.go",
+      "line": 178,
+      "name": "aiOrigin",
+      "statement_coverage": 50.0
+    },
+    {
+      "file": "ecc-crm/backend/ai_store.go",
+      "line": 185,
+      "name": "aiUserRequest",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/ai_tools.go",
+      "line": 12,
+      "name": "aiRecordURL",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/ai_tools.go",
+      "line": 19,
+      "name": "recordReference",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/ai_tools.go",
+      "line": 22,
+      "name": "minimizedRecord",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/ai_tools.go",
+      "line": 31,
+      "name": "search",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/ai_tools.go",
+      "line": 91,
+      "name": "sanitizedRecord",
+      "statement_coverage": 87.5
+    },
+    {
+      "file": "ecc-crm/backend/ai_tools.go",
+      "line": 104,
+      "name": "readRecord",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/ai_tools.go",
+      "line": 152,
+      "name": "analyze",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/ai_tools.go",
+      "line": 245,
+      "name": "aiPlural",
+      "statement_coverage": 66.7
+    },
+    {
+      "file": "ecc-crm/backend/ai_tools.go",
+      "line": 258,
+      "name": "aiAttention",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/ai_tools.go",
+      "line": 262,
+      "name": "aiAttentionScoped",
+      "statement_coverage": 87.0
+    },
+    {
+      "file": "ecc-crm/backend/ai_tools.go",
+      "line": 295,
+      "name": "aiReferencesAllowed",
+      "statement_coverage": 35.7
+    },
+    {
+      "file": "ecc-crm/backend/ai_voice.go",
+      "line": 26,
+      "name": "loadAIVoice",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/ai_voice.go",
+      "line": 37,
+      "name": "handleAIVoice",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/ai_voice.go",
+      "line": 206,
+      "name": "validVoiceCallID",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/ai_voice.go",
+      "line": 217,
+      "name": "hangupAICall",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/ai_voice.go",
+      "line": 233,
+      "name": "stopAIVoice",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/ai_voice.go",
+      "line": 250,
+      "name": "handleAIStopVoice",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/ai_voice.go",
+      "line": 262,
+      "name": "handleAIVoiceTool",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/ai_voice.go",
+      "line": 330,
+      "name": "handleAIVoiceTranscript",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/ai_voice.go",
+      "line": 385,
+      "name": "expireAIVoice",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/application_blockers.go",
+      "line": 19,
+      "name": "readCaseRows",
+      "statement_coverage": 84.2
+    },
+    {
+      "file": "ecc-crm/backend/application_blockers.go",
+      "line": 44,
+      "name": "handleApplicationBlockers",
+      "statement_coverage": 75.6
+    },
+    {
+      "file": "ecc-crm/backend/application_readiness.go",
+      "line": 40,
+      "name": "submissionTarget",
+      "statement_coverage": 90.0
+    },
+    {
+      "file": "ecc-crm/backend/application_readiness.go",
+      "line": 57,
+      "name": "handleApplicationReadiness",
+      "statement_coverage": 75.0
+    },
+    {
+      "file": "ecc-crm/backend/assignment_review.go",
+      "line": 22,
+      "name": "handleAssignmentReview",
+      "statement_coverage": 90.7
+    },
+    {
+      "file": "ecc-crm/backend/assignment_review.go",
+      "line": 82,
+      "name": "handleAssignmentMapping",
+      "statement_coverage": 58.5
+    },
+    {
+      "file": "ecc-crm/backend/assignment_review.go",
+      "line": 163,
+      "name": "recordMap",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/assistant.go",
+      "line": 20,
+      "name": "registerAssistantRoutes",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/assistant.go",
+      "line": 28,
+      "name": "assistantEnabled",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/assistant.go",
+      "line": 32,
+      "name": "handleAssistantSettings",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/assistant.go",
+      "line": 59,
+      "name": "dateDistance",
+      "statement_coverage": 77.8
+    },
+    {
+      "file": "ecc-crm/backend/assistant.go",
+      "line": 74,
+      "name": "compactWorkText",
+      "statement_coverage": 80.0
+    },
+    {
+      "file": "ecc-crm/backend/assistant.go",
+      "line": 83,
+      "name": "productivityWorkload",
+      "statement_coverage": 75.0
+    },
+    {
+      "file": "ecc-crm/backend/assistant.go",
+      "line": 91,
+      "name": "workAssigned",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/assistant.go",
+      "line": 104,
+      "name": "collectWorkload",
+      "statement_coverage": 83.7
+    },
+    {
+      "file": "ecc-crm/backend/assistant.go",
+      "line": 227,
+      "name": "handleProductivityBrief",
+      "statement_coverage": 58.1
+    },
+    {
+      "file": "ecc-crm/backend/assistant.go",
+      "line": 269,
+      "name": "handleProductivityBrief",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/assistant.go",
+      "line": 275,
+      "name": "handleAssistantRequest",
+      "statement_coverage": 59.5
+    },
+    {
+      "file": "ecc-crm/backend/assistant.go",
+      "line": 378,
+      "name": "handleAssistantRequest",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/assistant.go",
+      "line": 383,
+      "name": "handleAssistantJob",
+      "statement_coverage": 60.0
+    },
+    {
+      "file": "ecc-crm/backend/assistant.go",
+      "line": 398,
+      "name": "handleAssistantJob",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/assistant.go",
+      "line": 403,
+      "name": "generateAssistant",
+      "statement_coverage": 80.0
+    },
+    {
+      "file": "ecc-crm/backend/assistant.go",
+      "line": 424,
+      "name": "processAssistantJobs",
+      "statement_coverage": 70.7
+    },
+    {
+      "file": "ecc-crm/backend/assistant.go",
+      "line": 486,
+      "name": "handleAssistantJobs",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/assistant.go",
+      "line": 508,
+      "name": "handleAssistantJobs",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/assistant.go",
+      "line": 514,
+      "name": "documentNeedsReview",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/assistant_chat.go",
+      "line": 35,
+      "name": "registerAIFirstRoutes",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/assistant_chat.go",
+      "line": 63,
+      "name": "handleAICapabilities",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/assistant_chat.go",
+      "line": 67,
+      "name": "loadAIThread",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/assistant_chat.go",
+      "line": 80,
+      "name": "aiThreadMessages",
+      "statement_coverage": 21.7
+    },
+    {
+      "file": "ecc-crm/backend/assistant_chat.go",
+      "line": 111,
+      "name": "handleAIThreads",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/assistant_chat.go",
+      "line": 154,
+      "name": "handleAIThread",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/assistant_chat.go",
+      "line": 172,
+      "name": "handleAIDeleteThread",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/assistant_chat.go",
+      "line": 200,
+      "name": "validateChatMessages",
+      "statement_coverage": 88.9
+    },
+    {
+      "file": "ecc-crm/backend/assistant_chat.go",
+      "line": 215,
+      "name": "handleAssistantChat",
+      "statement_coverage": 70.2
+    },
+    {
+      "file": "ecc-crm/backend/auth.go",
+      "line": 21,
+      "name": "initSecret",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/auth.go",
+      "line": 74,
+      "name": "writeJSON",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/auth.go",
+      "line": 81,
+      "name": "writeError",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/auth.go",
+      "line": 85,
+      "name": "issueToken",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/auth.go",
+      "line": 99,
+      "name": "authMiddleware",
+      "statement_coverage": 81.8
+    },
+    {
+      "file": "ecc-crm/backend/auth.go",
+      "line": 147,
+      "name": "isTokenRevoked",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/auth.go",
+      "line": 160,
+      "name": "isTokenRevoked",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/auth.go",
+      "line": 166,
+      "name": "revokeToken",
+      "statement_coverage": 80.0
+    },
+    {
+      "file": "ecc-crm/backend/auth.go",
+      "line": 175,
+      "name": "revokeToken",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/auth.go",
+      "line": 181,
+      "name": "handleLogin",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/auth.go",
+      "line": 206,
+      "name": "handleLogin",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/auth.go",
+      "line": 212,
+      "name": "handleRegister",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/auth.go",
+      "line": 258,
+      "name": "handleRegister",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/auth.go",
+      "line": 264,
+      "name": "handleMe",
+      "statement_coverage": 55.6
+    },
+    {
+      "file": "ecc-crm/backend/auth.go",
+      "line": 278,
+      "name": "handleMe",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/auth.go",
+      "line": 284,
+      "name": "handleUpdateMe",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/auth.go",
+      "line": 380,
+      "name": "handleUpdateMe",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/auth.go",
+      "line": 386,
+      "name": "handleChangePassword",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/auth.go",
+      "line": 441,
+      "name": "handleChangePassword",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/auth.go",
+      "line": 447,
+      "name": "handleLogoutAll",
+      "statement_coverage": 86.7
+    },
+    {
+      "file": "ecc-crm/backend/auth.go",
+      "line": 471,
+      "name": "handleLogoutAll",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/automation.go",
+      "line": 22,
+      "name": "notification",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/automation.go",
+      "line": 28,
+      "name": "notificationWithDB",
+      "statement_coverage": 66.7
+    },
+    {
+      "file": "ecc-crm/backend/automation.go",
+      "line": 34,
+      "name": "generateReminders",
+      "statement_coverage": 67.3
+    },
+    {
+      "file": "ecc-crm/backend/automation.go",
+      "line": 193,
+      "name": "publicURL",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/automation.go",
+      "line": 197,
+      "name": "webhookClient",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/automation.go",
+      "line": 218,
+      "name": "handleWebhookSettings",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/automation.go",
+      "line": 242,
+      "name": "deliverWebhooks",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/automation.go",
+      "line": 302,
+      "name": "allowedPush",
+      "statement_coverage": 80.0
+    },
+    {
+      "file": "ecc-crm/backend/automation.go",
+      "line": 310,
+      "name": "handlePushSubscription",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/automation.go",
+      "line": 326,
+      "name": "deliverPushNotifications",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/automation.go",
+      "line": 371,
+      "name": "handleNotificationPreferences",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/automation.go",
+      "line": 389,
+      "name": "handleManageWebhook",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/automation.go",
+      "line": 409,
+      "name": "handleRetryWebhook",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/bulk_revision.go",
+      "line": 5,
+      "name": "checkBulkRevision",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/bulk_revision.go",
+      "line": 17,
+      "name": "handleBulkDeals",
+      "statement_coverage": 71.7
+    },
+    {
+      "file": "ecc-crm/backend/cases.go",
+      "line": 48,
+      "name": "isValidCaseStage",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/cases.go",
+      "line": 57,
+      "name": "isValidCasePriority",
+      "statement_coverage": 75.0
+    },
+    {
+      "file": "ecc-crm/backend/cases.go",
+      "line": 67,
+      "name": "findCaseByID",
+      "statement_coverage": 75.0
+    },
+    {
+      "file": "ecc-crm/backend/cases.go",
+      "line": 76,
+      "name": "findCaseByID",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/cases.go",
+      "line": 83,
+      "name": "validateCase",
+      "statement_coverage": 85.0
+    },
+    {
+      "file": "ecc-crm/backend/cases.go",
+      "line": 116,
+      "name": "validateCase",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/cases.go",
+      "line": 122,
+      "name": "listCasesHandler",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/cases.go",
+      "line": 156,
+      "name": "listCasesHandler",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/cases.go",
+      "line": 162,
+      "name": "getCaseHandler",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/cases.go",
+      "line": 175,
+      "name": "getCaseHandler",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/cases.go",
+      "line": 181,
+      "name": "createCaseHandler",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/cases.go",
+      "line": 253,
+      "name": "createCaseHandler",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/cases.go",
+      "line": 259,
+      "name": "updateCaseHandler",
+      "statement_coverage": 85.5
+    },
+    {
+      "file": "ecc-crm/backend/cases.go",
+      "line": 343,
+      "name": "updateCaseHandler",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/cases.go",
+      "line": 349,
+      "name": "updateCaseStageHandler",
+      "statement_coverage": 71.4
+    },
+    {
+      "file": "ecc-crm/backend/cases.go",
+      "line": 383,
+      "name": "updateCaseStageHandler",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/cases.go",
+      "line": 389,
+      "name": "deleteCaseHandler",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/cases.go",
+      "line": 420,
+      "name": "deleteCaseHandler",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/cmd/vapid/main.go",
+      "line": 9,
+      "name": "main",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/communication.go",
+      "line": 22,
+      "name": "integrationStatus",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/communication.go",
+      "line": 25,
+      "name": "queueMail",
+      "statement_coverage": 75.0
+    },
+    {
+      "file": "ecc-crm/backend/communication.go",
+      "line": 32,
+      "name": "handleComposeMail",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/communication.go",
+      "line": 87,
+      "name": "handleComposeMail",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/communication.go",
+      "line": 92,
+      "name": "handleRetryMail",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/communication.go",
+      "line": 106,
+      "name": "handleReadNotification",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/communication.go",
+      "line": 120,
+      "name": "queueChangeEvents",
+      "statement_coverage": 69.2
+    },
+    {
+      "file": "ecc-crm/backend/communication.go",
+      "line": 142,
+      "name": "queueChangeEvents",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/communication.go",
+      "line": 147,
+      "name": "organizationToday",
+      "statement_coverage": 83.3
+    },
+    {
+      "file": "ecc-crm/backend/communication.go",
+      "line": 159,
+      "name": "smtpConfiguration",
+      "statement_coverage": 61.5
+    },
+    {
+      "file": "ecc-crm/backend/communication.go",
+      "line": 179,
+      "name": "deliverSMTP",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/communication.go",
+      "line": 182,
+      "name": "deliverSMTPAttachment",
+      "statement_coverage": 67.3
+    },
+    {
+      "file": "ecc-crm/backend/communication.go",
+      "line": 253,
+      "name": "wrapBase64",
+      "statement_coverage": 71.4
+    },
+    {
+      "file": "ecc-crm/backend/communication.go",
+      "line": 267,
+      "name": "markWorkerRun",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/communication.go",
+      "line": 275,
+      "name": "startWorkers",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/communication.go",
+      "line": 299,
+      "name": "deliverMailOutbox",
+      "statement_coverage": 53.8
+    },
+    {
+      "file": "ecc-crm/backend/communication.go",
+      "line": 371,
+      "name": "handleSMTPSettings",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/communication.go",
+      "line": 415,
+      "name": "integrationStatusFor",
+      "statement_coverage": 75.0
+    },
+    {
+      "file": "ecc-crm/backend/consolidated_workspace.go",
+      "line": 13,
+      "name": "consolidatedReadSnapshot",
+      "statement_coverage": 66.7
+    },
+    {
+      "file": "ecc-crm/backend/consolidated_workspace.go",
+      "line": 22,
+      "name": "registerConsolidatedRoutes",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/consolidated_workspace.go",
+      "line": 29,
+      "name": "handleCommunicationWorkspace",
+      "statement_coverage": 84.7
+    },
+    {
+      "file": "ecc-crm/backend/consolidated_workspace.go",
+      "line": 118,
+      "name": "handleWorkspaceCalendar",
+      "statement_coverage": 87.0
+    },
+    {
+      "file": "ecc-crm/backend/consolidated_workspace.go",
+      "line": 222,
+      "name": "handleReferralDirectory",
+      "statement_coverage": 88.1
+    },
+    {
+      "file": "ecc-crm/backend/contacts.go",
+      "line": 25,
+      "name": "validateContact",
+      "statement_coverage": 88.0
+    },
+    {
+      "file": "ecc-crm/backend/contacts.go",
+      "line": 67,
+      "name": "validateContact",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/contacts.go",
+      "line": 73,
+      "name": "writeFieldErrors",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/contacts.go",
+      "line": 82,
+      "name": "listContacts",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/contacts.go",
+      "line": 108,
+      "name": "listContacts",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/contacts.go",
+      "line": 114,
+      "name": "getContact",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/contacts.go",
+      "line": 129,
+      "name": "getContact",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/contacts.go",
+      "line": 135,
+      "name": "createContact",
+      "statement_coverage": 73.7
+    },
+    {
+      "file": "ecc-crm/backend/contacts.go",
+      "line": 182,
+      "name": "createContact",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/contacts.go",
+      "line": 188,
+      "name": "updateContact",
+      "statement_coverage": 88.2
+    },
+    {
+      "file": "ecc-crm/backend/contacts.go",
+      "line": 241,
+      "name": "updateContact",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/contacts.go",
+      "line": 247,
+      "name": "deleteContact",
+      "statement_coverage": 92.6
+    },
+    {
+      "file": "ecc-crm/backend/contacts.go",
+      "line": 293,
+      "name": "deleteContact",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/control_center.go",
+      "line": 13,
+      "name": "registerWorkspaceRoutes",
+      "statement_coverage": 81.2
+    },
+    {
+      "file": "ecc-crm/backend/control_center.go",
+      "line": 48,
+      "name": "queryObjects",
+      "statement_coverage": 82.6
+    },
+    {
+      "file": "ecc-crm/backend/control_center.go",
+      "line": 80,
+      "name": "handleControlCenter",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/control_center.go",
+      "line": 156,
+      "name": "handleControlCenter",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/control_center.go",
+      "line": 161,
+      "name": "handleCreateTeam",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/control_center.go",
+      "line": 181,
+      "name": "teamInOrganization",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/control_center.go",
+      "line": 189,
+      "name": "handleCreateWorkspaceUser",
+      "statement_coverage": 66.7
+    },
+    {
+      "file": "ecc-crm/backend/control_center.go",
+      "line": 248,
+      "name": "handleCreateWorkspaceUser",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/control_center.go",
+      "line": 253,
+      "name": "handleManageWorkspaceUser",
+      "statement_coverage": 78.2
+    },
+    {
+      "file": "ecc-crm/backend/control_center.go",
+      "line": 337,
+      "name": "handleManageWorkspaceUser",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/control_center.go",
+      "line": 342,
+      "name": "handleAcceptInvite",
+      "statement_coverage": 79.3
+    },
+    {
+      "file": "ecc-crm/backend/control_center.go",
+      "line": 381,
+      "name": "handleAcceptInvite",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/control_center.go",
+      "line": 386,
+      "name": "handleOrganizationSettings",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/control_center.go",
+      "line": 420,
+      "name": "handleRecordAccess",
+      "statement_coverage": 58.6
+    },
+    {
+      "file": "ecc-crm/backend/control_center.go",
+      "line": 459,
+      "name": "handleRecordAccess",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/control_center.go",
+      "line": 464,
+      "name": "setRecordScope",
+      "statement_coverage": 67.7
+    },
+    {
+      "file": "ecc-crm/backend/control_center.go",
+      "line": 519,
+      "name": "setRecordScope",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/control_center.go",
+      "line": 525,
+      "name": "handleWorkspaceClock",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/conversations.go",
+      "line": 19,
+      "name": "registerConversationRoutes",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/conversations.go",
+      "line": 29,
+      "name": "conversationContact",
+      "statement_coverage": 75.0
+    },
+    {
+      "file": "ecc-crm/backend/conversations.go",
+      "line": 38,
+      "name": "conversationContact",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/conversations.go",
+      "line": 43,
+      "name": "handleConversations",
+      "statement_coverage": 78.0
+    },
+    {
+      "file": "ecc-crm/backend/conversations.go",
+      "line": 109,
+      "name": "handleConversations",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/conversations.go",
+      "line": 125,
+      "name": "findInboundContact",
+      "statement_coverage": 77.8
+    },
+    {
+      "file": "ecc-crm/backend/conversations.go",
+      "line": 141,
+      "name": "findInboundContact",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/conversations.go",
+      "line": 146,
+      "name": "attachInbound",
+      "statement_coverage": 70.5
+    },
+    {
+      "file": "ecc-crm/backend/conversations.go",
+      "line": 209,
+      "name": "attachInbound",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/conversations.go",
+      "line": 214,
+      "name": "signedInbound",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/conversations.go",
+      "line": 223,
+      "name": "handleInboundEmail",
+      "statement_coverage": 64.7
+    },
+    {
+      "file": "ecc-crm/backend/conversations.go",
+      "line": 247,
+      "name": "handleInboundEmail",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/conversations.go",
+      "line": 252,
+      "name": "handleUnmatched",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/conversations.go",
+      "line": 264,
+      "name": "handleLinkMessage",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/conversations.go",
+      "line": 297,
+      "name": "handleLinkMessage",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/conversations.go",
+      "line": 302,
+      "name": "handleWhatsAppChallenge",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/conversations.go",
+      "line": 311,
+      "name": "handleWhatsAppWebhook",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/conversations.go",
+      "line": 374,
+      "name": "handleWhatsAppWebhook",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/conversations.go",
+      "line": 379,
+      "name": "handleWhatsAppSend",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/conversations.go",
+      "line": 420,
+      "name": "handleWhatsAppSend",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/conversations.go",
+      "line": 425,
+      "name": "processWhatsApp",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/conversations.go",
+      "line": 478,
+      "name": "whatsAppTime",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/conversations.go",
+      "line": 486,
+      "name": "subjectCaseReference",
+      "statement_coverage": 85.7
+    },
+    {
+      "file": "ecc-crm/backend/conversations.go",
+      "line": 500,
+      "name": "deliveryExplanation",
+      "statement_coverage": 42.9
+    },
+    {
+      "file": "ecc-crm/backend/daily_overview.go",
+      "line": 11,
+      "name": "dailyOverview",
+      "statement_coverage": 98.2
+    },
+    {
+      "file": "ecc-crm/backend/daily_work.go",
+      "line": 14,
+      "name": "independentDailyRead",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/daily_work.go",
+      "line": 18,
+      "name": "registerDailyRoutes",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/daily_work.go",
+      "line": 42,
+      "name": "dailySnapshot",
+      "statement_coverage": 73.7
+    },
+    {
+      "file": "ecc-crm/backend/daily_work.go",
+      "line": 68,
+      "name": "sqlDailyWorkload",
+      "statement_coverage": 74.1
+    },
+    {
+      "file": "ecc-crm/backend/daily_work.go",
+      "line": 109,
+      "name": "handleMyWork",
+      "statement_coverage": 93.6
+    },
+    {
+      "file": "ecc-crm/backend/daily_work.go",
+      "line": 407,
+      "name": "handleStudentJourney",
+      "statement_coverage": 94.1
+    },
+    {
+      "file": "ecc-crm/backend/daily_work.go",
+      "line": 499,
+      "name": "qualityKey",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/daily_work.go",
+      "line": 500,
+      "name": "formQuality",
+      "statement_coverage": 62.9
+    },
+    {
+      "file": "ecc-crm/backend/daily_work.go",
+      "line": 557,
+      "name": "handleFormQuality",
+      "statement_coverage": 80.0
+    },
+    {
+      "file": "ecc-crm/backend/daily_work.go",
+      "line": 587,
+      "name": "dailyOrigin",
+      "statement_coverage": 60.0
+    },
+    {
+      "file": "ecc-crm/backend/dashboard_overview.go",
+      "line": 104,
+      "name": "allows",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/dashboard_overview.go",
+      "line": 113,
+      "name": "dashboardSnapshot",
+      "statement_coverage": 58.3
+    },
+    {
+      "file": "ecc-crm/backend/dashboard_overview.go",
+      "line": 131,
+      "name": "dashboardWorkspace",
+      "statement_coverage": 78.9
+    },
+    {
+      "file": "ecc-crm/backend/dashboard_overview.go",
+      "line": 163,
+      "name": "resolveDashboardFilter",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/dashboard_overview.go",
+      "line": 185,
+      "name": "mergePaymentBucket",
+      "statement_coverage": 83.3
+    },
+    {
+      "file": "ecc-crm/backend/dashboard_overview.go",
+      "line": 196,
+      "name": "sortedPaymentBuckets",
+      "statement_coverage": 83.3
+    },
+    {
+      "file": "ecc-crm/backend/dashboard_overview.go",
+      "line": 205,
+      "name": "severityFor",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/dashboard_overview.go",
+      "line": 212,
+      "name": "containsStage",
+      "statement_coverage": 75.0
+    },
+    {
+      "file": "ecc-crm/backend/dashboard_overview.go",
+      "line": 221,
+      "name": "teamName",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/dashboard_overview.go",
+      "line": 232,
+      "name": "workspaceTeams",
+      "statement_coverage": 81.8
+    },
+    {
+      "file": "ecc-crm/backend/dashboard_overview.go",
+      "line": 249,
+      "name": "handleDashboardOverview",
+      "statement_coverage": 91.6
+    },
+    {
+      "file": "ecc-crm/backend/data_tools.go",
+      "line": 23,
+      "name": "newPDF",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/data_tools.go",
+      "line": 36,
+      "name": "invoicePDF",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/data_tools.go",
+      "line": 54,
+      "name": "validCurrency",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/data_tools.go",
+      "line": 62,
+      "name": "currencyOf",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/data_tools.go",
+      "line": 68,
+      "name": "money",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/data_tools.go",
+      "line": 69,
+      "name": "validateIPAllowlist",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/data_tools.go",
+      "line": 86,
+      "name": "registerDataRoutes",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/data_tools.go",
+      "line": 94,
+      "name": "handleInvoicePDF",
+      "statement_coverage": 77.8
+    },
+    {
+      "file": "ecc-crm/backend/data_tools.go",
+      "line": 119,
+      "name": "handleInvoicePDF",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/data_tools.go",
+      "line": 124,
+      "name": "handleContactImport",
+      "statement_coverage": 79.5
+    },
+    {
+      "file": "ecc-crm/backend/data_tools.go",
+      "line": 224,
+      "name": "handleContactImport",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/data_tools.go",
+      "line": 229,
+      "name": "normalizePhone",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/data_tools.go",
+      "line": 232,
+      "name": "validPhone",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/data_tools.go",
+      "line": 248,
+      "name": "handleDuplicates",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/data_tools.go",
+      "line": 268,
+      "name": "handleDuplicates",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/data_tools.go",
+      "line": 273,
+      "name": "handleMergeContacts",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/data_tools.go",
+      "line": 347,
+      "name": "handleMergeContacts",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/data_tools.go",
+      "line": 352,
+      "name": "handleBulkContacts",
+      "statement_coverage": 59.0
+    },
+    {
+      "file": "ecc-crm/backend/data_tools.go",
+      "line": 414,
+      "name": "handleBulkContacts",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/data_tools.go",
+      "line": 419,
+      "name": "xmlText",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/data_tools.go",
+      "line": 420,
+      "name": "xlsxExport",
+      "statement_coverage": 93.1
+    },
+    {
+      "file": "ecc-crm/backend/data_tools.go",
+      "line": 460,
+      "name": "pdfExport",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/data_tools.go",
+      "line": 477,
+      "name": "mustJSON",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/database.go",
+      "line": 19,
+      "name": "openDatabase",
+      "statement_coverage": 70.7
+    },
+    {
+      "file": "ecc-crm/backend/database.go",
+      "line": 83,
+      "name": "loadStore",
+      "statement_coverage": 83.6
+    },
+    {
+      "file": "ecc-crm/backend/database.go",
+      "line": 159,
+      "name": "readRows",
+      "statement_coverage": 78.6
+    },
+    {
+      "file": "ecc-crm/backend/database.go",
+      "line": 180,
+      "name": "readIdentityDatabase",
+      "statement_coverage": 70.0
+    },
+    {
+      "file": "ecc-crm/backend/database.go",
+      "line": 237,
+      "name": "readDatabase",
+      "statement_coverage": 53.3
+    },
+    {
+      "file": "ecc-crm/backend/database.go",
+      "line": 284,
+      "name": "syncRows",
+      "statement_coverage": 70.6
+    },
+    {
+      "file": "ecc-crm/backend/database.go",
+      "line": 335,
+      "name": "saveStore",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/database.go",
+      "line": 336,
+      "name": "saveDatabase",
+      "statement_coverage": 66.7
+    },
+    {
+      "file": "ecc-crm/backend/database.go",
+      "line": 351,
+      "name": "saveDatabaseTx",
+      "statement_coverage": 74.4
+    },
+    {
+      "file": "ecc-crm/backend/deal_board.go",
+      "line": 28,
+      "name": "dealBoardPredicate",
+      "statement_coverage": 76.9
+    },
+    {
+      "file": "ecc-crm/backend/deal_board.go",
+      "line": 46,
+      "name": "validBoardDates",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/deal_board.go",
+      "line": 61,
+      "name": "boardTotals",
+      "statement_coverage": 87.7
+    },
+    {
+      "file": "ecc-crm/backend/deal_board.go",
+      "line": 132,
+      "name": "boardSnapshot",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/deals.go",
+      "line": 27,
+      "name": "isValidDealStage",
+      "statement_coverage": 75.0
+    },
+    {
+      "file": "ecc-crm/backend/deals.go",
+      "line": 37,
+      "name": "findContactByID",
+      "statement_coverage": 75.0
+    },
+    {
+      "file": "ecc-crm/backend/deals.go",
+      "line": 46,
+      "name": "findContactByID",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/deals.go",
+      "line": 53,
+      "name": "validateDeal",
+      "statement_coverage": 61.1
+    },
+    {
+      "file": "ecc-crm/backend/deals.go",
+      "line": 86,
+      "name": "validateDeal",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/deals.go",
+      "line": 92,
+      "name": "listDeals",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/deals.go",
+      "line": 121,
+      "name": "listDeals",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/deals.go",
+      "line": 127,
+      "name": "getDeal",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/deals.go",
+      "line": 142,
+      "name": "getDeal",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/deals.go",
+      "line": 148,
+      "name": "createDeal",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/deals.go",
+      "line": 201,
+      "name": "createDeal",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/deals.go",
+      "line": 207,
+      "name": "updateDeal",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/deals.go",
+      "line": 285,
+      "name": "updateDeal",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/deals.go",
+      "line": 291,
+      "name": "updateDealStage",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/deals.go",
+      "line": 329,
+      "name": "updateDealStage",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/deals.go",
+      "line": 335,
+      "name": "deleteDeal",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/deals.go",
+      "line": 366,
+      "name": "deleteDeal",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/document_files.go",
+      "line": 17,
+      "name": "registerDocumentRoutes",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/document_files.go",
+      "line": 24,
+      "name": "visibleDocument",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/document_files.go",
+      "line": 35,
+      "name": "visibleDocument",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/document_files.go",
+      "line": 40,
+      "name": "uploadRoot",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/document_files.go",
+      "line": 41,
+      "name": "handleFileVersions",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/document_files.go",
+      "line": 54,
+      "name": "handleFileVersions",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/document_files.go",
+      "line": 59,
+      "name": "validatedFile",
+      "statement_coverage": 80.0
+    },
+    {
+      "file": "ecc-crm/backend/document_files.go",
+      "line": 97,
+      "name": "handleFileUpload",
+      "statement_coverage": 69.8
+    },
+    {
+      "file": "ecc-crm/backend/document_files.go",
+      "line": 175,
+      "name": "handleFileUpload",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/document_files.go",
+      "line": 180,
+      "name": "handleFileDownload",
+      "statement_coverage": 75.0
+    },
+    {
+      "file": "ecc-crm/backend/document_files.go",
+      "line": 221,
+      "name": "handleFileDownload",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/document_review.go",
+      "line": 5,
+      "name": "handleDocumentReview",
+      "statement_coverage": 80.6
+    },
+    {
+      "file": "ecc-crm/backend/documents.go",
+      "line": 38,
+      "name": "isValidDocumentStatus",
+      "statement_coverage": 75.0
+    },
+    {
+      "file": "ecc-crm/backend/documents.go",
+      "line": 48,
+      "name": "validateDocument",
+      "statement_coverage": 50.0
+    },
+    {
+      "file": "ecc-crm/backend/documents.go",
+      "line": 88,
+      "name": "validateDocument",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/documents.go",
+      "line": 94,
+      "name": "listDocumentsHandler",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/documents.go",
+      "line": 125,
+      "name": "listDocumentsHandler",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/documents.go",
+      "line": 131,
+      "name": "getDocumentHandler",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/documents.go",
+      "line": 144,
+      "name": "getDocumentHandler",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/documents.go",
+      "line": 150,
+      "name": "createDocumentHandler",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/documents.go",
+      "line": 212,
+      "name": "createDocumentHandler",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/documents.go",
+      "line": 218,
+      "name": "updateDocumentHandler",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/documents.go",
+      "line": 278,
+      "name": "updateDocumentHandler",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/documents.go",
+      "line": 284,
+      "name": "updateDocumentStatusHandler",
+      "statement_coverage": 75.0
+    },
+    {
+      "file": "ecc-crm/backend/documents.go",
+      "line": 329,
+      "name": "updateDocumentStatusHandler",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/documents.go",
+      "line": 335,
+      "name": "deleteDocumentHandler",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/documents.go",
+      "line": 357,
+      "name": "deleteDocumentHandler",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/documents.go",
+      "line": 363,
+      "name": "documentTransition",
+      "statement_coverage": 77.8
+    },
+    {
+      "file": "ecc-crm/backend/escalations.go",
+      "line": 21,
+      "name": "handleEscalationRules",
+      "statement_coverage": 26.7
+    },
+    {
+      "file": "ecc-crm/backend/escalations.go",
+      "line": 110,
+      "name": "runEscalations",
+      "statement_coverage": 76.4
+    },
+    {
+      "file": "ecc-crm/backend/escalations.go",
+      "line": 266,
+      "name": "fmtInt",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/everyday_work.go",
+      "line": 12,
+      "name": "registerEverydayRoutes",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/everyday_work.go",
+      "line": 27,
+      "name": "workflowValue",
+      "statement_coverage": 55.6
+    },
+    {
+      "file": "ecc-crm/backend/everyday_work.go",
+      "line": 40,
+      "name": "saveWorkflowValue",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/everyday_work.go",
+      "line": 48,
+      "name": "workflowRevision",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/everyday_work.go",
+      "line": 60,
+      "name": "writableWorkflowRecord",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/everyday_work.go",
+      "line": 73,
+      "name": "accessibleMessage",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/everyday_work.go",
+      "line": 96,
+      "name": "handleMessageHandling",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/everyday_work.go",
+      "line": 169,
+      "name": "handlePortalReply",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/everyday_work.go",
+      "line": 199,
+      "name": "canonicalProfile",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/everyday_work.go",
+      "line": 240,
+      "name": "handleClientProfile",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/everyday_work.go",
+      "line": 323,
+      "name": "financeCapability",
+      "statement_coverage": 72.7
+    },
+    {
+      "file": "ecc-crm/backend/everyday_work.go",
+      "line": 340,
+      "name": "handleFinanceCapabilities",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/everyday_work.go",
+      "line": 399,
+      "name": "contactAllowed",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/everyday_work.go",
+      "line": 421,
+      "name": "consultationData",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/everyday_work.go",
+      "line": 431,
+      "name": "handleConsultation",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/everyday_work.go",
+      "line": 529,
+      "name": "consultationText",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/everyday_work.go",
+      "line": 532,
+      "name": "calendarEscape",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/everyday_work.go",
+      "line": 535,
+      "name": "consultationCalendar",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/everyday_work.go",
+      "line": 556,
+      "name": "handleConsultationICS",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/everyday_work.go",
+      "line": 572,
+      "name": "portalAdviser",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/everyday_work.go",
+      "line": 583,
+      "name": "handleWorkOutcomes",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/everyday_work.go",
+      "line": 622,
+      "name": "portalClientTask",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/everyday_work.go",
+      "line": 629,
+      "name": "handleClientTask",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/everyday_work.go",
+      "line": 666,
+      "name": "generateConsultationReminders",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/exception_queues.go",
+      "line": 8,
+      "name": "overdueHandoffPriorities",
+      "statement_coverage": 80.0
+    },
+    {
+      "file": "ecc-crm/backend/expansion.go",
+      "line": 18,
+      "name": "independentRead",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/expansion.go",
+      "line": 25,
+      "name": "registerExpansionRoutes",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/expansion.go",
+      "line": 47,
+      "name": "migrateExpansion",
+      "statement_coverage": 85.7
+    },
+    {
+      "file": "ecc-crm/backend/expansion.go",
+      "line": 80,
+      "name": "validEntity",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/expansion.go",
+      "line": 88,
+      "name": "versionOf",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/expansion.go",
+      "line": 98,
+      "name": "withRecordVersions",
+      "statement_coverage": 88.2
+    },
+    {
+      "file": "ecc-crm/backend/expansion.go",
+      "line": 126,
+      "name": "checkRecordVersion",
+      "statement_coverage": 88.9
+    },
+    {
+      "file": "ecc-crm/backend/expansion.go",
+      "line": 175,
+      "name": "sqlRecord",
+      "statement_coverage": 79.2
+    },
+    {
+      "file": "ecc-crm/backend/expansion.go",
+      "line": 214,
+      "name": "handleSQLRecord",
+      "statement_coverage": 83.3
+    },
+    {
+      "file": "ecc-crm/backend/expansion.go",
+      "line": 238,
+      "name": "archiveDeleted",
+      "statement_coverage": 83.9
+    },
+    {
+      "file": "ecc-crm/backend/expansion.go",
+      "line": 284,
+      "name": "handleTrash",
+      "statement_coverage": 55.6
+    },
+    {
+      "file": "ecc-crm/backend/expansion.go",
+      "line": 297,
+      "name": "replaceSavedRecord",
+      "statement_coverage": 84.6
+    },
+    {
+      "file": "ecc-crm/backend/expansion.go",
+      "line": 316,
+      "name": "handleRestoreTrash",
+      "statement_coverage": 63.6
+    },
+    {
+      "file": "ecc-crm/backend/expansion.go",
+      "line": 362,
+      "name": "handleRestoreTrash",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/expansion.go",
+      "line": 367,
+      "name": "validRestoredRelations",
+      "statement_coverage": 88.9
+    },
+    {
+      "file": "ecc-crm/backend/expansion.go",
+      "line": 384,
+      "name": "committedUser",
+      "statement_coverage": 91.7
+    },
+    {
+      "file": "ecc-crm/backend/expansion_workers.go",
+      "line": 11,
+      "name": "httpRequestForWorker",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/expansion_workers.go",
+      "line": 16,
+      "name": "startExpansionWorkers",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/finance.go",
+      "line": 50,
+      "name": "isValidPaymentMilestone",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/finance.go",
+      "line": 60,
+      "name": "validateInvoice",
+      "statement_coverage": 60.0
+    },
+    {
+      "file": "ecc-crm/backend/finance.go",
+      "line": 94,
+      "name": "validateInvoice",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/finance.go",
+      "line": 102,
+      "name": "listInvoicesHandler",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/finance.go",
+      "line": 134,
+      "name": "listInvoicesHandler",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/finance.go",
+      "line": 140,
+      "name": "getInvoiceHandler",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/finance.go",
+      "line": 153,
+      "name": "getInvoiceHandler",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/finance.go",
+      "line": 159,
+      "name": "createInvoiceHandler",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/finance.go",
+      "line": 233,
+      "name": "createInvoiceHandler",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/finance.go",
+      "line": 239,
+      "name": "updateInvoiceHandler",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/finance.go",
+      "line": 311,
+      "name": "updateInvoiceHandler",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/finance.go",
+      "line": 317,
+      "name": "requestRefundHandler",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/finance.go",
+      "line": 366,
+      "name": "requestRefundHandler",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/finance.go",
+      "line": 372,
+      "name": "deleteInvoiceHandler",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/finance.go",
+      "line": 400,
+      "name": "deleteInvoiceHandler",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/finance.go",
+      "line": 408,
+      "name": "listPaymentsHandler",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/finance.go",
+      "line": 430,
+      "name": "listPaymentsHandler",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/finance.go",
+      "line": 436,
+      "name": "createPaymentHandler",
+      "statement_coverage": 76.7
+    },
+    {
+      "file": "ecc-crm/backend/finance.go",
+      "line": 540,
+      "name": "createPaymentHandler",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/finance.go",
+      "line": 546,
+      "name": "deletePaymentHandler",
+      "statement_coverage": 81.2
+    },
+    {
+      "file": "ecc-crm/backend/finance.go",
+      "line": 595,
+      "name": "deletePaymentHandler",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/followups.go",
+      "line": 42,
+      "name": "registerFollowupRoutes",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/followups.go",
+      "line": 57,
+      "name": "validateFollowupRule",
+      "statement_coverage": 54.5
+    },
+    {
+      "file": "ecc-crm/backend/followups.go",
+      "line": 81,
+      "name": "newerDate",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/followups.go",
+      "line": 88,
+      "name": "ruleAuditTouches",
+      "statement_coverage": 58.1
+    },
+    {
+      "file": "ecc-crm/backend/followups.go",
+      "line": 153,
+      "name": "dayAge",
+      "statement_coverage": 83.3
+    },
+    {
+      "file": "ecc-crm/backend/followups.go",
+      "line": 164,
+      "name": "followupMatches",
+      "statement_coverage": 64.3
+    },
+    {
+      "file": "ecc-crm/backend/followups.go",
+      "line": 212,
+      "name": "followupPreviewToken",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/followups.go",
+      "line": 225,
+      "name": "followupPreviewFresh",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/followups.go",
+      "line": 230,
+      "name": "decodeFollowupRule",
+      "statement_coverage": 72.7
+    },
+    {
+      "file": "ecc-crm/backend/followups.go",
+      "line": 246,
+      "name": "previewFollowupRule",
+      "statement_coverage": 60.0
+    },
+    {
+      "file": "ecc-crm/backend/followups.go",
+      "line": 268,
+      "name": "previewFollowupRule",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/followups.go",
+      "line": 274,
+      "name": "saveFollowupRule",
+      "statement_coverage": 59.1
+    },
+    {
+      "file": "ecc-crm/backend/followups.go",
+      "line": 306,
+      "name": "saveFollowupRule",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/followups.go",
+      "line": 312,
+      "name": "listFollowupRules",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/followups.go",
+      "line": 335,
+      "name": "listFollowupRules",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/followups.go",
+      "line": 341,
+      "name": "refreshFollowupPreview",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/followups.go",
+      "line": 375,
+      "name": "refreshFollowupPreview",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/followups.go",
+      "line": 381,
+      "name": "toggleFollowupRule",
+      "statement_coverage": 60.7
+    },
+    {
+      "file": "ecc-crm/backend/followups.go",
+      "line": 423,
+      "name": "toggleFollowupRule",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/followups.go",
+      "line": 429,
+      "name": "editFollowupRule",
+      "statement_coverage": 52.6
+    },
+    {
+      "file": "ecc-crm/backend/followups.go",
+      "line": 456,
+      "name": "deleteFollowupRule",
+      "statement_coverage": 50.0
+    },
+    {
+      "file": "ecc-crm/backend/followups.go",
+      "line": 480,
+      "name": "listFollowupHistory",
+      "statement_coverage": 78.9
+    },
+    {
+      "file": "ecc-crm/backend/followups.go",
+      "line": 506,
+      "name": "caseStageHistory",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/followups.go",
+      "line": 528,
+      "name": "caseStageHistory",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/followups.go",
+      "line": 534,
+      "name": "studentApplicationHistory",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/followups.go",
+      "line": 563,
+      "name": "studentApplicationHistory",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/followups.go",
+      "line": 569,
+      "name": "applicationActionQueue",
+      "statement_coverage": 91.7
+    },
+    {
+      "file": "ecc-crm/backend/followups.go",
+      "line": 606,
+      "name": "applicationActionQueue",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/followups.go",
+      "line": 614,
+      "name": "runFollowupRules",
+      "statement_coverage": 79.0
+    },
+    {
+      "file": "ecc-crm/backend/followups.go",
+      "line": 700,
+      "name": "organizationTodayForOrg",
+      "statement_coverage": 83.3
+    },
+    {
+      "file": "ecc-crm/backend/followups.go",
+      "line": 720,
+      "name": "handleDataQuality",
+      "statement_coverage": 84.7
+    },
+    {
+      "file": "ecc-crm/backend/followups.go",
+      "line": 904,
+      "name": "handleDataQuality",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/handoff_reminders.go",
+      "line": 9,
+      "name": "remindPendingHandoffs",
+      "statement_coverage": 84.1
+    },
+    {
+      "file": "ecc-crm/backend/handoffs.go",
+      "line": 26,
+      "name": "registerHandoffRoutes",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/handoffs.go",
+      "line": 31,
+      "name": "handoffHistory",
+      "statement_coverage": 78.6
+    },
+    {
+      "file": "ecc-crm/backend/handoffs.go",
+      "line": 51,
+      "name": "handleApplicationHandoffs",
+      "statement_coverage": 80.8
+    },
+    {
+      "file": "ecc-crm/backend/handoffs.go",
+      "line": 87,
+      "name": "handleProposeHandoff",
+      "statement_coverage": 70.9
+    },
+    {
+      "file": "ecc-crm/backend/handoffs.go",
+      "line": 156,
+      "name": "handleResolveHandoff",
+      "statement_coverage": 71.7
+    },
+    {
+      "file": "ecc-crm/backend/http_security.go",
+      "line": 18,
+      "name": "protectHTTP",
+      "statement_coverage": 26.7
+    },
+    {
+      "file": "ecc-crm/backend/identity_providers.go",
+      "line": 21,
+      "name": "registerIdentityRoutes",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/identity_providers.go",
+      "line": 32,
+      "name": "oidcConfiguration",
+      "statement_coverage": 87.5
+    },
+    {
+      "file": "ecc-crm/backend/identity_providers.go",
+      "line": 44,
+      "name": "handleSSOStart",
+      "statement_coverage": 84.6
+    },
+    {
+      "file": "ecc-crm/backend/identity_providers.go",
+      "line": 61,
+      "name": "finishIdentity",
+      "statement_coverage": 46.7
+    },
+    {
+      "file": "ecc-crm/backend/identity_providers.go",
+      "line": 83,
+      "name": "finishIdentity",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/identity_providers.go",
+      "line": 88,
+      "name": "handleSSOCallback",
+      "statement_coverage": 70.5
+    },
+    {
+      "file": "ecc-crm/backend/identity_providers.go",
+      "line": 148,
+      "name": "handleSSOCallback",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/identity_providers.go",
+      "line": 153,
+      "name": "handleSSOFinish",
+      "statement_coverage": 87.0
+    },
+    {
+      "file": "ecc-crm/backend/identity_providers.go",
+      "line": 185,
+      "name": "handleSSOFinish",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/identity_providers.go",
+      "line": 193,
+      "name": "CreateSession",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/identity_providers.go",
+      "line": 229,
+      "name": "DeleteSession",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/identity_providers.go",
+      "line": 233,
+      "name": "GetSession",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/identity_providers.go",
+      "line": 236,
+      "name": "samlConfiguration",
+      "statement_coverage": 6.7
+    },
+    {
+      "file": "ecc-crm/backend/identity_providers.go",
+      "line": 276,
+      "name": "handleSAMLStart",
+      "statement_coverage": 80.0
+    },
+    {
+      "file": "ecc-crm/backend/identity_providers.go",
+      "line": 284,
+      "name": "handleSAML",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/insights.go",
+      "line": 13,
+      "name": "sqlWorkspace",
+      "statement_coverage": 55.2
+    },
+    {
+      "file": "ecc-crm/backend/insights.go",
+      "line": 60,
+      "name": "sqlSummaryWorkspace",
+      "statement_coverage": 57.1
+    },
+    {
+      "file": "ecc-crm/backend/insights.go",
+      "line": 94,
+      "name": "sqlPriorityWorkspace",
+      "statement_coverage": 58.8
+    },
+    {
+      "file": "ecc-crm/backend/insights.go",
+      "line": 122,
+      "name": "readVisibleReportRows",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/insights.go",
+      "line": 127,
+      "name": "readScopedRows",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/insights.go",
+      "line": 132,
+      "name": "decodeScopedRows",
+      "statement_coverage": 78.6
+    },
+    {
+      "file": "ecc-crm/backend/insights.go",
+      "line": 177,
+      "name": "parseReportDates",
+      "statement_coverage": 80.0
+    },
+    {
+      "file": "ecc-crm/backend/insights.go",
+      "line": 193,
+      "name": "withinCohort",
+      "statement_coverage": 66.7
+    },
+    {
+      "file": "ecc-crm/backend/insights.go",
+      "line": 199,
+      "name": "cohortMetrics",
+      "statement_coverage": 94.2
+    },
+    {
+      "file": "ecc-crm/backend/insights.go",
+      "line": 268,
+      "name": "handleInsights",
+      "statement_coverage": 83.8
+    },
+    {
+      "file": "ecc-crm/backend/insights.go",
+      "line": 379,
+      "name": "trackCaseStages",
+      "statement_coverage": 80.0
+    },
+    {
+      "file": "ecc-crm/backend/integration_health.go",
+      "line": 38,
+      "name": "integrationConfiguration",
+      "statement_coverage": 75.7
+    },
+    {
+      "file": "ecc-crm/backend/integration_health.go",
+      "line": 87,
+      "name": "handleIntegrationHealth",
+      "statement_coverage": 86.7
+    },
+    {
+      "file": "ecc-crm/backend/integration_health.go",
+      "line": 108,
+      "name": "testSMTPConnection",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/integration_health.go",
+      "line": 152,
+      "name": "probeIntegration",
+      "statement_coverage": 48.4
+    },
+    {
+      "file": "ecc-crm/backend/integration_health.go",
+      "line": 201,
+      "name": "handleIntegrationTest",
+      "statement_coverage": 64.0
+    },
+    {
+      "file": "ecc-crm/backend/lead_intake.go",
+      "line": 12,
+      "name": "handleLeadCVReview",
+      "statement_coverage": 64.2
+    },
+    {
+      "file": "ecc-crm/backend/lead_intake.go",
+      "line": 88,
+      "name": "convertLead",
+      "statement_coverage": 76.1
+    },
+    {
+      "file": "ecc-crm/backend/lead_intake.go",
+      "line": 212,
+      "name": "handleLeadCVUpload",
+      "statement_coverage": 75.0
+    },
+    {
+      "file": "ecc-crm/backend/lead_pipeline.go",
+      "line": 22,
+      "name": "leadPipelineMetrics",
+      "statement_coverage": 92.1
+    },
+    {
+      "file": "ecc-crm/backend/lead_work.go",
+      "line": 12,
+      "name": "leadNextAction",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/lead_work.go",
+      "line": 18,
+      "name": "openLead",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/lead_work.go",
+      "line": 21,
+      "name": "phoneIdentity",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/lead_work.go",
+      "line": 33,
+      "name": "leadDuplicateCandidates",
+      "statement_coverage": 87.5
+    },
+    {
+      "file": "ecc-crm/backend/lead_work.go",
+      "line": 70,
+      "name": "checkLeadDuplicates",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/lead_work.go",
+      "line": 92,
+      "name": "appendLeadEvent",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/lead_work.go",
+      "line": 102,
+      "name": "registerLeadWorkRoutes",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/lead_work.go",
+      "line": 107,
+      "name": "handleLeadTimelineLog",
+      "statement_coverage": 72.4
+    },
+    {
+      "file": "ecc-crm/backend/lead_work.go",
+      "line": 150,
+      "name": "handleLeadTimeline",
+      "statement_coverage": 66.7
+    },
+    {
+      "file": "ecc-crm/backend/lead_work.go",
+      "line": 230,
+      "name": "leadMap",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/lead_work.go",
+      "line": 237,
+      "name": "trackLeadTimeline",
+      "statement_coverage": 87.0
+    },
+    {
+      "file": "ecc-crm/backend/lead_work.go",
+      "line": 309,
+      "name": "remindLeadFollowUps",
+      "statement_coverage": 81.5
+    },
+    {
+      "file": "ecc-crm/backend/leads.go",
+      "line": 39,
+      "name": "isValidLeadSource",
+      "statement_coverage": 75.0
+    },
+    {
+      "file": "ecc-crm/backend/leads.go",
+      "line": 48,
+      "name": "isValidLeadStatus",
+      "statement_coverage": 75.0
+    },
+    {
+      "file": "ecc-crm/backend/leads.go",
+      "line": 57,
+      "name": "validateLead",
+      "statement_coverage": 77.3
+    },
+    {
+      "file": "ecc-crm/backend/leads.go",
+      "line": 93,
+      "name": "listLeadsHandler",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/leads.go",
+      "line": 119,
+      "name": "listLeadsHandler",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/leads.go",
+      "line": 125,
+      "name": "getLeadHandler",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/leads.go",
+      "line": 135,
+      "name": "getLeadHandler",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/leads.go",
+      "line": 141,
+      "name": "createLeadHandler",
+      "statement_coverage": 85.7
+    },
+    {
+      "file": "ecc-crm/backend/leads.go",
+      "line": 204,
+      "name": "createLeadHandler",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/leads.go",
+      "line": 210,
+      "name": "updateLeadHandler",
+      "statement_coverage": 81.2
+    },
+    {
+      "file": "ecc-crm/backend/leads.go",
+      "line": 275,
+      "name": "updateLeadHandler",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/leads.go",
+      "line": 281,
+      "name": "deleteLeadHandler",
+      "statement_coverage": 88.9
+    },
+    {
+      "file": "ecc-crm/backend/leads.go",
+      "line": 310,
+      "name": "deleteLeadHandler",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/mailbox_sync.go",
+      "line": 19,
+      "name": "graphToken",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/mailbox_sync.go",
+      "line": 57,
+      "name": "validGraphLink",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/mailbox_sync.go",
+      "line": 61,
+      "name": "setSyncStatus",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/mailbox_sync.go",
+      "line": 64,
+      "name": "handleMailboxStatus",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/mailbox_sync.go",
+      "line": 82,
+      "name": "syncMailbox",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/main.go",
+      "line": 18,
+      "name": "main",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/main.go",
+      "line": 202,
+      "name": "mountStatic",
+      "statement_coverage": 77.4
+    },
+    {
+      "file": "ecc-crm/backend/main.go",
+      "line": 251,
+      "name": "findProjectRoot",
+      "statement_coverage": 91.7
+    },
+    {
+      "file": "ecc-crm/backend/main.go",
+      "line": 272,
+      "name": "fileExists",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/main.go",
+      "line": 277,
+      "name": "hasStaticExtension",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/main.go",
+      "line": 282,
+      "name": "isAllowedStaticFile",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/main.go",
+      "line": 293,
+      "name": "serveFileIfExists",
+      "statement_coverage": 60.0
+    },
+    {
+      "file": "ecc-crm/backend/operational_attention.go",
+      "line": 13,
+      "name": "handleOperationalAttention",
+      "statement_coverage": 82.6
+    },
+    {
+      "file": "ecc-crm/backend/operations.go",
+      "line": 22,
+      "name": "WriteHeader",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/operations.go",
+      "line": 28,
+      "name": "Write",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/operations.go",
+      "line": 34,
+      "name": "observeHTTP",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/operations.go",
+      "line": 50,
+      "name": "handleMetrics",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/operations.go",
+      "line": 62,
+      "name": "handleOperations",
+      "statement_coverage": 55.8
+    },
+    {
+      "file": "ecc-crm/backend/partners.go",
+      "line": 38,
+      "name": "isValidPartnerType",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/partners.go",
+      "line": 47,
+      "name": "validatePartner",
+      "statement_coverage": 61.1
+    },
+    {
+      "file": "ecc-crm/backend/partners.go",
+      "line": 78,
+      "name": "listPartnersHandler",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/partners.go",
+      "line": 111,
+      "name": "listPartnersHandler",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/partners.go",
+      "line": 117,
+      "name": "getPartnerHandler",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/partners.go",
+      "line": 130,
+      "name": "getPartnerHandler",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/partners.go",
+      "line": 136,
+      "name": "createPartnerHandler",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/partners.go",
+      "line": 190,
+      "name": "createPartnerHandler",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/partners.go",
+      "line": 196,
+      "name": "updatePartnerHandler",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/partners.go",
+      "line": 250,
+      "name": "updatePartnerHandler",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/partners.go",
+      "line": 256,
+      "name": "deletePartnerHandler",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/partners.go",
+      "line": 278,
+      "name": "deletePartnerHandler",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/payment_gateway.go",
+      "line": 18,
+      "name": "registerPaymentRoutes",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/payment_gateway.go",
+      "line": 26,
+      "name": "stripeRequest",
+      "statement_coverage": 78.9
+    },
+    {
+      "file": "ecc-crm/backend/payment_gateway.go",
+      "line": 52,
+      "name": "currencyMinor",
+      "statement_coverage": 66.7
+    },
+    {
+      "file": "ecc-crm/backend/payment_gateway.go",
+      "line": 58,
+      "name": "handleCheckout",
+      "statement_coverage": 77.3
+    },
+    {
+      "file": "ecc-crm/backend/payment_gateway.go",
+      "line": 88,
+      "name": "handleCheckout",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/payment_gateway.go",
+      "line": 93,
+      "name": "stripeSignatureValid",
+      "statement_coverage": 91.7
+    },
+    {
+      "file": "ecc-crm/backend/payment_gateway.go",
+      "line": 127,
+      "name": "handleStripeWebhook",
+      "statement_coverage": 67.3
+    },
+    {
+      "file": "ecc-crm/backend/payment_gateway.go",
+      "line": 202,
+      "name": "handleStripeWebhook",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/payment_gateway.go",
+      "line": 207,
+      "name": "handleGatewayRefund",
+      "statement_coverage": 81.5
+    },
+    {
+      "file": "ecc-crm/backend/payment_gateway.go",
+      "line": 296,
+      "name": "handleGatewayRefund",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/payment_gateway.go",
+      "line": 302,
+      "name": "stripeGet",
+      "statement_coverage": 73.3
+    },
+    {
+      "file": "ecc-crm/backend/persistence.go",
+      "line": 43,
+      "name": "snapshot",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/persistence.go",
+      "line": 55,
+      "name": "snapshot",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/persistence.go",
+      "line": 61,
+      "name": "restoreStore",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/persistence.go",
+      "line": 85,
+      "name": "restoreStore",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/persistence.go",
+      "line": 97,
+      "name": "Header",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/persistence.go",
+      "line": 98,
+      "name": "WriteHeader",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/persistence.go",
+      "line": 103,
+      "name": "Write",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/persistence.go",
+      "line": 110,
+      "name": "persistMutations",
+      "statement_coverage": 85.7
+    },
+    {
+      "file": "ecc-crm/backend/portal.go",
+      "line": 12,
+      "name": "registerPortalRoutes",
+      "statement_coverage": 91.7
+    },
+    {
+      "file": "ecc-crm/backend/portal.go",
+      "line": 27,
+      "name": "handlePortalInvite",
+      "statement_coverage": 43.9
+    },
+    {
+      "file": "ecc-crm/backend/portal.go",
+      "line": 87,
+      "name": "handlePortalInvite",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/portal.go",
+      "line": 92,
+      "name": "handlePortalInvites",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/portal.go",
+      "line": 104,
+      "name": "handlePortalRevoke",
+      "statement_coverage": 50.0
+    },
+    {
+      "file": "ecc-crm/backend/portal.go",
+      "line": 121,
+      "name": "handlePortalExchange",
+      "statement_coverage": 70.6
+    },
+    {
+      "file": "ecc-crm/backend/portal.go",
+      "line": 147,
+      "name": "portalMiddleware",
+      "statement_coverage": 85.7
+    },
+    {
+      "file": "ecc-crm/backend/portal.go",
+      "line": 167,
+      "name": "portalIdentity",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/portal.go",
+      "line": 171,
+      "name": "portalCases",
+      "statement_coverage": 80.0
+    },
+    {
+      "file": "ecc-crm/backend/portal.go",
+      "line": 181,
+      "name": "portalCases",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/portal.go",
+      "line": 186,
+      "name": "portalDocument",
+      "statement_coverage": 85.7
+    },
+    {
+      "file": "ecc-crm/backend/portal.go",
+      "line": 198,
+      "name": "portalDocument",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/portal.go",
+      "line": 203,
+      "name": "portalInvoice",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/portal.go",
+      "line": 215,
+      "name": "portalInvoice",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/portal.go",
+      "line": 220,
+      "name": "handlePortalMe",
+      "statement_coverage": 69.2
+    },
+    {
+      "file": "ecc-crm/backend/portal.go",
+      "line": 259,
+      "name": "handlePortalMe",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/portal.go",
+      "line": 264,
+      "name": "fmtString",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/portal.go",
+      "line": 265,
+      "name": "handlePortalMessage",
+      "statement_coverage": 31.8
+    },
+    {
+      "file": "ecc-crm/backend/portal.go",
+      "line": 295,
+      "name": "handlePortalMessage",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/portal.go",
+      "line": 300,
+      "name": "portalStaffRequest",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/portal.go",
+      "line": 304,
+      "name": "handlePortalUpload",
+      "statement_coverage": 25.0
+    },
+    {
+      "file": "ecc-crm/backend/portal.go",
+      "line": 327,
+      "name": "handlePortalUpload",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/portal.go",
+      "line": 332,
+      "name": "handlePortalDownload",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/portal.go",
+      "line": 341,
+      "name": "handlePortalDownload",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/portal.go",
+      "line": 346,
+      "name": "handlePortalInvoice",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/portal.go",
+      "line": 363,
+      "name": "handlePortalInvoice",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/portal.go",
+      "line": 368,
+      "name": "handlePortalLogout",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/portal.go",
+      "line": 379,
+      "name": "portalNotify",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/productivity_documents.go",
+      "line": 6,
+      "name": "documentIssue",
+      "statement_coverage": 85.7
+    },
+    {
+      "file": "ecc-crm/backend/productivity_documents.go",
+      "line": 29,
+      "name": "dailyDocumentItems",
+      "statement_coverage": 73.9
+    },
+    {
+      "file": "ecc-crm/backend/productivity_reminders.go",
+      "line": 5,
+      "name": "responsibleRecipient",
+      "statement_coverage": 90.9
+    },
+    {
+      "file": "ecc-crm/backend/productivity_reminders.go",
+      "line": 22,
+      "name": "documentResponsible",
+      "statement_coverage": 89.3
+    },
+    {
+      "file": "ecc-crm/backend/productivity_reminders.go",
+      "line": 63,
+      "name": "remindProductivity",
+      "statement_coverage": 75.5
+    },
+    {
+      "file": "ecc-crm/backend/productivity_reporting.go",
+      "line": 34,
+      "name": "operationalReport",
+      "statement_coverage": 80.2
+    },
+    {
+      "file": "ecc-crm/backend/productivity_templates.go",
+      "line": 18,
+      "name": "builtinFollowupTemplates",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/productivity_templates.go",
+      "line": 25,
+      "name": "registerFollowupTemplateRoutes",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/productivity_templates.go",
+      "line": 30,
+      "name": "handleFollowupTemplates",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/productivity_templates.go",
+      "line": 60,
+      "name": "handleSaveFollowupTemplate",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/productivity_templates.go",
+      "line": 86,
+      "name": "handleDeleteFollowupTemplate",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/productivity_templates.go",
+      "line": 103,
+      "name": "handleLeadConversionPreview",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/productivity_templates.go",
+      "line": 126,
+      "name": "recordVersion",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/receipt_controls.go",
+      "line": 9,
+      "name": "receiptActive",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/receipt_controls.go",
+      "line": 12,
+      "name": "receiptRisk",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/receipt_controls.go",
+      "line": 26,
+      "name": "pendingReceipt",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/receipt_controls.go",
+      "line": 28,
+      "name": "pendingInvoiceReceiptCounts",
+      "statement_coverage": 85.7
+    },
+    {
+      "file": "ecc-crm/backend/receipt_controls.go",
+      "line": 48,
+      "name": "handleReceiptReview",
+      "statement_coverage": 77.8
+    },
+    {
+      "file": "ecc-crm/backend/receipt_controls.go",
+      "line": 108,
+      "name": "handleInvoiceFinanceStatus",
+      "statement_coverage": 68.8
+    },
+    {
+      "file": "ecc-crm/backend/reconciliation.go",
+      "line": 31,
+      "name": "registerReconciliationRoutes",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/reconciliation.go",
+      "line": 36,
+      "name": "financeReviewer",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/reconciliation.go",
+      "line": 43,
+      "name": "handleReconciliation",
+      "statement_coverage": 84.1
+    },
+    {
+      "file": "ecc-crm/backend/reconciliation.go",
+      "line": 104,
+      "name": "parseStatement",
+      "statement_coverage": 78.8
+    },
+    {
+      "file": "ecc-crm/backend/reconciliation.go",
+      "line": 149,
+      "name": "handleReconciliationImport",
+      "statement_coverage": 78.3
+    },
+    {
+      "file": "ecc-crm/backend/reconciliation.go",
+      "line": 179,
+      "name": "handleReconciliationMatch",
+      "statement_coverage": 66.0
+    },
+    {
+      "file": "ecc-crm/backend/record_audit.go",
+      "line": 8,
+      "name": "extendedRecordAudit",
+      "statement_coverage": 98.3
+    },
+    {
+      "file": "ecc-crm/backend/record_photos.go",
+      "line": 22,
+      "name": "registerRecordPhotoRoutes",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/record_photos.go",
+      "line": 30,
+      "name": "handleQRDecode",
+      "statement_coverage": 62.2
+    },
+    {
+      "file": "ecc-crm/backend/record_photos.go",
+      "line": 78,
+      "name": "recordPhotoScope",
+      "statement_coverage": 69.2
+    },
+    {
+      "file": "ecc-crm/backend/record_photos.go",
+      "line": 100,
+      "name": "recordPhotoScope",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/record_photos.go",
+      "line": 106,
+      "name": "auditRecordPhoto",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/record_photos.go",
+      "line": 115,
+      "name": "handleRecordQR",
+      "statement_coverage": 65.5
+    },
+    {
+      "file": "ecc-crm/backend/record_photos.go",
+      "line": 153,
+      "name": "handleRecordQR",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/record_photos.go",
+      "line": 159,
+      "name": "handleRecordPhoto",
+      "statement_coverage": 87.5
+    },
+    {
+      "file": "ecc-crm/backend/record_photos.go",
+      "line": 180,
+      "name": "handleRecordPhoto",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/record_photos.go",
+      "line": 186,
+      "name": "handleRecordPhotoUpload",
+      "statement_coverage": 61.1
+    },
+    {
+      "file": "ecc-crm/backend/record_photos.go",
+      "line": 234,
+      "name": "handleRecordPhotoUpload",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/record_photos.go",
+      "line": 240,
+      "name": "handleRecordPhotoDelete",
+      "statement_coverage": 53.8
+    },
+    {
+      "file": "ecc-crm/backend/record_photos.go",
+      "line": 260,
+      "name": "handleRecordPhotoDelete",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/record_productivity.go",
+      "line": 12,
+      "name": "registerProductivityRoutes",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/record_productivity.go",
+      "line": 23,
+      "name": "workPlanEntity",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/record_productivity.go",
+      "line": 26,
+      "name": "recordScopeMap",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/record_productivity.go",
+      "line": 29,
+      "name": "handleWorkPlan",
+      "statement_coverage": 90.0
+    },
+    {
+      "file": "ecc-crm/backend/record_productivity.go",
+      "line": 57,
+      "name": "handleSaveWorkPlan",
+      "statement_coverage": 80.0
+    },
+    {
+      "file": "ecc-crm/backend/record_productivity.go",
+      "line": 161,
+      "name": "handleClientHistory",
+      "statement_coverage": 68.9
+    },
+    {
+      "file": "ecc-crm/backend/record_productivity.go",
+      "line": 556,
+      "name": "formatMoney",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/record_productivity.go",
+      "line": 569,
+      "name": "handleWorkspacePriorities",
+      "statement_coverage": 85.3
+    },
+    {
+      "file": "ecc-crm/backend/record_productivity.go",
+      "line": 717,
+      "name": "activeApplication",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/record_productivity.go",
+      "line": 721,
+      "name": "actionOrDefault",
+      "statement_coverage": 66.7
+    },
+    {
+      "file": "ecc-crm/backend/reports.go",
+      "line": 42,
+      "name": "handleReports",
+      "statement_coverage": 92.0
+    },
+    {
+      "file": "ecc-crm/backend/repository.go",
+      "line": 16,
+      "name": "repositoryRoute",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/repository.go",
+      "line": 30,
+      "name": "repositoryFields",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/repository.go",
+      "line": 52,
+      "name": "repositoryVisibility",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/repository.go",
+      "line": 82,
+      "name": "repositoryPredicate",
+      "statement_coverage": 83.3
+    },
+    {
+      "file": "ecc-crm/backend/repository.go",
+      "line": 118,
+      "name": "enrichRepositoryRecords",
+      "statement_coverage": 89.3
+    },
+    {
+      "file": "ecc-crm/backend/repository.go",
+      "line": 156,
+      "name": "handleRepositoryRead",
+      "statement_coverage": 80.0
+    },
+    {
+      "file": "ecc-crm/backend/repository.go",
+      "line": 269,
+      "name": "saveStoreDeltaTx",
+      "statement_coverage": 82.8
+    },
+    {
+      "file": "ecc-crm/backend/repository.go",
+      "line": 372,
+      "name": "idOfValue",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/repository.go",
+      "line": 374,
+      "name": "withDBTransaction",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/requirement_plan.go",
+      "line": 36,
+      "name": "requirementPeople",
+      "statement_coverage": 84.2
+    },
+    {
+      "file": "ecc-crm/backend/requirement_plan.go",
+      "line": 64,
+      "name": "documentChecklist",
+      "statement_coverage": 95.3
+    },
+    {
+      "file": "ecc-crm/backend/requirement_plan.go",
+      "line": 124,
+      "name": "handleRequirementPlan",
+      "statement_coverage": 72.2
+    },
+    {
+      "file": "ecc-crm/backend/runtime_store.go",
+      "line": 37,
+      "name": "runtimeForCall",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/runtime_store.go",
+      "line": 52,
+      "name": "publishLegacyRuntime",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/runtime_store.go",
+      "line": 62,
+      "name": "attachRuntime",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/runtime_store.go",
+      "line": 68,
+      "name": "lockSQLWriter",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/runtime_store.go",
+      "line": 75,
+      "name": "workerRuntime",
+      "statement_coverage": 52.2
+    },
+    {
+      "file": "ecc-crm/backend/runtime_store.go",
+      "line": 105,
+      "name": "todayForOrgDB",
+      "statement_coverage": 83.3
+    },
+    {
+      "file": "ecc-crm/backend/runtime_store.go",
+      "line": 115,
+      "name": "legacyRuntimeView",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/runtime_store.go",
+      "line": 118,
+      "name": "runtimeForReadCall",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/runtime_store.go",
+      "line": 127,
+      "name": "claimDelivery",
+      "statement_coverage": 71.4
+    },
+    {
+      "file": "ecc-crm/backend/runtime_store.go",
+      "line": 139,
+      "name": "cloneStoreValue",
+      "statement_coverage": 96.2
+    },
+    {
+      "file": "ecc-crm/backend/schools.go",
+      "line": 23,
+      "name": "isValidContractStatus",
+      "statement_coverage": 75.0
+    },
+    {
+      "file": "ecc-crm/backend/schools.go",
+      "line": 32,
+      "name": "validateSchool",
+      "statement_coverage": 78.6
+    },
+    {
+      "file": "ecc-crm/backend/schools.go",
+      "line": 57,
+      "name": "listSchoolsHandler",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/schools.go",
+      "line": 83,
+      "name": "listSchoolsHandler",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/schools.go",
+      "line": 89,
+      "name": "getSchoolHandler",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/schools.go",
+      "line": 101,
+      "name": "getSchoolHandler",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/schools.go",
+      "line": 107,
+      "name": "createSchoolHandler",
+      "statement_coverage": 88.9
+    },
+    {
+      "file": "ecc-crm/backend/schools.go",
+      "line": 149,
+      "name": "createSchoolHandler",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/schools.go",
+      "line": 155,
+      "name": "updateSchoolHandler",
+      "statement_coverage": 86.2
+    },
+    {
+      "file": "ecc-crm/backend/schools.go",
+      "line": 197,
+      "name": "updateSchoolHandler",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/schools.go",
+      "line": 203,
+      "name": "deleteSchoolHandler",
+      "statement_coverage": 84.6
+    },
+    {
+      "file": "ecc-crm/backend/schools.go",
+      "line": 225,
+      "name": "deleteSchoolHandler",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/session_security.go",
+      "line": 31,
+      "name": "utcNow",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/session_security.go",
+      "line": 32,
+      "name": "randomSecret",
+      "statement_coverage": 75.0
+    },
+    {
+      "file": "ecc-crm/backend/session_security.go",
+      "line": 39,
+      "name": "hashSecret",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/session_security.go",
+      "line": 43,
+      "name": "validEmail",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/session_security.go",
+      "line": 47,
+      "name": "passwordError",
+      "statement_coverage": 60.0
+    },
+    {
+      "file": "ecc-crm/backend/session_security.go",
+      "line": 56,
+      "name": "appURL",
+      "statement_coverage": 83.3
+    },
+    {
+      "file": "ecc-crm/backend/session_security.go",
+      "line": 66,
+      "name": "secureCookie",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/session_security.go",
+      "line": 69,
+      "name": "validOrigin",
+      "statement_coverage": 77.8
+    },
+    {
+      "file": "ecc-crm/backend/session_security.go",
+      "line": 83,
+      "name": "requestIP",
+      "statement_coverage": 72.7
+    },
+    {
+      "file": "ecc-crm/backend/session_security.go",
+      "line": 100,
+      "name": "ipAllowed",
+      "statement_coverage": 25.0
+    },
+    {
+      "file": "ecc-crm/backend/session_security.go",
+      "line": 123,
+      "name": "findUserByID",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/session_security.go",
+      "line": 134,
+      "name": "findUserByID",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/session_security.go",
+      "line": 139,
+      "name": "authorizeWorkspaceRequest",
+      "statement_coverage": 83.3
+    },
+    {
+      "file": "ecc-crm/backend/session_security.go",
+      "line": 155,
+      "name": "setSessionCookies",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/session_security.go",
+      "line": 165,
+      "name": "clearSessionCookies",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/session_security.go",
+      "line": 170,
+      "name": "mintSession",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/session_security.go",
+      "line": 185,
+      "name": "cookieIdentity",
+      "statement_coverage": 83.3
+    },
+    {
+      "file": "ecc-crm/backend/session_security.go",
+      "line": 210,
+      "name": "handleSessionRefresh",
+      "statement_coverage": 77.3
+    },
+    {
+      "file": "ecc-crm/backend/session_security.go",
+      "line": 238,
+      "name": "handleSessionRefresh",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/session_security.go",
+      "line": 243,
+      "name": "handleSessionLogout",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/session_security.go",
+      "line": 253,
+      "name": "handleRevokeSession",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/session_security.go",
+      "line": 271,
+      "name": "securityEvent",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/session_security.go",
+      "line": 275,
+      "name": "loginLocked",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/session_security.go",
+      "line": 284,
+      "name": "failedLogin",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/session_security.go",
+      "line": 294,
+      "name": "handleSecureLogin",
+      "statement_coverage": 77.1
+    },
+    {
+      "file": "ecc-crm/backend/session_security.go",
+      "line": 343,
+      "name": "handleSecureLogin",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/session_security.go",
+      "line": 348,
+      "name": "handleSecureRegister",
+      "statement_coverage": 57.5
+    },
+    {
+      "file": "ecc-crm/backend/session_security.go",
+      "line": 404,
+      "name": "handleSecureRegister",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/session_security.go",
+      "line": 409,
+      "name": "encryptSecret",
+      "statement_coverage": 72.7
+    },
+    {
+      "file": "ecc-crm/backend/session_security.go",
+      "line": 425,
+      "name": "decryptSecret",
+      "statement_coverage": 90.0
+    },
+    {
+      "file": "ecc-crm/backend/session_security.go",
+      "line": 439,
+      "name": "totpCode",
+      "statement_coverage": 90.9
+    },
+    {
+      "file": "ecc-crm/backend/session_security.go",
+      "line": 453,
+      "name": "validTOTP",
+      "statement_coverage": 80.0
+    },
+    {
+      "file": "ecc-crm/backend/session_security.go",
+      "line": 462,
+      "name": "verifySecondFactor",
+      "statement_coverage": 84.6
+    },
+    {
+      "file": "ecc-crm/backend/session_security.go",
+      "line": 483,
+      "name": "handleTwoFactor",
+      "statement_coverage": 55.2
+    },
+    {
+      "file": "ecc-crm/backend/session_security.go",
+      "line": 568,
+      "name": "handleTwoFactor",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/session_security.go",
+      "line": 573,
+      "name": "handleForgotPassword",
+      "statement_coverage": 75.0
+    },
+    {
+      "file": "ecc-crm/backend/session_security.go",
+      "line": 602,
+      "name": "handleForgotPassword",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/session_security.go",
+      "line": 607,
+      "name": "consumeAuthToken",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/session_security.go",
+      "line": 618,
+      "name": "consumeAuthToken",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/session_security.go",
+      "line": 623,
+      "name": "handleResetPassword",
+      "statement_coverage": 81.5
+    },
+    {
+      "file": "ecc-crm/backend/session_security.go",
+      "line": 659,
+      "name": "handleResetPassword",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/session_security.go",
+      "line": 664,
+      "name": "initializePersistentSecret",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/staff_options.go",
+      "line": 8,
+      "name": "handleStaffOptions",
+      "statement_coverage": 50.0
+    },
+    {
+      "file": "ecc-crm/backend/staff_options.go",
+      "line": 37,
+      "name": "normalizeStaffAssignment",
+      "statement_coverage": 88.2
+    },
+    {
+      "file": "ecc-crm/backend/staff_options.go",
+      "line": 64,
+      "name": "handleStaffDirectory",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/stage_gates.go",
+      "line": 13,
+      "name": "Error",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/stage_gates.go",
+      "line": 27,
+      "name": "gatePolicy",
+      "statement_coverage": 87.5
+    },
+    {
+      "file": "ecc-crm/backend/stage_gates.go",
+      "line": 39,
+      "name": "gateDocuments",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/stage_gates.go",
+      "line": 57,
+      "name": "gateFingerprint",
+      "statement_coverage": 80.0
+    },
+    {
+      "file": "ecc-crm/backend/stage_gates.go",
+      "line": 63,
+      "name": "evaluateStageGate",
+      "statement_coverage": 82.5
+    },
+    {
+      "file": "ecc-crm/backend/stage_gates.go",
+      "line": 122,
+      "name": "handleGatePolicies",
+      "statement_coverage": 62.5
+    },
+    {
+      "file": "ecc-crm/backend/stage_gates.go",
+      "line": 176,
+      "name": "loadGateCase",
+      "statement_coverage": 68.4
+    },
+    {
+      "file": "ecc-crm/backend/stage_gates.go",
+      "line": 202,
+      "name": "handleCaseGates",
+      "statement_coverage": 63.2
+    },
+    {
+      "file": "ecc-crm/backend/stage_gates.go",
+      "line": 228,
+      "name": "gateEntry",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/stage_gates.go",
+      "line": 232,
+      "name": "handleGateApproval",
+      "statement_coverage": 53.3
+    },
+    {
+      "file": "ecc-crm/backend/stage_gates.go",
+      "line": 277,
+      "name": "handleCaseTransition",
+      "statement_coverage": 76.5
+    },
+    {
+      "file": "ecc-crm/backend/stage_gates.go",
+      "line": 335,
+      "name": "applicationStageFollowUp",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/stage_gates.go",
+      "line": 374,
+      "name": "enforceApplicationGates",
+      "statement_coverage": 89.3
+    },
+    {
+      "file": "ecc-crm/backend/store.go",
+      "line": 342,
+      "name": "newID",
+      "statement_coverage": 75.0
+    },
+    {
+      "file": "ecc-crm/backend/store.go",
+      "line": 350,
+      "name": "parseLimitOffset",
+      "statement_coverage": 90.0
+    },
+    {
+      "file": "ecc-crm/backend/store.go",
+      "line": 368,
+      "name": "slicePage",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/store.go",
+      "line": 379,
+      "name": "seedData",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/store.go",
+      "line": 479,
+      "name": "seedDeals",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/store.go",
+      "line": 527,
+      "name": "seedActivities",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/store.go",
+      "line": 575,
+      "name": "seedTasks",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/store.go",
+      "line": 587,
+      "name": "seedSchools",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/store.go",
+      "line": 645,
+      "name": "seedStudents",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/store.go",
+      "line": 687,
+      "name": "seedAgents",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/store.go",
+      "line": 721,
+      "name": "seedLeads",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/store.go",
+      "line": 777,
+      "name": "seedCases",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/store.go",
+      "line": 824,
+      "name": "seedDocuments",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/store.go",
+      "line": 861,
+      "name": "seedFinance",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/store.go",
+      "line": 896,
+      "name": "seedPartners",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/store.go",
+      "line": 937,
+      "name": "findUserByEmail",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/store.go",
+      "line": 944,
+      "name": "findUserByEmail",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/store.go",
+      "line": 952,
+      "name": "listSchools",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/store.go",
+      "line": 960,
+      "name": "listSchools",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/store.go",
+      "line": 966,
+      "name": "getSchoolByID",
+      "statement_coverage": 83.3
+    },
+    {
+      "file": "ecc-crm/backend/store.go",
+      "line": 977,
+      "name": "getSchoolByID",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/store.go",
+      "line": 985,
+      "name": "listStudents",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/store.go",
+      "line": 993,
+      "name": "listStudents",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/store.go",
+      "line": 999,
+      "name": "getStudentByID",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/store.go",
+      "line": 1010,
+      "name": "getStudentByID",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/store.go",
+      "line": 1018,
+      "name": "listAgents",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/store.go",
+      "line": 1026,
+      "name": "listAgents",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/store.go",
+      "line": 1032,
+      "name": "getAgentByID",
+      "statement_coverage": 83.3
+    },
+    {
+      "file": "ecc-crm/backend/store.go",
+      "line": 1043,
+      "name": "getAgentByID",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/store.go",
+      "line": 1051,
+      "name": "listLeads",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/store.go",
+      "line": 1059,
+      "name": "listLeads",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/store.go",
+      "line": 1065,
+      "name": "getLeadByID",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/store.go",
+      "line": 1076,
+      "name": "getLeadByID",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/store.go",
+      "line": 1084,
+      "name": "listCases",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/store.go",
+      "line": 1092,
+      "name": "listCases",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/store.go",
+      "line": 1098,
+      "name": "getCaseByID",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/store.go",
+      "line": 1109,
+      "name": "getCaseByID",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/store.go",
+      "line": 1117,
+      "name": "listDocuments",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/store.go",
+      "line": 1125,
+      "name": "listDocuments",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/store.go",
+      "line": 1131,
+      "name": "getDocumentByID",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/store.go",
+      "line": 1142,
+      "name": "getDocumentByID",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/store.go",
+      "line": 1150,
+      "name": "listInvoices",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/store.go",
+      "line": 1158,
+      "name": "listInvoices",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/store.go",
+      "line": 1164,
+      "name": "getInvoiceByID",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/store.go",
+      "line": 1175,
+      "name": "getInvoiceByID",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/store.go",
+      "line": 1183,
+      "name": "listPayments",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/store.go",
+      "line": 1191,
+      "name": "listPayments",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/store.go",
+      "line": 1199,
+      "name": "listPartners",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/store.go",
+      "line": 1207,
+      "name": "listPartners",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/store.go",
+      "line": 1213,
+      "name": "getPartnerByID",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/store.go",
+      "line": 1224,
+      "name": "getPartnerByID",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/students.go",
+      "line": 27,
+      "name": "linkedStudentCounts",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/students.go",
+      "line": 40,
+      "name": "linkedStudentCounts",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/students.go",
+      "line": 46,
+      "name": "isValidAcceptanceStatus",
+      "statement_coverage": 75.0
+    },
+    {
+      "file": "ecc-crm/backend/students.go",
+      "line": 55,
+      "name": "isValidVisaStatus",
+      "statement_coverage": 75.0
+    },
+    {
+      "file": "ecc-crm/backend/students.go",
+      "line": 64,
+      "name": "isValidInvoiceStatus",
+      "statement_coverage": 75.0
+    },
+    {
+      "file": "ecc-crm/backend/students.go",
+      "line": 73,
+      "name": "validateStudent",
+      "statement_coverage": 80.0
+    },
+    {
+      "file": "ecc-crm/backend/students.go",
+      "line": 122,
+      "name": "validateStudent",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/students.go",
+      "line": 128,
+      "name": "listStudentsHandler",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/students.go",
+      "line": 159,
+      "name": "listStudentsHandler",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/students.go",
+      "line": 165,
+      "name": "getStudentHandler",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/students.go",
+      "line": 175,
+      "name": "getStudentHandler",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/students.go",
+      "line": 181,
+      "name": "createStudentHandler",
+      "statement_coverage": 85.7
+    },
+    {
+      "file": "ecc-crm/backend/students.go",
+      "line": 243,
+      "name": "createStudentHandler",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/students.go",
+      "line": 249,
+      "name": "updateStudentHandler",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/students.go",
+      "line": 311,
+      "name": "updateStudentHandler",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/students.go",
+      "line": 317,
+      "name": "deleteStudentHandler",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/students.go",
+      "line": 339,
+      "name": "deleteStudentHandler",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/targeted_writes.go",
+      "line": 13,
+      "name": "targetedContactWrite",
+      "statement_coverage": 77.6
+    },
+    {
+      "file": "ecc-crm/backend/tasks.go",
+      "line": 25,
+      "name": "isValidTaskStatus",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/tasks.go",
+      "line": 34,
+      "name": "validateTask",
+      "statement_coverage": 71.4
+    },
+    {
+      "file": "ecc-crm/backend/tasks.go",
+      "line": 55,
+      "name": "validateTask",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/tasks.go",
+      "line": 61,
+      "name": "listTasks",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/tasks.go",
+      "line": 87,
+      "name": "listTasks",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/tasks.go",
+      "line": 93,
+      "name": "getTask",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/tasks.go",
+      "line": 106,
+      "name": "getTask",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/tasks.go",
+      "line": 112,
+      "name": "createTask",
+      "statement_coverage": 76.2
+    },
+    {
+      "file": "ecc-crm/backend/tasks.go",
+      "line": 147,
+      "name": "createTask",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/tasks.go",
+      "line": 153,
+      "name": "updateTask",
+      "statement_coverage": 82.4
+    },
+    {
+      "file": "ecc-crm/backend/tasks.go",
+      "line": 198,
+      "name": "updateTask",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/tasks.go",
+      "line": 204,
+      "name": "updateTaskStatus",
+      "statement_coverage": 81.0
+    },
+    {
+      "file": "ecc-crm/backend/tasks.go",
+      "line": 233,
+      "name": "updateTaskStatus",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/tasks.go",
+      "line": 239,
+      "name": "deleteTask",
+      "statement_coverage": 84.6
+    },
+    {
+      "file": "ecc-crm/backend/tasks.go",
+      "line": 258,
+      "name": "deleteTask",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/team_chat.go",
+      "line": 10,
+      "name": "registerTeamChatRoutes",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/team_chat.go",
+      "line": 15,
+      "name": "handleChatPeople",
+      "statement_coverage": 73.3
+    },
+    {
+      "file": "ecc-crm/backend/team_chat.go",
+      "line": 54,
+      "name": "handleTeamChat",
+      "statement_coverage": 75.4
+    },
+    {
+      "file": "ecc-crm/backend/trash_retention.go",
+      "line": 18,
+      "name": "loadTrashPolicy",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/trash_retention.go",
+      "line": 28,
+      "name": "handleTrashPolicy",
+      "statement_coverage": 47.1
+    },
+    {
+      "file": "ecc-crm/backend/trash_retention.go",
+      "line": 52,
+      "name": "trashPreview",
+      "statement_coverage": 81.8
+    },
+    {
+      "file": "ecc-crm/backend/trash_retention.go",
+      "line": 84,
+      "name": "handleTrashPreview",
+      "statement_coverage": 50.0
+    },
+    {
+      "file": "ecc-crm/backend/trash_retention.go",
+      "line": 96,
+      "name": "purgeTrash",
+      "statement_coverage": 64.3
+    },
+    {
+      "file": "ecc-crm/backend/trash_retention.go",
+      "line": 119,
+      "name": "handleTrashPurge",
+      "statement_coverage": 75.0
+    },
+    {
+      "file": "ecc-crm/backend/trash_retention.go",
+      "line": 152,
+      "name": "processTrashRetention",
+      "statement_coverage": 88.5
+    },
+    {
+      "file": "ecc-crm/backend/trash_retention.go",
+      "line": 189,
+      "name": "collectPurgedFiles",
+      "statement_coverage": 72.7
+    },
+    {
+      "file": "ecc-crm/backend/usability.go",
+      "line": 23,
+      "name": "handleUsabilityFeedback",
+      "statement_coverage": 78.4
+    },
+    {
+      "file": "ecc-crm/backend/validation.go",
+      "line": 16,
+      "name": "normalizedCountry",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/validation.go",
+      "line": 35,
+      "name": "normalizeRequest",
+      "statement_coverage": 65.7
+    },
+    {
+      "file": "ecc-crm/backend/validation.go",
+      "line": 89,
+      "name": "scopeForRelatedRequest",
+      "statement_coverage": 86.4
+    },
+    {
+      "file": "ecc-crm/backend/workflows.go",
+      "line": 36,
+      "name": "registerWorkflowRoutes",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/workflows.go",
+      "line": 43,
+      "name": "entry",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/workflows.go",
+      "line": 52,
+      "name": "invoiceTotal",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/workflows.go",
+      "line": 60,
+      "name": "recomputeInvoiceLocked",
+      "statement_coverage": 80.0
+    },
+    {
+      "file": "ecc-crm/backend/workflows.go",
+      "line": 82,
+      "name": "recomputeInvoiceLocked",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/workflows.go",
+      "line": 87,
+      "name": "handleWorkflowOverview",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/workflows.go",
+      "line": 106,
+      "name": "handleWorkflowOverview",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/workflows.go",
+      "line": 111,
+      "name": "visibleRecordID",
+      "statement_coverage": 75.0
+    },
+    {
+      "file": "ecc-crm/backend/workflows.go",
+      "line": 119,
+      "name": "handleWorkflow",
+      "statement_coverage": 43.6
+    },
+    {
+      "file": "ecc-crm/backend/workflows.go",
+      "line": 690,
+      "name": "handleWorkflow",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/workflows.go",
+      "line": 695,
+      "name": "handleInvoiceEmail",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/workflows.go",
+      "line": 723,
+      "name": "handleInvoiceEmail",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/workflows.go",
+      "line": 728,
+      "name": "handleSaveView",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/workflows.go",
+      "line": 751,
+      "name": "handleDeleteView",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/workflows.go",
+      "line": 764,
+      "name": "applyComputedData",
+      "statement_coverage": 93.2
+    },
+    {
+      "file": "ecc-crm/backend/workflows.go",
+      "line": 852,
+      "name": "applyComputedData",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/workflows.go",
+      "line": 857,
+      "name": "sortRecords",
+      "statement_coverage": 0.0
+    },
+    {
+      "file": "ecc-crm/backend/workspace.go",
+      "line": 29,
+      "name": "requestActor",
+      "statement_coverage": 42.9
+    },
+    {
+      "file": "ecc-crm/backend/workspace.go",
+      "line": 41,
+      "name": "recordsOf",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/workspace.go",
+      "line": 62,
+      "name": "recordLabel",
+      "statement_coverage": 83.3
+    },
+    {
+      "file": "ecc-crm/backend/workspace.go",
+      "line": 72,
+      "name": "changesBetween",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/workspace.go",
+      "line": 97,
+      "name": "handleAudit",
+      "statement_coverage": 69.7
+    },
+    {
+      "file": "ecc-crm/backend/workspace.go",
+      "line": 155,
+      "name": "handleSearch",
+      "statement_coverage": 73.7
+    },
+    {
+      "file": "ecc-crm/backend/workspace.go",
+      "line": 204,
+      "name": "csvValue",
+      "statement_coverage": 76.9
+    },
+    {
+      "file": "ecc-crm/backend/workspace.go",
+      "line": 228,
+      "name": "handleExport",
+      "statement_coverage": 79.4
+    },
+    {
+      "file": "ecc-crm/backend/workspace.go",
+      "line": 318,
+      "name": "handleExport",
+      "statement_coverage": 100.0
+    },
+    {
+      "file": "ecc-crm/backend/workspace.go",
+      "line": 324,
+      "name": "auditScope",
+      "statement_coverage": 87.5
+    }
+  ]
+}

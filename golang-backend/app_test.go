@@ -15,6 +15,7 @@ import (
 func setupStore(t *testing.T) {
 	t.Helper()
 	jwtSecret = []byte("test-secret")
+	t.Setenv("SEED_DEMO_DATA", "true")
 	t.Setenv("LEGACY_DATA_FILE", "")
 	t.Cleanup(func() {
 		if database != nil {

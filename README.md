@@ -26,7 +26,7 @@ students, agents, leads, cases, document tracking, invoices, payments, and partn
 
 ## Run
 
-Requires Elm 0.19.1, Go 1.26 or newer, and a C compiler (such as GCC) for the
+Requires Elm 0.19.2 (`npm install -g elm@0.19.2-0`), Go 1.26 or newer, and a C compiler (such as GCC) for the
 [SQLite driver](https://github.com/mattn/go-sqlite3#installation).
 
 ```bash
@@ -34,8 +34,17 @@ Requires Elm 0.19.1, Go 1.26 or newer, and a C compiler (such as GCC) for the
 ./build/ecc-crm
 ```
 
-Open http://localhost:7000. The first launch seeds demo records and an account:
-`demo@northwind.dev` / `Demo1234`.
+Open http://localhost:7000 and register the first workspace account. A fresh
+installation starts empty. Set `ALLOW_SIGNUP=false` after creating the intended
+accounts to require invitations. The container defaults to registration disabled;
+for an empty container database, explicitly enable `ALLOW_SIGNUP=true` during
+private first-time setup, create the owner account, then disable registration.
+
+For a local demonstration only, start a fresh database with
+`SEED_DEMO_DATA=true ./build/ecc-crm`. This explicitly enables sample records and
+the public demonstration login `demo@northwind.dev` / `Demo1234`. Keep this flag
+disabled in production. Existing demo accounts are not automatically removed;
+change their credentials or disable them before exposing an existing demo database.
 
 The same app supports phones and tablets with bottom navigation, record cards,
 larger touch controls and mobile forms. See [docs/MOBILE.md](docs/MOBILE.md) for
@@ -136,7 +145,8 @@ OIDC and SAML integrations require configuration before live use.
 
 Record pages now embed native tools, with a separate client portal, cohort reports,
 inbound conversations, optional AI drafts, version conflicts, and recoverable deletion.
-Docker/Compose, CI, metrics and backup/restore scripts are included.
+Docker/Compose, CI/CD, metrics and backup/restore scripts are included.
+See [automatic testing and releases](docs/CI_CD.md); `npm run test:all` runs the full verification pipeline locally.
 See [docs/EXPANSION.md](docs/EXPANSION.md) for setup, verification and remaining
 provider/scaling limits. The older implementation checklist describes the previous
 feature set; it is not a production acceptance record for this expansion.

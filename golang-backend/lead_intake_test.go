@@ -72,6 +72,11 @@ func TestLeadCVVersionsConversionAndIsolation(t *testing.T) {
 	if converted["contactId"] == "" || converted["studentId"] == "" || converted["caseId"] == "" {
 		t.Fatal("conversion links missing")
 	}
+	for _, student := range students {
+		if student.ID == converted["studentId"] && !strings.HasPrefix(student.StudentCode, "ECC-ST-") {
+			t.Fatal("converted student lacks automatic reference")
+		}
+	}
 	assertStatus(t, featureRequest(h, "POST", "/api/workflows/lead-convert", map[string]string{"id": lead.ID, "target": "student"}, cookies), 200)
 	if len(cases) != initialCases+1 || len(students) != initialStudents+1 || len(contacts) != initialContacts+1 {
 		t.Fatal("repeat conversion created duplicate records")

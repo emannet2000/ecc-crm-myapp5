@@ -82,8 +82,6 @@ input, select, textarea { font-family: inherit; }
   border-radius: 6px;
 }
 
-html[data-nav-focus="adviser"][data-show-deals="false"] .sidebar [data-nav-label="Deals"]{display:none}
-.optional-tools{margin:10px 12px;font-size:12px}.optional-tools label{display:flex;gap:8px;align-items:center;margin:10px 0}.optional-tools input{width:auto}
 
 button:focus:not(:focus-visible),
 a:focus:not(:focus-visible),

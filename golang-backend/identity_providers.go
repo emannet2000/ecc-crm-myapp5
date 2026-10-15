@@ -156,7 +156,7 @@ func (state *runtimeStore) handleSSOFinish(w http.ResponseWriter, r *http.Reques
 		return
 	}
 	u, err := state.consumeAuthToken(r, req.Token, "sso")
-	if err != nil || !verifySecondFactor(&u, req.Code) {
+	if err != nil || u.Disabled || !verifySecondFactor(&u, req.Code) {
 		writeError(w, 401, "Invalid or expired verification")
 		return
 	}
@@ -164,7 +164,14 @@ func (state *runtimeStore) handleSSOFinish(w http.ResponseWriter, r *http.Reques
 		writeError(w, 403, "Network is not allowed")
 		return
 	}
-	storeDB(r).Exec("UPDATE auth_tokens SET used_at=? WHERE hash=?", utcNow(), hashSecret(req.Token))
+	if _, err = storeDB(r).Exec("UPDATE auth_tokens SET used_at=? WHERE hash=?", utcNow(), hashSecret(req.Token)); err != nil {
+		writeError(w, 500, "Could not complete sign-in")
+		return
+	}
+	if err = securityEvent(r, u, "login.sso_mfa"); err != nil {
+		writeError(w, 500, "Could not complete sign-in")
+		return
+	}
 	state.mu.Lock()
 	state.users[strings.ToLower(u.Email)] = u
 	state.mu.Unlock()
@@ -172,7 +179,6 @@ func (state *runtimeStore) handleSSOFinish(w http.ResponseWriter, r *http.Reques
 		writeError(w, 500, "Could not complete sign-in")
 		return
 	}
-	securityEvent(r, u, "login.sso_mfa")
 	writeJSON(w, 200, statusResponse{"ok"})
 }
 

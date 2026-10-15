@@ -77,7 +77,7 @@ test('statement reconciliation excludes other currencies and preserves a rejecte
 test('modal drafts restore fields without restoring consent and retain their original record version',async()=>{
  const options={staleContact:true};const{page,calls,contact}=await fixture('workspace',options);try{
   await page.evaluate(async()=>{
-   const nav=document.createElement('crm-nav-focus');nav.setAttribute('user-id','draft-user');document.body.append(nav);
+   const nav=document.createElement('aside');nav.id='workspace-navigation';nav.setAttribute('data-user-id','draft-user');document.body.append(nav);
    await new Promise(resolve=>{const xhr=new XMLHttpRequest();xhr.open('GET','/api/contacts/c_client');xhr.onload=resolve;xhr.send()});
    window.openDraftModal=()=>{const modal=document.createElement('div');modal.className='modal';modal.setAttribute('data-draft-record-id','c_client');modal.innerHTML='<h2>Edit contact</h2><form><crm-draft-recovery></crm-draft-recovery><input id="name" value="Client One"><input id="consent" type="checkbox"><button type="submit">Save</button></form>';modal.querySelector('form').addEventListener('submit',event=>{event.preventDefault();const xhr=new XMLHttpRequest();xhr.open('PUT','/api/contacts/c_client');xhr.send('{}')});document.body.append(modal)};
    window.openDraftModal();
@@ -104,7 +104,7 @@ test('modal drafts restore fields without restoring consent and retain their ori
 test('modal drafts stay isolated across records with the same title, including reused dialogs',async()=>{
  const {page}=await fixture('workspace');try{
   await page.evaluate(()=>{
-   const nav=document.createElement('crm-nav-focus');nav.setAttribute('user-id','isolation-user');document.body.append(nav);
+   const nav=document.createElement('aside');nav.id='workspace-navigation';nav.setAttribute('data-user-id','isolation-user');document.body.append(nav);
    const modal=document.createElement('div');modal.className='modal';modal.setAttribute('data-draft-record-id','first');
    modal.innerHTML='<h2>Edit contact</h2><form><crm-draft-recovery></crm-draft-recovery><input id="draft-name" value="Same name"></form>';document.body.append(modal);
   });
@@ -138,7 +138,7 @@ async function fixture(view = 'contacts', options = {}) {
       let data,contentType='application/json',status=200;
       if(url.pathname.startsWith('/public/')) {data=fs.readFileSync(path.join(__dirname,'..',url.pathname));contentType=url.pathname.endsWith('.css')?'text/css':'application/javascript';}
       else if(url.pathname==='/portal') {data=fs.readFileSync(path.join(__dirname,'../public/portal.html'));contentType='text/html';}
-      else if(url.pathname==='/') {contentType='text/html';data=`<!doctype html><html><head><meta charset="utf-8"></head><body><div id="app">${view==='leadwork'?'<crm-lead-work record-id="l_client"></crm-lead-work>':view==='picker'?'<crm-record-picker entity="contacts" value="c_client" label="Client"></crm-record-picker>':view==='ai'?'<crm-ai-chat></crm-ai-chat>':view==='workspace'?'<crm-workspace></crm-workspace>':view==='insights'?'<crm-insights></crm-insights>':view==='daily'?'<crm-my-work></crm-my-work>':view==='journey'?'<crm-student-journey record-id="s_client"></crm-student-journey>':view==='quality'?'<crm-form-quality entity="students" studentcode="DUP"></crm-form-quality>':view==='connections'?'<crm-integration-health></crm-integration-health>':`<crm-record-tools entity="${view}" record-id="${view==='students'?'s_client':view==='leads'?'l_client':'c_client'}"></crm-record-tools>`}</div><script src="/public/pickers.js"></script><script src="/public/assignment-review.js"></script><script src="/public/record-versions.js"></script><script src="/public/draft-recovery.js"></script><script src="/public/productivity.js"></script><script src="/public/ai.js"></script><script src="/public/followup-templates.js"></script><script src="/public/handoffs.js"></script><script src="/public/progress.js"></script><script src="/public/consolidation.js"></script><script src="/public/workspace-secondary.js"></script><script src="/public/center.js"></script><script src="/public/components.js"></script><script src="/public/lead-work.js"></script></body></html>`;}
+      else if(url.pathname==='/') {contentType='text/html';data=`<!doctype html><html><head><meta charset="utf-8"></head><body><div id="app">${view==='leadwork'?'<crm-lead-work record-id="l_client"></crm-lead-work>':view==='picker'?'<crm-record-picker entity="contacts" value="c_client" label="Client"></crm-record-picker>':view==='ai'?'<crm-ai-chat></crm-ai-chat>':view==='workspace'?'<crm-workspace></crm-workspace>':view==='insights'?'<crm-insights></crm-insights>':view==='daily'?'<div id="work-dashboard-fixture"></div>':view==='journey'?'<crm-student-journey record-id="s_client"></crm-student-journey>':view==='quality'?'<crm-form-quality entity="students" studentcode="DUP"></crm-form-quality>':view==='connections'?'<crm-integration-health></crm-integration-health>':`<crm-record-tools entity="${view}" record-id="${view==='students'?'s_client':view==='leads'?'l_client':'c_client'}"></crm-record-tools>`}</div><script src="/public/pickers.js"></script><script src="/public/assignment-review.js"></script><script src="/public/record-versions.js"></script><script src="/public/draft-recovery.js"></script><script src="/public/productivity.js"></script><script src="/public/ai.js"></script><script src="/public/followup-templates.js"></script><script src="/public/handoffs.js"></script><script src="/public/progress.js"></script><script src="/public/consolidation.js"></script><script src="/public/workspace-secondary.js"></script><link rel="stylesheet" href="/public/work-dashboard-elm.css"><script src="/public/work-dashboard-elm.js"></script><script src="/public/record-browser-elm.js"></script><script src="/public/center.js"></script><script src="/public/components.js"></script><script src="/public/lead-work.js"></script>${view==='daily'?'<script>Elm.WorkDashboard.init({node:document.getElementById("work-dashboard-fixture"),flags:{userId:"u_manager"}})</script>':''}</body></html>`;}
       else if(view==='picker'&&url.pathname==='/api/contacts/c_client') data={contact};
       else if(view==='picker'&&url.pathname==='/api/contacts') {
         let rows=Array.from({length:240},(_,i)=>({id:'pick-'+i,name:'Searchable client '+i,email:'client'+i+'@example.com'}));
@@ -169,7 +169,7 @@ async function fixture(view = 'contacts', options = {}) {
       else if(url.pathname==='/api/assignments/review')data={items:[{entity:'leads',id:'l_client',label:'Prospective Client',previous:'Historical Flor',suggestedId:'u_1',editable:true,revision:'legacy-version',route:'/leads/l_client',staff:[{id:'u_1',name:'Demo User'}]}],total:1};
       else if(url.pathname==='/api/assignments/leads/l_client'){if(options.staleMapping){status=409;data={error:'Assignment changed'}}else data={mapped:'l_client',staffName:'Demo User'};}
       else if(url.pathname==='/api/staff-options') data={staff:[{id:'u_1',name:'Demo User'},{id:'u_manager',name:'Adviser'}]};
-      else if(url.pathname==='/api/my-work') {data={category:url.searchParams.get('category')||'',today:'2026-10-10',total:url.searchParams.get('category')==='documents'?1:url.searchParams.get('category')==='overdueLeads'?0:60,counts:{applications:60,documents:1,followups:0,deadlines:1,tasks:0},items:url.searchParams.get('category')==='overdueLeads'?[]:[{id:'case_client',entity:'case',name:'ECC-001',reason:'Required documents need review',action:'Review passport',owner:'Adviser',priority:'high',deadline:'2026-10-12',route:'/cases/case_client'}]};if(!url.searchParams.get('category'))data.items=Array.from({length:Math.min(25,Math.max(0,data.total-Number(url.searchParams.get('offset')||0)))},(_,i)=>({...data.items[0],id:'case_'+i}));if(options.workResponse){const override=await options.workResponse(url,data);if(override){data=override.data;status=override.status||200;}}}
+      else if(url.pathname==='/api/my-work') {data={scope:url.searchParams.get('scope')||'mine',teamId:url.searchParams.get('team')||'',teamName:'',category:url.searchParams.get('category')||'',today:'2026-10-10',total:url.searchParams.get('category')==='documents'?1:url.searchParams.get('category')==='overdueLeads'?0:60,counts:{applications:60,documents:1,followups:0,deadlines:1,tasks:0},items:url.searchParams.get('category')==='overdueLeads'?[]:[{id:'case_client',entity:'case',name:'ECC-001',reason:'Required documents need review',action:'Review passport',owner:'Adviser',priority:'high',deadline:'2026-10-12',route:'/cases/case_client'}]};if(!url.searchParams.get('category'))data.items=Array.from({length:Math.min(25,Math.max(0,data.total-Number(url.searchParams.get('offset')||0)))},(_,i)=>({...data.items[0],id:'case_'+i}));if(options.workResponse){const override=await options.workResponse(url,data);if(override){data=override.data;status=override.status||200;}}}
       else if(url.pathname==='/api/students/s_client/journey') data={student,applications:flow.cases.map(c=>({...c,assignedOfficer:'Adviser',nextAction:'Request passport'})),documents:flow.documents.map(d=>({...d,required:true})),invoices:[{id:'invoice-1',invoiceNumber:'INV-1',currency:'PHP',balance:50,amountReceived:20}],payments:[{invoiceId:'invoice-1',reference:'Receipt-1',amount:20,currency:'PHP'}],messages:[{caseId:'case_client',subject:'Portal response',body:'<img src=x onerror=alert(1)>',channel:'portal',direction:'inbound',createdAt:'2026-10-10'}],messageTotal:1,required:1,verified:0};
       else if(url.pathname==='/api/form-quality') data={findings:JSON.parse(req.postData()).studentCode==='DUP'?[{title:'Possible duplicate student',detail:'Review Student One.',route:'/students/s_client'}]:[]};
       else if(url.pathname==='/api/integrations/status') data={canTest:true,integrations:[{id:'email',name:'Email',state:'needs_configuration',message:'Configure SMTP.'},{id:'payments',name:'Payments',state:'configured',message:'Run a connection check.'}]};
@@ -250,7 +250,7 @@ test('a background refresh cannot replace the version attached to an open edit d
 
 test('live app login, native record workflows, reporting and mobile layout', {skip:process.env.ECC_BROWSER_LIVE!=='true'},async()=>{
  const directory=fs.mkdtempSync(path.join(os.tmpdir(),'ecc-crm-browser-')),port='17001';
- const server=spawn(path.join(__dirname,'../build/ecc-crm'),[],{cwd:path.join(__dirname,'..'),env:{...process.env,PORT:port,DATABASE_PATH:path.join(directory,'crm.sqlite3'),JWT_SECRET:'browser-test-secret-only',APP_URL:'http://localhost:'+port,ALLOW_SIGNUP:'false',GRAPH_ORG_ID:'',WHATSAPP_ORG_ID:''},stdio:'pipe'});
+ const server=spawn(path.join(__dirname,'../build/ecc-crm'),[],{cwd:path.join(__dirname,'..'),env:{...process.env,SEED_DEMO_DATA:'true',PORT:port,DATABASE_PATH:path.join(directory,'crm.sqlite3'),JWT_SECRET:'browser-test-secret-only',APP_URL:'http://localhost:'+port,ALLOW_SIGNUP:'false',GRAPH_ORG_ID:'',WHATSAPP_ORG_ID:''},stdio:'pipe'});
  const page=await browser.newPage();let output='';server.stderr.on('data',data=>output+=data);server.stdout.on('data',data=>output+=data);
  await page.setRequestInterception(true);page.on('request',request=>{if(new URL(request.url()).origin==='http://localhost:'+port)request.continue();else request.abort()});
  try{
@@ -286,21 +286,19 @@ test('live app login, native record workflows, reporting and mobile layout', {sk
   assert.equal(await page.$eval('.modal input',el=>getComputedStyle(el).fontSize),'16px');
   await page.click('.modal__close');
   await page.goto('http://localhost:'+port+'/administration',{waitUntil:'networkidle2'});
-  await page.waitForFunction(()=>document.querySelector('crm-administration')?.shadowRoot.querySelector('table'));
-  await page.evaluate(()=>[...document.querySelector('crm-administration').shadowRoot.querySelectorAll('button')].find(b=>b.textContent==='Add user').click());
-  await page.evaluate(()=>{const root=document.querySelector('crm-administration').shadowRoot;root.querySelector('[name=name]').value='Browser Viewer';root.querySelector('[name=email]').value='browser-viewer@example.com';root.querySelector('[name=role]').value='viewer';root.querySelector('[name=password]').value='BrowserViewerPassword!';root.querySelector('form').requestSubmit()});
-  await page.waitForFunction(()=>document.querySelector('crm-administration').shadowRoot.textContent.includes('browser-viewer@example.com'));
-  await page.evaluate(()=>[...document.querySelector('crm-administration').shadowRoot.querySelectorAll('nav button')].find(b=>b.textContent==='Access levels').click());
-  assert.ok(await page.evaluate(()=>document.querySelector('crm-administration').shadowRoot.textContent.includes('Read only')));
+  await page.waitForFunction(()=>document.querySelector('.administration-elm table'));
+  await page.evaluate(()=>[...document.querySelector('.administration-elm').querySelectorAll('button')].find(b=>b.textContent==='Add user').click());
+  await page.evaluate(()=>{const root=document.querySelector('.administration-elm');for(const [name,value] of Object.entries({name:'Browser Viewer',email:'browser-viewer@example.com',role:'viewer',password:'BrowserViewerPassword!'})){const field=root.querySelector('[name='+name+']');field.value=value;field.dispatchEvent(new Event('input',{bubbles:true}));}root.querySelector('form').requestSubmit()});
+  await page.waitForFunction(()=>document.querySelector('.administration-elm').textContent.includes('browser-viewer@example.com'));
+  await page.evaluate(()=>[...document.querySelector('.administration-elm').querySelectorAll('nav button')].find(b=>b.textContent==='Access levels').click());
+  await page.waitForFunction(()=>document.querySelector('.administration-elm').textContent.includes('Read only'));
   await page.setViewport({width:390,height:844});assert.ok(await page.$eval('body',el=>el.scrollWidth<=window.innerWidth+2));
   await page.goto('http://localhost:'+port+'/reports',{waitUntil:'networkidle2'});await page.waitForFunction(()=>document.querySelector('crm-insights').shadowRoot.textContent.includes('Lead conversion'));
   await page.setViewport({width:390,height:844});assert.ok(await page.$eval('body',el=>el.scrollWidth<=window.innerWidth+2));
 
   await page.setViewport({width:1280,height:900});
-  for(const focus of ['management','finance','adviser']){
-    await page.evaluate(focus=>{const select=document.querySelector('crm-nav-focus select');select.value=focus;select.dispatchEvent(new Event('change',{bubbles:true}))},focus);
-    assert.equal(await page.evaluate(()=>{const nav=document.querySelector('.sidebar nav[aria-label="Daily work"]');return [...nav.children].some(e=>e.textContent.trim()==='Leads'&&getComputedStyle(e).display!=='none')}),true,'Leads hidden in '+focus);
-  }
+  assert.equal(await page.$('crm-nav-focus'),null);
+  assert.equal(await page.evaluate(()=>[...document.querySelector('.sidebar nav[aria-label="Daily work"]').children].some(e=>e.textContent.trim()==='Leads'&&getComputedStyle(e).display!=='none')),true);
   await page.goto('http://localhost:'+port+'/leads',{waitUntil:'networkidle2'});
   await page.waitForFunction(()=>[...document.querySelectorAll('button')].some(b=>b.textContent.trim()==='Add lead'));
   await page.evaluate(()=>[...document.querySelectorAll('button')].find(b=>b.textContent.trim()==='Add lead').click());
@@ -355,12 +353,12 @@ test('live app login, native record workflows, reporting and mobile layout', {sk
   await page.click('.modal button[type=submit]');
   await page.waitForFunction(()=>!document.querySelector('.modal'));
 
- }catch(error){fs.mkdirSync(path.join(__dirname,'artifacts'),{recursive:true});await page.screenshot({path:path.join(__dirname,'artifacts/live-failure.png'),fullPage:true});throw new Error(error.message+'\nUI: '+await page.evaluate(()=>JSON.stringify({url:location.pathname,width:innerWidth,mobile:matchMedia('(max-width: 900px)').matches,mainInert:document.querySelector('.app-main')?.inert,mainAttr:document.querySelector('.app-main')?.hasAttribute('inert'),sideInert:document.querySelector('.sidebar')?.inert,work:document.querySelector('crm-my-work')?.shadowRoot.textContent,active:document.activeElement?.outerHTML?.slice(0,200)}))+'\n'+output)}finally{await page.close();server.kill('SIGTERM');await new Promise(resolve=>{if(server.exitCode!==null)return resolve();server.once('exit',resolve)});fs.rmSync(directory,{recursive:true,force:true})}
+ }catch(error){fs.mkdirSync(path.join(__dirname,'artifacts'),{recursive:true});await page.screenshot({path:path.join(__dirname,'artifacts/live-failure.png'),fullPage:true});throw new Error(error.message+'\nUI: '+await page.evaluate(()=>JSON.stringify({url:location.pathname,width:innerWidth,mobile:matchMedia('(max-width: 900px)').matches,mainInert:document.querySelector('.app-main')?.inert,mainAttr:document.querySelector('.app-main')?.hasAttribute('inert'),sideInert:document.querySelector('.sidebar')?.inert,work:document.querySelector('.daily-work')?.textContent,active:document.activeElement?.outerHTML?.slice(0,200)}))+'\n'+output)}finally{await page.close();server.kill('SIGTERM');await new Promise(resolve=>{if(server.exitCode!==null)return resolve();server.once('exit',resolve)});fs.rmSync(directory,{recursive:true,force:true})}
 });
 
 test('live dashboard overview cards open record details on desktop and mobile',{skip:process.env.ECC_BROWSER_LIVE!=='true'},async()=>{
  const directory=fs.mkdtempSync(path.join(os.tmpdir(),'ecc-crm-overview-')),port='17002';
- const server=spawn(path.join(__dirname,'../build/ecc-crm'),[],{cwd:path.join(__dirname,'..'),env:{...process.env,PORT:port,DATABASE_PATH:path.join(directory,'crm.sqlite3'),JWT_SECRET:'overview-test-secret-only',APP_URL:'http://localhost:'+port,ALLOW_SIGNUP:'false',GRAPH_ORG_ID:'',WHATSAPP_ORG_ID:''},stdio:'pipe'});
+ const server=spawn(path.join(__dirname,'../build/ecc-crm'),[],{cwd:path.join(__dirname,'..'),env:{...process.env,SEED_DEMO_DATA:'true',PORT:port,DATABASE_PATH:path.join(directory,'crm.sqlite3'),JWT_SECRET:'overview-test-secret-only',APP_URL:'http://localhost:'+port,ALLOW_SIGNUP:'false',GRAPH_ORG_ID:'',WHATSAPP_ORG_ID:''},stdio:'pipe'});
  const page=await browser.newPage();let output='';server.stdout.on('data',d=>output+=d);server.stderr.on('data',d=>output+=d);
  await page.setRequestInterception(true);page.on('request',r=>new URL(r.url()).origin==='http://localhost:'+port?r.continue():r.abort());
  try{
@@ -371,25 +369,25 @@ test('live dashboard overview cards open record details on desktop and mobile',{
   await page.waitForSelector('.app-shell');
   for(const width of [1280,390]){
    await page.setViewport({width,height:900});
-  await page.waitForFunction(()=>document.querySelector('crm-my-work')?.shadowRoot.querySelector('.work-item'));
-  await page.waitForFunction(()=>getComputedStyle(document.querySelector('crm-my-work').shadowRoot.querySelector('.work-count')).display==='grid');
-  await page.$eval('crm-my-work',host=>host.shadowRoot.querySelectorAll('details.journey-section').forEach(section=>section.open=true));
+  await page.waitForFunction(()=>document.querySelector('.daily-work')?.querySelector('.work-item'));
+  await page.$eval('.daily-work',host=>host.querySelectorAll('details.journey-section').forEach(section=>section.open=true));
+  await page.waitForFunction(()=>getComputedStyle(document.querySelector('.daily-work').querySelector('.work-count')).display==='grid');
   for(const category of ['deals','pipeline','leads','students','cases','applications','followups','overdueLeads','documents','deadlines']){
     const response=page.waitForResponse(r=>{const url=new URL(r.url());return url.pathname==='/api/my-work'&&url.searchParams.get('category')===category});
-    await page.evaluate(category=>document.querySelector('crm-my-work').shadowRoot.querySelector('[data-category="'+category+'"]').scrollIntoView({block:'center',behavior:'instant'}),category);
+    await page.evaluate(category=>document.querySelector('.daily-work').querySelector('[data-category="'+category+'"]').scrollIntoView({block:'center',behavior:'instant'}),category);
     await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
-    await page.click('crm-my-work >>> [data-category="'+category+'"]');
+    await page.click('.daily-work [data-category="'+category+'"]');
     const out=await (await response).json();assert.equal(out.category,category);
-    await page.waitForFunction(category=>{const root=document.querySelector('crm-my-work').shadowRoot;return root.querySelector('[data-category="'+category+'"]').getAttribute('aria-pressed')==='true'&&root.querySelector('[aria-busy="false"]')}, {},category);
+    await page.waitForFunction(category=>{const root=document.querySelector('.daily-work');return root.querySelector('[data-category="'+category+'"]').getAttribute('aria-pressed')==='true'&&root.querySelector('[aria-busy="false"]')}, {},category);
     if(category==='cases'||category==='applications'||category==='documents')assert.ok(out.items.every(item=>item.entity==='case'));
     if(category==='leads'||category==='followups'||category==='overdueLeads')assert.ok(out.items.every(item=>item.entity==='lead'));
-    if(out.total)assert.ok(await page.evaluate(()=>[...document.querySelector('crm-my-work').shadowRoot.querySelectorAll('.work-item a')].every(a=>a.getAttribute('href').startsWith('/'))));
+    if(out.total)assert.ok(await page.evaluate(()=>[...document.querySelector('.daily-work').querySelectorAll('.work-item a')].every(a=>a.getAttribute('href').startsWith('/'))));
   }
   assert.equal(await page.$$eval('[data-work-category]',cards=>cards.length),0);
-   await page.focus('crm-my-work >>> [data-category="deals"]');
+   await page.focus('.daily-work [data-category="deals"]');
    const keyboardResponse=page.waitForResponse(r=>{const url=new URL(r.url());return url.pathname==='/api/my-work'&&url.searchParams.get('category')==='deals'});
    await page.keyboard.press('Enter');assert.equal((await (await keyboardResponse).json()).category,'deals');
-   await page.waitForFunction(()=>document.querySelector('crm-my-work').shadowRoot.querySelector('[aria-busy="false"]'));
+   await page.waitForFunction(()=>document.querySelector('.daily-work').querySelector('[aria-busy="false"]'));
   }
   await page.setViewport({width:1280,height:900});
   await page.goto('http://localhost:'+port+'/deals',{waitUntil:'networkidle2'});
@@ -423,7 +421,7 @@ test('live dashboard overview cards open record details on desktop and mobile',{
   await page.click('.modal button[type=submit]');const saved=await saveResponse;
   assert.equal(saved.status(),200);assert.equal(JSON.parse(saved.request().postData()).assignedTo,'u_1');
   await page.waitForFunction(()=>!document.querySelector('.modal'));
- }catch(error){throw new Error(error.message+'\n'+output)}finally{await page.close();server.kill('SIGTERM');await new Promise(resolve=>{if(server.exitCode!==null)return resolve();server.once('exit',resolve)});fs.rmSync(directory,{recursive:true,force:true})}
+ }catch(error){throw new Error(error.stack+'\nUI: '+await page.evaluate(()=>JSON.stringify({path:location.pathname,work:document.querySelector('.daily-work')?.textContent,display:document.querySelector('.work-count')&&getComputedStyle(document.querySelector('.work-count')).display,root:document.querySelector('.work-dashboard-elm')?.className,sheets:[...document.styleSheets].map(sheet=>({href:sheet.href,rules:[...sheet.cssRules].filter(rule=>rule.selectorText?.includes('work-count')).map(rule=>rule.cssText)}))}))+'\n'+output)}finally{await page.close();server.kill('SIGTERM');await new Promise(resolve=>{if(server.exitCode!==null)return resolve();server.once('exit',resolve)});fs.rmSync(directory,{recursive:true,force:true})}
 });
 
 test('historical assignment review requires confirmation and keeps a stale mapping selection',async()=>{
@@ -454,45 +452,45 @@ test('staff labels and owner filters show names while preserving account IDs',as
 
 test('daily work renders full counts without AI and pages the assignment queue',async()=>{
  const {page,calls,errors}=await fixture('daily');try{
-  await page.waitForFunction(()=>document.querySelector('crm-my-work').shadowRoot.textContent.includes('60 work items'));
-  assert.equal(await page.$eval('crm-my-work',host=>host.shadowRoot.querySelector('details.journey-section').open),false);
-  assert.ok(await page.evaluate(()=>{const root=document.querySelector('crm-my-work').shadowRoot;return root.querySelector('a').getAttribute('href')==='/cases/case_client'&&root.textContent.includes('Needs attention')&&root.textContent.includes('Browse all records')&&root.querySelectorAll('.work-counts').length===2}));
-  await page.evaluate(()=>[...document.querySelector('crm-my-work').shadowRoot.querySelectorAll('button')].find(b=>b.textContent==='Next').click());
-  await page.waitForFunction(()=>document.querySelector('crm-my-work').shadowRoot.textContent.includes('26–50 of 60')).catch(async error=>{throw new Error(error.message+' '+await page.evaluate(()=>document.querySelector('crm-my-work').shadowRoot.textContent))});
-  await page.evaluate(()=>document.querySelector('crm-my-work').shadowRoot.querySelector('[data-category="documents"]').click());
-  await page.waitForFunction(()=>document.querySelector('crm-my-work').shadowRoot.textContent.includes('1 work items'));
+  await page.waitForFunction(()=>document.querySelector('.daily-work').textContent.includes('60 work items'));
+  assert.equal(await page.$eval('.daily-work',host=>host.querySelector('details.journey-section').open),false);
+  assert.ok(await page.evaluate(()=>{const root=document.querySelector('.daily-work');return root.querySelector('a').getAttribute('href')==='/cases/case_client'&&root.textContent.includes('Needs attention')&&root.textContent.includes('Browse all records')&&root.querySelectorAll('.work-counts').length===2}));
+  await page.evaluate(()=>[...document.querySelector('.daily-work').querySelectorAll('button')].find(b=>b.textContent==='Next').click());
+  await page.waitForFunction(()=>document.querySelector('.daily-work').textContent.includes('26–50 of 60')).catch(async error=>{throw new Error(error.message+' '+await page.evaluate(()=>document.querySelector('.daily-work').textContent))});
+  await page.evaluate(()=>document.querySelector('.daily-work').querySelector('[data-category="documents"]').click());
+  await page.waitForFunction(()=>document.querySelector('.daily-work').textContent.includes('1 work items'));
   assert.ok(calls.some(c=>c.path==='/api/my-work'&&c.query.includes('category=documents')&&c.query.includes('offset=0')));
-  assert.ok(await page.evaluate(()=>{const root=document.querySelector('crm-my-work').shadowRoot;return root.textContent.includes('Responsible: Adviser')&&root.textContent.includes('Due 2026-10-12')&&[...root.querySelectorAll('a')].some(a=>a.textContent==='Review application and next action'&&a.getAttribute('href')==='/cases/case_client')}));
-  await page.evaluate(()=>document.querySelector('crm-my-work').shadowRoot.querySelector('[data-category="overdueLeads"]').click());
-  await page.waitForFunction(()=>document.querySelector('crm-my-work').shadowRoot.textContent.includes('No matching work items'));
-  await page.evaluate(()=>[...document.querySelector('crm-my-work').shadowRoot.querySelectorAll('button')].find(b=>b.textContent==='Show all work').click());
-  await page.waitForFunction(()=>document.querySelector('crm-my-work').shadowRoot.textContent.includes('60 work items'));
+  assert.ok(await page.evaluate(()=>{const root=document.querySelector('.daily-work');return root.textContent.includes('Responsible: Adviser')&&root.textContent.includes('Due 2026-10-12')&&[...root.querySelectorAll('a')].some(a=>a.textContent==='Review application and next action'&&a.getAttribute('href')==='/cases/case_client')}));
+  await page.evaluate(()=>document.querySelector('.daily-work').querySelector('[data-category="overdueLeads"]').click());
+  await page.waitForFunction(()=>document.querySelector('.daily-work').textContent.includes('No matching work items'));
+  await page.evaluate(()=>[...document.querySelector('.daily-work').querySelectorAll('button')].find(b=>b.textContent==='Show all work').click());
+  await page.waitForFunction(()=>document.querySelector('.daily-work').textContent.includes('60 work items'));
   assert.equal(calls.filter(c=>c.path.includes('/assistant')).length,0);assert.deepEqual(errors,[]);
  }finally{await page.close()}
 });
 test('daily work preserves controls on slow requests, ignores stale results and recovers from errors',async()=>{
  const options={};const {page,errors}=await fixture('daily',options);
  try{
-  await page.waitForFunction(()=>document.querySelector('crm-my-work').shadowRoot.textContent.includes('60 work items'));
+  await page.waitForFunction(()=>document.querySelector('.daily-work').textContent.includes('60 work items'));
   options.workResponse=async(url,data)=>{if(url.searchParams.get('category')==='documents')await new Promise(resolve=>setTimeout(resolve,600));return {data}};
-  await page.evaluate(()=>{const root=document.querySelector('crm-my-work').shadowRoot;root.querySelector('.work-counts').parentElement.open=true;window.workButton=root.querySelector('[data-category="documents"]');window.workButton.click();});
-  assert.ok(await page.evaluate(()=>{const root=document.querySelector('crm-my-work').shadowRoot;return window.workButton.isConnected&&root.querySelector('[aria-busy="true"]')&&root.querySelector('h3').textContent==='Applications needing documents'}));
-  await page.click('crm-my-work >>> [data-category="overdueLeads"]');
-  await page.waitForFunction(()=>document.querySelector('crm-my-work').shadowRoot.textContent.includes('No matching work items'));
+  await page.evaluate(()=>{const root=document.querySelector('.daily-work');root.querySelector('.work-counts').parentElement.open=true;window.workButton=root.querySelector('[data-category="documents"]');window.workButton.click();});
+  assert.ok(await page.evaluate(()=>{const root=document.querySelector('.daily-work');return window.workButton.isConnected&&root.querySelector('[aria-busy="true"]')&&root.querySelector('h3').textContent==='Applications needing documents'}));
+  await page.click('.daily-work [data-category="overdueLeads"]');
+  await page.waitForFunction(()=>document.querySelector('.daily-work').textContent.includes('No matching work items'));
   await new Promise(resolve=>setTimeout(resolve,800));
-  assert.equal(await page.evaluate(()=>document.querySelector('crm-my-work').shadowRoot.querySelector('h3').textContent),'Overdue lead follow-ups');
+  assert.equal(await page.evaluate(()=>document.querySelector('.daily-work').querySelector('h3').textContent),'Overdue lead follow-ups');
   assert.ok(await page.evaluate(()=>window.workButton.isConnected));
   options.workResponse=async()=>({status:503,data:{error:'Temporary database failure'}});
-  await page.click('crm-my-work >>> [data-category="documents"]');
-  await page.waitForFunction(()=>document.querySelector('crm-my-work').shadowRoot.textContent.includes('Temporary database failure'));
-  assert.ok(await page.evaluate(()=>{const root=document.querySelector('crm-my-work').shadowRoot;return !root.querySelector('button[type="submit"]').disabled&&root.querySelectorAll('[data-category]').length===16&&!root.querySelector('[aria-busy="true"]')}));
+  await page.click('.daily-work [data-category="documents"]');
+  await page.waitForFunction(()=>document.querySelector('.daily-work').textContent.includes('Temporary database failure'));
+  assert.ok(await page.evaluate(()=>{const root=document.querySelector('.daily-work');return !root.querySelector('button[type="submit"]').disabled&&root.querySelectorAll('[data-category]').length===16&&!root.querySelector('[aria-busy="true"]')}));
   options.workResponse=async(url,data)=>{delete data.category;return {data}};
-  await page.click('crm-my-work >>> button[type="submit"]');
-  await page.waitForFunction(()=>document.querySelector('crm-my-work').shadowRoot.textContent.includes('server did not apply this work filter'));
+  await page.click('.daily-work button[type="submit"]');
+  await page.waitForFunction(()=>document.querySelector('.daily-work').textContent.includes('Could not read the response'));
   options.workResponse=null;
-  await page.click('crm-my-work >>> button[type="submit"]');
-  await page.waitForFunction(()=>document.querySelector('crm-my-work').shadowRoot.textContent.includes('1 work items'));
-  assert.ok(await page.evaluate(()=>document.querySelector('crm-my-work').shadowRoot.querySelector('.work-item a').getAttribute('href')==='/cases/case_client'));
+  await page.click('.daily-work button[type="submit"]');
+  await page.waitForFunction(()=>document.querySelector('.daily-work').textContent.includes('1 work items'));
+  assert.ok(await page.evaluate(()=>document.querySelector('.daily-work').querySelector('.work-item a').getAttribute('href')==='/cases/case_client'));
   assert.deepEqual(errors,[]);
  }finally{await page.close()}
 });
@@ -506,12 +504,12 @@ test('daily overview cards show record details and links for all five categories
  }};
  const {page,errors}=await fixture('daily',options);
  try{
-  await page.waitForFunction(()=>document.querySelector('crm-my-work').shadowRoot.querySelector('.work-item'));
-  await page.$eval('crm-my-work',host=>host.shadowRoot.querySelectorAll('details.journey-section').forEach(section=>section.open=true));
+  await page.waitForFunction(()=>document.querySelector('.daily-work').querySelector('.work-item'));
+  await page.$eval('.daily-work',host=>host.querySelectorAll('details.journey-section').forEach(section=>section.open=true));
   for(const [category,entity]of Object.entries(entities)){
-   await page.click('crm-my-work >>> [data-category="'+category+'"]');
-   await page.waitForFunction(entity=>document.querySelector('crm-my-work').shadowRoot.textContent.includes('Specific '+entity),{},entity);
-   assert.ok(await page.evaluate(entity=>{const root=document.querySelector('crm-my-work').shadowRoot;return root.textContent.includes('Program: Nursing')&&root.textContent.includes('Source: Flor')&&[...root.querySelectorAll('.work-item a')].some(a=>a.classList.contains('button')&&a.getAttribute('href')==='/'+({deal:'deals',lead:'leads',student:'students',case:'cases'}[entity])+'/overview')},entity));
+   await page.click('.daily-work [data-category="'+category+'"]');
+   await page.waitForFunction(entity=>!document.querySelector('.daily-work [aria-busy=true]')&&document.querySelector('.daily-work').textContent.includes('Specific '+entity),{},entity);
+   assert.ok(await page.evaluate(entity=>{const root=document.querySelector('.daily-work');return root.textContent.includes('Program: Nursing')&&root.textContent.includes('Source: Flor')&&[...root.querySelectorAll('.work-item a')].some(a=>a.classList.contains('button')&&a.getAttribute('href')==='/'+({deal:'deals',lead:'leads',student:'students',case:'cases'}[entity])+'/overview')},entity));
   }
   assert.deepEqual(errors,[]);
  }finally{await page.close()}
@@ -686,7 +684,7 @@ test('application requirements keep missing files visible and collapse completed
 
 test('live application essentials group daily actions and reveal linked handoffs on mobile',{skip:process.env.ECC_BROWSER_LIVE!=='true'},async()=>{
  const directory=fs.mkdtempSync(path.join(os.tmpdir(),'ecc-crm-essentials-')),port='17003';
- const server=spawn(path.join(__dirname,'../build/ecc-crm'),[],{cwd:path.join(__dirname,'..'),env:{...process.env,PORT:port,DATABASE_PATH:path.join(directory,'crm.sqlite3'),JWT_SECRET:'essentials-test-secret-only',ALLOW_SIGNUP:'false'},stdio:'pipe'});
+ const server=spawn(path.join(__dirname,'../build/ecc-crm'),[],{cwd:path.join(__dirname,'..'),env:{...process.env,SEED_DEMO_DATA:'true',PORT:port,DATABASE_PATH:path.join(directory,'crm.sqlite3'),JWT_SECRET:'essentials-test-secret-only',ALLOW_SIGNUP:'false'},stdio:'pipe'});
  const page=await browser.newPage();
  try{
   for(let i=0;i<100;i++){try{if((await fetch('http://localhost:'+port+'/api/health')).ok)break}catch{}await new Promise(resolve=>setTimeout(resolve,100))}
@@ -739,7 +737,7 @@ test('service templates preview requirements and action defaults before applying
 
 test('live dashboard filters, closed stage transitions and mobile stay consistent',{skip:process.env.ECC_BROWSER_LIVE!=='true',timeout:120000},async()=>{
  const directory=fs.mkdtempSync(path.join(os.tmpdir(),'ecc-dashboard-regression-')),port='17009',base='http://localhost:'+port;
- const server=spawn(path.join(__dirname,'../build/ecc-crm'),[],{cwd:path.join(__dirname,'..'),env:{...process.env,PORT:port,DATABASE_PATH:path.join(directory,'crm.sqlite3'),JWT_SECRET:'dashboard-regression-only',APP_URL:base,ALLOW_SIGNUP:'false',SMTP_HOST:'',STRIPE_SECRET_KEY:'',OPENAI_API_KEY:''},stdio:'pipe'});
+ const server=spawn(path.join(__dirname,'../build/ecc-crm'),[],{cwd:path.join(__dirname,'..'),env:{...process.env,SEED_DEMO_DATA:'true',PORT:port,DATABASE_PATH:path.join(directory,'crm.sqlite3'),JWT_SECRET:'dashboard-regression-only',APP_URL:base,ALLOW_SIGNUP:'false',SMTP_HOST:'',STRIPE_SECRET_KEY:'',OPENAI_API_KEY:''},stdio:'pipe'});
  const page=await browser.newPage(),errors=[];page.on('pageerror',error=>errors.push(error.message));
  await page.setRequestInterception(true);page.on('request',r=>new URL(r.url()).origin===base?r.continue():r.abort());
  const api=(method,url,body,etag)=>page.evaluate(async({method,url,body,etag})=>{const r=await fetch(url,{method,headers:{'Content-Type':'application/json',...(etag?{'If-Match':etag}:{})},body:body===undefined?undefined:JSON.stringify(body)});return{status:r.status,etag:r.headers.get('etag'),data:await r.json()}},{method,url,body,etag});
@@ -757,19 +755,19 @@ test('live dashboard filters, closed stage transitions and mobile stay consisten
   }
   const team=await api('POST','/api/admin/teams',{name:'Regression empty branch'});assert.equal(team.status,201);
   await page.evaluate(()=>window.dispatchEvent(new Event('crm:record-changed')));
-  await page.waitForFunction(id=>document.querySelector('crm-dashboard-overview')?.shadowRoot.querySelector('[name=team] option[value="'+id+'"]'),{},team.data.id);
+  await page.waitForFunction(id=>document.querySelector('.dashboard-overview')?.querySelector('[name=team] option[value="'+id+'"]'),{},team.data.id);
   const cases=await api('GET','/api/cases?limit=100');const id=cases.data.cases[0].id;
   const record=await api('GET','/api/cases/'+id+'/gates');
   const moved=await api('POST','/api/cases/'+id+'/transition',{stage:'Closed',override:true,reason:'Browser regression test'},record.data.revision);assert.equal(moved.status,200,JSON.stringify(moved.data));
   await page.evaluate(()=>window.dispatchEvent(new Event('crm:record-changed')));
   for(const width of [1280,390]){
    await page.setViewport({width,height:900});
-   await page.waitForFunction(()=>document.querySelector('crm-dashboard-overview')?.shadowRoot.querySelector('.kpi'));
-   await page.select('crm-dashboard-overview >>> [name=scope]','all');
-   await page.waitForFunction(()=>!document.querySelector('crm-dashboard-overview').shadowRoot.querySelector('button').disabled);
+   await page.waitForFunction(()=>document.querySelector('.dashboard-overview')?.querySelector('.kpi'));
+   await page.select('.dashboard-overview [name=scope]','all');
+   await page.waitForFunction(()=>!document.querySelector('.dashboard-overview').querySelector('button').disabled);
    for(const category of ['applications','leads','followups','followupsToday','followupsUpcoming','invoicesOverdue']){
     const response=page.waitForResponse(r=>{const u=new URL(r.url());return u.pathname==='/api/my-work'&&u.searchParams.get('category')===category&&u.searchParams.get('dashboard')==='1'});
-    await page.evaluate(category=>document.querySelector('crm-dashboard-overview').shadowRoot.querySelector('.kpi[data-category="'+category+'"]').click(),category);
+    await page.evaluate(category=>document.querySelector('.dashboard-overview').querySelector('.kpi[data-category="'+category+'"]').click(),category);
     const r=await response;assert.equal(r.status(),200);const out=await r.json();assert.equal(out.category,category);assert.equal(new URL(r.url()).searchParams.get('scope'),'all');
     if(category==='followups') {assert.ok(out.items.some(i=>i.id===expectedLeads.today));assert.ok(out.items.some(i=>i.id===expectedLeads.overdue));assert.ok(!out.items.some(i=>i.id===expectedLeads.upcoming));}
     if(category==='followupsToday') {assert.ok(out.items.some(i=>i.id===expectedLeads.today));assert.ok(!out.items.some(i=>i.id===expectedLeads.upcoming||i.id===expectedLeads.overdue));}
@@ -777,25 +775,25 @@ test('live dashboard filters, closed stage transitions and mobile stay consisten
 
    }
    const closedResponse=page.waitForResponse(r=>{const u=new URL(r.url());return u.pathname==='/api/my-work'&&u.searchParams.get('stage')==='Closed'});
-   await page.evaluate(()=>[...document.querySelector('crm-dashboard-overview').shadowRoot.querySelectorAll('.stage-list button')].find(b=>b.getAttribute('aria-label')?.startsWith('Closed:')).click());
+   await page.evaluate(()=>[...document.querySelector('.dashboard-overview').querySelectorAll('.stage-list button')].find(b=>b.getAttribute('aria-label')?.startsWith('Closed:')).click());
    assert.ok((await (await closedResponse).json()).items.some(item=>item.id===id));
    const taskResponse=page.waitForResponse(r=>new URL(r.url()).searchParams.get('category')==='tasks');
-   await page.evaluate(()=>document.querySelector('crm-my-work').shadowRoot.querySelector('[data-category=tasks]').click());
+   await page.evaluate(()=>document.querySelector('.daily-work').querySelector('[data-category=tasks]').click());
    const tasks=await taskResponse;assert.equal(tasks.status(),200);assert.equal(new URL(tasks.url()).searchParams.get('stage'),null);
-   await page.select('crm-dashboard-overview >>> [name=team]',team.data.id);
-   await page.waitForFunction(()=>!document.querySelector('crm-dashboard-overview').shadowRoot.querySelector('button').disabled);
+   await page.select('.dashboard-overview [name=team]',team.data.id);
+   await page.waitForFunction(()=>!document.querySelector('.dashboard-overview').querySelector('button').disabled);
    const branchResponse=page.waitForResponse(r=>{const u=new URL(r.url());return u.pathname==='/api/my-work'&&u.searchParams.get('category')==='applications'&&u.searchParams.get('team')===team.data.id});
-   await page.evaluate(()=>document.querySelector('crm-dashboard-overview').shadowRoot.querySelector('.kpi[data-category=applications]').click());
+   await page.evaluate(()=>document.querySelector('.dashboard-overview').querySelector('.kpi[data-category=applications]').click());
    const branch=await branchResponse;assert.equal(branch.status(),200);assert.equal((await branch.json()).total,0);
-   await page.waitForFunction(()=>document.querySelector('crm-my-work').shadowRoot.querySelector('[data-work-branch]').textContent==='Branch: Regression empty branch');
+   await page.waitForFunction(()=>document.querySelector('.daily-work').querySelector('[data-work-branch]').textContent==='Branch: Regression empty branch');
    const clearedResponse=page.waitForResponse(r=>{const u=new URL(r.url());return u.pathname==='/api/my-work'&&u.searchParams.get('category')==='applications'&&!u.searchParams.has('team')});
-   await page.click('crm-my-work >>> [data-clear-work-branch]');
+   await page.click('.daily-work [data-clear-work-branch]');
    assert.equal((await clearedResponse).status(),200);
-   await page.waitForFunction(()=>document.querySelector('crm-my-work').shadowRoot.querySelector('[data-work-branch]').textContent==='Branch: All accessible branches');
+   await page.waitForFunction(()=>document.querySelector('.daily-work').querySelector('[data-work-branch]').textContent==='Branch: All accessible branches');
 
    assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth+1),'page must fit mobile and desktop');
-   await page.select('crm-dashboard-overview >>> [name=team]','');
-   await page.waitForFunction(()=>!document.querySelector('crm-dashboard-overview').shadowRoot.querySelector('button').disabled);
+   await page.select('.dashboard-overview [name=team]','');
+   await page.waitForFunction(()=>!document.querySelector('.dashboard-overview').querySelector('button').disabled);
   }
   assert.deepEqual(errors,[]);
  }finally{await page.close();server.kill('SIGTERM');await new Promise(resolve=>server.exitCode!==null?resolve():server.once('exit',resolve));fs.rmSync(directory,{recursive:true,force:true})}

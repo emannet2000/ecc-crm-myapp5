@@ -1,6 +1,10 @@
 module Main exposing (main)
 
 import Api
+import Administration
+import WorkDashboard
+import ManagementReport
+import TeamChat
 import Browser
 import Browser.Events
 import Browser.Navigation as Nav
@@ -46,7 +50,11 @@ init flags url key =
             parseRoute url
 
         model =
-            { mode = Login
+            { workDashboard = WorkDashboard.init
+            , managementReport = ManagementReport.init
+            , teamChat = TeamChat.init
+            , administration = Administration.init
+            , mode = Login
             , theme =
                 if flags.theme == Just "dark" then
                     DarkTheme
@@ -174,6 +182,72 @@ init flags url key =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
+        WorkDashboardMsg workMsg ->
+            let
+                ( workModel, cmd ) = WorkDashboard.update workMsg model.workDashboard
+            in
+            ( { model | workDashboard = workModel }, Cmd.map WorkDashboardMsg cmd )
+
+        ManagementReportMsg reportMsg ->
+            let
+                ( reportModel, cmd ) = ManagementReport.update reportMsg model.managementReport
+            in
+            ( { model | managementReport = reportModel }, Cmd.map ManagementReportMsg cmd )
+
+        TeamChatMsg chatMsg ->
+            let
+                ( chatModel, cmd ) = TeamChat.update chatMsg model.teamChat
+            in
+            ( { model | teamChat = chatModel }, Cmd.map TeamChatMsg cmd )
+
+        AdministrationMsg adminMsg ->
+            let
+                ( adminModel, cmd ) = Administration.update adminMsg model.administration
+            in
+            if adminModel.signOut then
+                let
+                    ( next, authCmd ) = Update.Auth.update LoggedOut { model | administration = Administration.init, teamChat = TeamChat.init, managementReport = ManagementReport.clear model.managementReport, workDashboard = WorkDashboard.clear model.workDashboard }
+                in
+                ( next, Cmd.batch [ authCmd, Ports.protectUnsaved False ] )
+            else
+                ( { model | administration = adminModel }, Cmd.batch [ Cmd.map AdministrationMsg cmd, Ports.protectUnsaved (Administration.dirty adminModel || adminModel.busy) ] )
+
+        LoggedOut ->
+            if model.route == Types.Administration && (Administration.dirty model.administration || model.administration.busy || model.administration.loading) then
+                update (AdministrationMsg (Administration.Request Administration.SignOut)) model
+            else
+                let
+                    ( next, authCmd ) = Update.Auth.update LoggedOut { model | administration = Administration.init, teamChat = TeamChat.init, managementReport = ManagementReport.clear model.managementReport, workDashboard = WorkDashboard.clear model.workDashboard }
+                in
+                ( next, Cmd.batch [ authCmd, Ports.protectUnsaved False ] )
+
+        UrlChanged url ->
+            if model.route == Types.Administration && parseRoute url == Types.Administration && (Administration.dirty model.administration || model.administration.busy || model.administration.loading) then
+                ( model, Cmd.none )
+            else if model.route == Types.Administration && parseRoute url /= Types.Administration && (Administration.dirty model.administration || model.administration.busy || model.administration.loading) then
+                let
+                    ( next, cmd ) = update (AdministrationMsg (Administration.Request (Administration.Exit (Url.toString url)))) model
+                in
+                ( next, Cmd.batch [ cmd, Nav.replaceUrl model.navKey "/administration" ] )
+            else
+                Update.Navigation.update msg model
+
+        NavigatedTo route ->
+            if model.route == Types.Administration && route == Types.Administration then
+                ( model, Cmd.none )
+            else if model.route == Administration && route /= Administration && (Administration.dirty model.administration || model.administration.busy || model.administration.loading) then
+                update (AdministrationMsg (Administration.Request (Administration.Exit (routeToPath route)))) model
+            else
+                updateNavigation msg model
+
+        LinkClicked request ->
+            if model.route == Administration && (Administration.dirty model.administration || model.administration.busy || model.administration.loading) then
+                case request of
+                    Browser.Internal url -> update (AdministrationMsg (Administration.Request (Administration.Exit (Url.toString url)))) model
+                    Browser.External path -> update (AdministrationMsg (Administration.Request (Administration.Exit path))) model
+            else
+                updateNavigation msg model
+
         ToggledTheme ->
             let
                 nextTheme =
@@ -301,6 +375,17 @@ update msg model =
                 ( newModel, newCmds )
 
 
+updateNavigation : Msg -> Model -> ( Model, Cmd Msg )
+updateNavigation msg model =
+    let
+        ( next, cmd ) = Update.Navigation.update msg model
+    in
+    if next.route /= model.route then
+        ( next, Cmd.batch [ cmd, Nav.pushUrl next.navKey (routeToPath next.route) ] )
+    else
+        ( next, cmd )
+
+
 updateDomains : Msg -> Model -> ( Model, Cmd Msg )
 updateDomains msg model =
     List.foldl
@@ -348,7 +433,10 @@ escapeDecoder =
 subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.batch
-        [ Ports.recordChanged (\_ -> NavigatedTo model.route)
+        [ if model.route == Home && model.user /= Nothing then Browser.Events.onResize (\width _ -> WorkDashboardMsg (WorkDashboard.Viewport width)) else Sub.none
+        , if model.route == Reports && model.user /= Nothing then Ports.printResult (ManagementReport.Printed >> ManagementReportMsg) else Sub.none
+        , if model.route == Chat && model.user /= Nothing then Sub.map TeamChatMsg (TeamChat.subscriptions model.teamChat) else Sub.none
+        , Ports.recordChanged (\_ -> NavigatedTo model.route)
         , Browser.Events.onKeyDown escapeDecoder
         , if model.user /= Nothing then
             Sub.batch [ Time.every 600000 (\_ -> RefreshSession), Time.every 60000 (\_ -> PollWorkspaceClock) ]

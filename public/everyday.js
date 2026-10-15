@@ -67,7 +67,7 @@
   const order=role==='admin'||role==='manager'?[2,0,1,3]:[0,3,1];
   for(const i of order){const[title,description,href,label]=guides[i],card=node('article',null,{class:'card'});card.append(node('h3',title),node('p',description),node('a',label,{href}));section.append(card)}
   if(role==='viewer')section.append(node('p','Your access is read-only. Ask the record owner to make changes.'));
-  section.append(node('a','Choose your navigation focus in the sidebar',{href:'#workspace-navigation'}));main.append(section);
+  main.append(section);
   if(role!=='admin')return;
   const status=node('section',null,{class:'card'}),notice=node('p','',{role:'status','aria-live':'polite'}),content=node('div');
   const refresh=node('button','Refresh readiness',{type:'button',class:'secondary'});

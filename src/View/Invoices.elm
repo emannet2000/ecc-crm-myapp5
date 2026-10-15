@@ -513,7 +513,7 @@ invoiceFormView model inv isEdit =
             Nothing ->
                 text ""
         , div [ class "form-grid" ]
-            [ invoiceRichField inv "invoiceNumber" "Invoice number (auto if empty)" "text"
+            [ if isEdit then invoiceRichField inv "invoiceNumber" "Invoice reference" "text" else p [ class "ecc-field__message" ] [ text "Invoice reference is generated automatically when you save." ]
             , invoiceClientSelect model inv
             , invoiceCaseSelect model inv
             , invoiceRichField inv "totalFee" "Total fee" "number"

@@ -63,3 +63,14 @@ archive/
 *.sqlite-shm
 
 /golang-backend/backend.test
+
+
+data/
+.env
+.env.*
+!.env.example
+elm-stuff/
+node_modules/
+golang-backend/backend.test
+# Generated standalone Elm frontend bundles
+public/*-elm.js

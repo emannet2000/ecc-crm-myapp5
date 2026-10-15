@@ -16,7 +16,7 @@ html.crm-scroll-locked,html.crm-scroll-locked body{overflow:hidden;overscroll-be
   .app-shell .sidebar__nav--bottom{margin-top:8px;padding-top:8px}
   .app-shell .sidebar .nav-item,.app-shell .sidebar__signout-btn{min-height:44px}
   .app-shell .sidebar__user{margin-top:6px}
-  .app-shell .mobile-nav{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));position:fixed;z-index:120;inset:auto 0 0;background:var(--surface);border-top:1px solid var(--border);padding:4px max(4px,env(safe-area-inset-right)) env(safe-area-inset-bottom) max(4px,env(safe-area-inset-left));box-shadow:0 -3px 15px #18273e08}
+  .app-shell .mobile-nav{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));position:fixed;z-index:120;inset:auto 0 0;background:var(--surface);border-top:1px solid var(--border);padding:4px max(4px,env(safe-area-inset-right)) env(safe-area-inset-bottom) max(4px,env(safe-area-inset-left));box-shadow:0 -3px 15px #18273e08}
   .app-shell .mobile-nav .nav-item{display:flex;flex-direction:column;justify-content:center;align-items:center;gap:4px;min-width:0;min-height:58px;margin:0;padding:6px 2px;border-radius:9px;color:var(--text-muted);font-size:11px;line-height:1.2}
   .app-shell .mobile-nav .nav-item--active{color:var(--primary);background:color-mix(in srgb,var(--primary) 14%,var(--surface))}
   .app-shell .mobile-nav .nav-item__icon{width:22px;height:22px;justify-content:center;align-items:center}

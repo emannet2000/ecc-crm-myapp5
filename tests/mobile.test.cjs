@@ -51,7 +51,7 @@ test('sortable headers and selection controls remain available above mobile card
 
 test('record and administration shadow tables adapt after asynchronous rendering',async()=>{
   const app=await mount('');try{
-    const host=app.document.createElement('crm-administration'),root=host.attachShadow({mode:'open'});app.document.querySelector('main').append(host);await wait();
+    const host=app.document.createElement('crm-record-tools'),root=host.attachShadow({mode:'open'});app.document.querySelector('main').append(host);await wait();
     root.innerHTML='<section class="tools">'+tableHTML+'</section>';await wait();
     assert.ok(root.querySelector('table').hasAttribute('data-mobile-cards'));
     assert.equal(root.querySelector('td').getAttribute('data-label'),'Name');

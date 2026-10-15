@@ -9,7 +9,7 @@ const {spawn} = require('node:child_process');
 const puppeteer = require('puppeteer');
 const root = path.join(__dirname, '..');
 
-test('live consolidated communication, calendar, bulk selection, optional tools and directory', {timeout: 180000}, async () => {
+test('live consolidated communication, calendar, bulk selection, fixed navigation and directory', {timeout: 180000}, async () => {
   const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'ecc-consolidation-'));
   const probe = net.createServer();
   await new Promise(resolve => probe.listen(0, '127.0.0.1', resolve));
@@ -18,7 +18,7 @@ test('live consolidated communication, calendar, bulk selection, optional tools 
   const base = 'http://localhost:' + port;
   const secret = 'consolidation-inbound-fixture';
   const server = spawn(path.join(root, 'build/ecc-crm'), [], {cwd: root, env: {
-    ...process.env, PORT: String(port), DATABASE_PATH: path.join(directory, 'crm.sqlite3'),
+    ...process.env,SEED_DEMO_DATA:'true', PORT: String(port), DATABASE_PATH: path.join(directory, 'crm.sqlite3'),
     JWT_SECRET: 'consolidation-session-fixture', APP_URL: base, ALLOW_SIGNUP: 'false',
     INBOUND_EMAIL_SECRET: secret, SMTP_HOST: '', GRAPH_ORG_ID: '', WHATSAPP_ORG_ID: '',
     STRIPE_SECRET_KEY: '', OPENAI_API_KEY: ''
@@ -136,18 +136,14 @@ test('live consolidated communication, calendar, bulk selection, optional tools 
     await clickText('Next month');
     assert.equal(await page.$eval('crm-workspace >>> input[aria-label="Calendar month"]', input => input.value), '2026-12');
 
-    // Navigation preferences remain per-account, and existing types retain their URLs.
-    await page.select('crm-nav-focus select', 'adviser');
-    assert.equal(await page.$eval('.sidebar [data-nav-label="Deals"]', element => getComputedStyle(element).display), 'none');
-    await page.$eval('crm-nav-focus details', details => { details.open = true; });
-    await page.click('crm-nav-focus input[aria-label="Show Deals while advising"]');
+    // Fixed navigation exposes modules without focus or optional-tool controls.
+    assert.equal(await page.$('crm-nav-focus'), null);
+    await page.$eval('.navigation-more', details => { details.open = true; });
     assert.notEqual(await page.$eval('.sidebar [data-nav-label="Deals"]', element => getComputedStyle(element).display), 'none');
-    assert.equal(await page.$eval('crm-workspace', host => [...host.shadowRoot.querySelectorAll('#tabs button')].some(button => button.textContent === 'Scan QR')), false);
-    await page.click('crm-nav-focus input[aria-label="Show QR tools"]');
     await page.waitForFunction(() => [...document.querySelector('crm-workspace').shadowRoot.querySelectorAll('#tabs button')].some(button => button.textContent === 'Scan QR'));
     await clickText('Scan QR');
     await page.waitForSelector('crm-workspace >>> video');
-    await page.click('.navigation-more > summary');
+    await page.$eval('.navigation-more', details => { details.open = true; });
     await page.click('.sidebar a[href="/workspace?tab=directory"]');
     await page.waitForSelector('crm-workspace >>> article a[href^="/agents/"]');
     assert.ok(await page.$('crm-workspace >>> article a[href^="/partners/"]'));

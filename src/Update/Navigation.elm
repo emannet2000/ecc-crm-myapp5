@@ -4,6 +4,10 @@ module Update.Navigation exposing (update)
 -}
 
 import Api
+import Administration
+import WorkDashboard
+import ManagementReport
+import TeamChat
 import Browser
 import Browser.Navigation as Nav
 import Router exposing (parseRoute, routeToPath)
@@ -424,7 +428,27 @@ update msg model =
 
                 finalModel =
                     { clearedModel
-                        | globalQuery = ""
+                        | workDashboard =
+                            if route == Home then
+                                WorkDashboard.start (Maybe.map .id model.user |> Maybe.withDefault "") clearedModel.workDashboard |> Tuple.first
+                            else
+                                clearedModel.workDashboard
+                        , managementReport =
+                            if route == Reports then
+                                ManagementReport.start (Maybe.map .id model.user |> Maybe.withDefault "") clearedModel.managementReport |> Tuple.first
+                            else
+                                clearedModel.managementReport
+                        , teamChat =
+                            if route == Chat then
+                                TeamChat.start (Maybe.map .id model.user |> Maybe.withDefault "") clearedModel.teamChat |> Tuple.first
+                            else
+                                clearedModel.teamChat
+                        , administration =
+                            if route == Types.Administration && Maybe.map .role model.user == Just "admin" && ((Maybe.map .currentUserId clearedModel.administration.data /= Maybe.map .id model.user) || (not (Administration.dirty clearedModel.administration) && not clearedModel.administration.busy)) then
+                                Administration.update Administration.Start clearedModel.administration |> Tuple.first
+                            else
+                                clearedModel.administration
+                        , globalQuery = ""
                         , globalResults = NotAsked
                         , auditOffset =
                             if route == Reports then
@@ -518,7 +542,23 @@ update msg model =
             in
             ( finalModel
             , Cmd.batch
-                [ if route == Reports || route == Home then
+                [ if route == Home then
+                    WorkDashboard.start (Maybe.map .id model.user |> Maybe.withDefault "") clearedModel.workDashboard |> Tuple.second |> Cmd.map WorkDashboardMsg
+                  else
+                    Cmd.none
+                , if route == Reports then
+                    ManagementReport.start (Maybe.map .id model.user |> Maybe.withDefault "") clearedModel.managementReport |> Tuple.second |> Cmd.map ManagementReportMsg
+                  else
+                    Cmd.none
+                , if route == Chat then
+                    TeamChat.start (Maybe.map .id model.user |> Maybe.withDefault "") clearedModel.teamChat |> Tuple.second |> Cmd.map TeamChatMsg
+                  else
+                    Cmd.none
+                , if route == Types.Administration && Maybe.map .role model.user == Just "admin" && ((Maybe.map .currentUserId clearedModel.administration.data /= Maybe.map .id model.user) || (not (Administration.dirty clearedModel.administration) && not clearedModel.administration.busy)) then
+                    Administration.update Administration.Start clearedModel.administration |> Tuple.second |> Cmd.map AdministrationMsg
+                  else
+                    Cmd.none
+                , if route == Reports || route == Home then
                     case clearedModel.token of
                         Just token ->
                             Cmd.batch [ if route == Home then Api.fetchReports token GotReports else Cmd.none, if route == Reports then Api.fetchAudit token 0 (GotAudit 0) else Cmd.none ]

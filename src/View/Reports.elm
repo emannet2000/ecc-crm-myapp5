@@ -1,5 +1,6 @@
 module View.Reports exposing (reportsView)
 
+import ManagementReport
 import Html exposing (..)
 import Html.Attributes exposing (attribute, class, disabled, selected, type_, value)
 import Html.Events exposing (onClick, onInput)
@@ -18,7 +19,7 @@ card label value =
 reportsView : Model -> Html Msg
 reportsView model =
     div [ class "report-suite" ]
-        [ Html.node "crm-reports" [] []
+        [ Html.map ManagementReportMsg (ManagementReport.view model.managementReport)
         , details [ class "report-secondary" ]
             [ summary [] [ text "Operational outcomes and priorities" ]
             , Html.node "crm-work-outcomes" [] []

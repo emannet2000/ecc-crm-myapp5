@@ -51,19 +51,11 @@ editable and captures its current revision. A change after review rejects the
 whole update. The selection remains available; review again before retrying.
 Changing the selection or target stage invalidates the previous review.
 
-## Optional tools
+## Tool access
 
-Expand **Optional tools** beneath Navigation focus in the sidebar.
-
-- **Show QR tools** adds Scan QR to Workspace tools and QR code to record tools.
-  QR tools start hidden. Existing QR links and permission checks remain available.
-- **Show Deals while advising** adds Deals to All modules while using the Advising
-  focus. Finance and Management retain Deals access. Direct deal links and records
-  remain accessible with their existing permissions.
-
-These display preferences are saved for the signed-in account on this browser.
-Changing optional visibility does not discard the current communication draft,
-bulk selection or calendar filters. Display preferences do not grant permissions.
+QR tools are available in Workspace tools as **Scan QR**, and in record tools
+as **QR code**. Deals is available under **All modules**. Navigation focus and
+optional visibility switches have been removed; existing permissions still apply.
 
 ## Agents and partners
 

@@ -65,7 +65,7 @@
   function refresh() {
     pending = false;
     prepareTables(document);
-    for (const host of document.querySelectorAll('crm-workspace,crm-record-tools,crm-insights,crm-administration,crm-student-journey,crm-my-work,crm-dashboard-overview,crm-recent-changes,crm-lead-work')) {
+    for (const host of document.querySelectorAll('crm-workspace,crm-record-tools,crm-insights,crm-student-journey,crm-recent-changes,crm-lead-work')) {
       const root = host.shadowRoot;
       if (!root) continue;
       if (!watched.has(root)) {

@@ -745,7 +745,7 @@ caseFormView model cf isEdit =
             Nothing ->
                 text ""
         , div [ class "form-grid" ]
-            [ caseRichField cf "caseNumber" "Application number (auto if empty)" "text"
+            [ if isEdit then caseRichField cf "caseNumber" "Application reference" "text" else p [ class "ecc-field__message" ] [ text "Application reference is generated automatically when you save." ]
             , caseStudentSelect model cf
             , caseClientSelect model cf
             , caseRichField cf "serviceCategory" "Service category" "text"

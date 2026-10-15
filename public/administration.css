@@ -1,7 +1,0 @@
-.admin-metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
-.admin-metrics .card{padding:16px}.admin-metrics h3{margin:0 0 8px;color:var(--muted);font-size:12px}
-.administration form>button{margin-top:18px}.admin-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px;padding-top:16px;border-top:1px solid var(--border)}
-.administration .toolbar{align-items:end}.administration .toolbar>label{flex:1;min-width:160px}
-.administration td button{white-space:nowrap}.administration [role=alert] button{margin-right:8px}
-.administration #notice input{margin-top:8px}.administration [aria-busy=true]{opacity:.7}
-@media(max-width:700px){.admin-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.administration td{min-width:110px}.administration .toolbar>label{min-width:100%}}

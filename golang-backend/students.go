@@ -214,11 +214,12 @@ func (state *runtimeStore) createStudentHandler(w http.ResponseWriter, r *http.R
 	}
 
 	now := time.Now().Format("2006-01-02")
+	recordID := newID("st")
 	newStudent := Student{
 		RecordScope:      newRecordScope(r),
-		ID:               newID("st"),
+		ID:               recordID,
 		Name:             strings.TrimSpace(req.Name),
-		StudentCode:      strings.TrimSpace(req.StudentCode),
+		StudentCode:      automaticReference(req.StudentCode, "ST", recordID),
 		CountryCode:      strings.TrimSpace(strings.ToUpper(req.CountryCode)),
 		SchoolID:         schoolID,
 		SchoolName:       schoolName,
@@ -292,7 +293,7 @@ func (state *runtimeStore) updateStudentHandler(w http.ResponseWriter, r *http.R
 
 	updated := state.students[idx]
 	updated.Name = strings.TrimSpace(req.Name)
-	updated.StudentCode = strings.TrimSpace(req.StudentCode)
+	updated.StudentCode = referenceOnUpdate(req.StudentCode, updated.StudentCode, "ST", updated.ID)
 	updated.CountryCode = strings.TrimSpace(strings.ToUpper(req.CountryCode))
 	updated.SchoolID = schoolID
 	updated.SchoolName = schoolName

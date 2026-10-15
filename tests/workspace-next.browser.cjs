@@ -11,12 +11,12 @@ const root=path.join(__dirname,'..');
 test('grouped navigation, requirement filters, representative loading and isolated restore',{timeout:300000},async()=>{
  const directory=fs.mkdtempSync(path.join(os.tmpdir(),'ecc-workspace-next-'));
  const database=path.join(directory,'fixture.sqlite3');
- execFileSync('go',['test','-run','^TestWriteRepresentativeBrowserFixture$','-count=1'],{cwd:path.join(root,'golang-backend'),env:{...process.env,ECC_BROWSER_FIXTURE_DATABASE:database},timeout:180000,stdio:'pipe'});
+ execFileSync('go',['test','-run','^TestWriteRepresentativeBrowserFixture$','-count=1'],{cwd:path.join(root,'golang-backend'),env:{...process.env,SEED_DEMO_DATA:'true',ECC_BROWSER_FIXTURE_DATABASE:database},timeout:180000,stdio:'pipe'});
  const probe=net.createServer();await new Promise(resolve=>probe.listen(0,'127.0.0.1',resolve));const port=probe.address().port;await new Promise(resolve=>probe.close(resolve));
  const base='http://127.0.0.1:'+port;
  let server,browser,log='';
  const start=async(binary,db)=>{
-  server=spawn(binary,[],{cwd:root,env:{...process.env,PORT:String(port),DATABASE_PATH:db,JWT_SECRET:'next-workspace-test-only',APP_URL:base,ALLOW_SIGNUP:'false',SMTP_HOST:'',OPENAI_API_KEY:'',STRIPE_SECRET_KEY:'',WHATSAPP_ORG_ID:'',GRAPH_ORG_ID:'',VAPID_PUBLIC_KEY:'',ECC_ACCEPTANCE_SEND:'false'},stdio:'pipe'});
+  server=spawn(binary,[],{cwd:root,env:{...process.env,SEED_DEMO_DATA:'true',PORT:String(port),DATABASE_PATH:db,JWT_SECRET:'next-workspace-test-only',APP_URL:base,ALLOW_SIGNUP:'false',SMTP_HOST:'',OPENAI_API_KEY:'',STRIPE_SECRET_KEY:'',WHATSAPP_ORG_ID:'',GRAPH_ORG_ID:'',VAPID_PUBLIC_KEY:'',ECC_ACCEPTANCE_SEND:'false'},stdio:'pipe'});
   server.stderr.on('data',data=>log+=data);
   for(let i=0;i<150;i++){try{if((await fetch(base+'/api/health')).ok)return}catch{}if(server.exitCode!==null)throw new Error(log);await new Promise(resolve=>setTimeout(resolve,100))}throw new Error('Server did not start');
  };
@@ -34,7 +34,7 @@ test('grouped navigation, requirement filters, representative loading and isolat
    const context=await browser.createBrowserContext(),page=await context.newPage();page.setDefaultTimeout(45000);page.on('pageerror',error=>errors.push(error.message));await page.setViewport({width:1280,height:900});await login(page);
    report.browser[label]=[];
    for(let i=0;i<3;i++){
-    await page.goto(base,{waitUntil:'load'});await page.waitForFunction(()=>document.querySelector('crm-my-work')?.shadowRoot.textContent.includes('work items'));
+    await page.goto(base,{waitUntil:'load'});await page.waitForFunction(()=>document.querySelector('.daily-work')?.textContent.includes('work items'));
     const usableWorkMs=await page.evaluate(()=>performance.now());
     await page.waitForFunction(()=>[...document.querySelectorAll('.home-secondary > summary')].every(summary=>summary.textContent.includes(' · ')&&!summary.textContent.includes('Loading')&&!summary.textContent.includes('Unavailable')));
     report.browser[label].push(await page.evaluate(usableWorkMs=>({usableWorkMs,completeHomeMs:performance.now(),navigationLoadMs:performance.getEntriesByType('navigation')[0].loadEventEnd,requests:performance.getEntriesByType('resource').filter(r=>r.name.includes('/api/')).map(r=>({path:new URL(r.name).pathname,durationMs:r.duration,transferBytes:r.transferSize}))}),usableWorkMs));
@@ -66,7 +66,7 @@ test('grouped navigation, requirement filters, representative loading and isolat
     const roleContext=await browser.createBrowserContext(),rolePage=await roleContext.newPage();rolePage.setDefaultTimeout(45000);await rolePage.setViewport({width:390,height:844});await login(rolePage,email,password);await rolePage.goto(base+'/workspace?tab=recovery');await rolePage.waitForSelector('crm-workspace >>> .workspace-nav-group');
     const text=await rolePage.$eval('crm-workspace',host=>host.shadowRoot.querySelector('#tabs').textContent);assert.ok(!text.includes('Backup & restore'));if(role!=='manager')assert.ok(!text.includes('Team & access'));if(role==='viewer')assert.ok(!text.includes('Finance review')&&!text.includes('Workflows')&&!text.includes('Trash'));assert.ok(await rolePage.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));await roleContext.close();
    }
-   const assessmentPath=path.join(artifacts,'next-integration-assessment.json');execFileSync('node',['tests/live-integrations.cjs'],{cwd:root,env:{...process.env,ECC_ACCEPTANCE_URL:base,ECC_ACCEPTANCE_EMAIL:'demo@northwind.dev',ECC_ACCEPTANCE_PASSWORD:'Demo1234',ECC_ACCEPTANCE_SEND:'false',ECC_ACCEPTANCE_REPORT:assessmentPath},timeout:90000,stdio:'pipe'});report.validation.integrations=JSON.parse(fs.readFileSync(assessmentPath,'utf8'));
+   const assessmentPath=path.join(artifacts,'next-integration-assessment.json');execFileSync('node',['tests/live-integrations.cjs'],{cwd:root,env:{...process.env,SEED_DEMO_DATA:'true',ECC_ACCEPTANCE_URL:base,ECC_ACCEPTANCE_EMAIL:'demo@northwind.dev',ECC_ACCEPTANCE_PASSWORD:'Demo1234',ECC_ACCEPTANCE_SEND:'false',ECC_ACCEPTANCE_REPORT:assessmentPath},timeout:90000,stdio:'pipe'});report.validation.integrations=JSON.parse(fs.readFileSync(assessmentPath,'utf8'));
    await context.close();await stop();
    const archive=path.join(directory,'backup.tar.gz');execFileSync('python3',['scripts/backup.py',db,archive],{cwd:root,stdio:'pipe'});
    report.validation.restore=JSON.parse(execFileSync('python3',['scripts/verify_backup.py',archive],{cwd:root,encoding:'utf8'}));assert.equal(report.validation.restore.state,'verified');assert.ok(report.validation.restore.documentFiles>0);

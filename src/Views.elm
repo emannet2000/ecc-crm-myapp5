@@ -3,6 +3,8 @@ module Views exposing (view)
 {-| Root view: routing between pages and app shell.
 -}
 
+import Administration
+import TeamChat
 import Html exposing (..)
 import Html.Attributes as Attr exposing (class)
 import Html.Events
@@ -85,14 +87,14 @@ pageContent model user =
                 tasksView model
 
             Chat ->
-                Html.node "crm-team-chat" [ Attr.attribute "user-id" user.id ] []
+                Html.map TeamChatMsg (TeamChat.view model.teamChat)
 
             Workspace ->
                 Html.node "crm-workspace" [ class "workspace-tools", Attr.attribute "workspace-query" model.workspaceQuery ] []
 
             Administration ->
                 if user.role == "admin" then
-                    Html.node "crm-administration" [] []
+                    Html.map AdministrationMsg (Administration.view model.administration)
 
                 else
                     div [ class "content__empty-block" ] [ text "System administration requires Administrator access. Contact your workspace administrator to change your access level." ]

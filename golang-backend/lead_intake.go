@@ -3,7 +3,6 @@ package main
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"io"
 	"net/http"
 	"strings"
@@ -185,14 +184,14 @@ func (state *runtimeStore) convertLead(w http.ResponseWriter, r *http.Request, i
 			studentID := ""
 			if target == "student" {
 				studentID = newID("s")
-				state.students = append(state.students, Student{RecordScope: lead.RecordScope, ID: studentID, Name: lead.Name, CountryCode: lead.InterestedCountry, ApplicationStage: "Planning", AcceptanceStatus: "Pending", VisaStatus: "Not Started", InvoiceStatus: "Not Issued", NextAction: leadNextAction(lead.NextAction), NextDeadline: lead.FollowUpDate, Notes: notes, CreatedBy: currentUser(r).Name, CreatedAt: organizationToday(r), PreDeparture: []ChecklistItem{}})
+				state.students = append(state.students, Student{RecordScope: lead.RecordScope, ID: studentID, StudentCode: automaticReference("", "ST", studentID), Name: lead.Name, CountryCode: lead.InterestedCountry, ApplicationStage: "Planning", AcceptanceStatus: "Pending", VisaStatus: "Not Started", InvoiceStatus: "Not Issued", NextAction: leadNextAction(lead.NextAction), NextDeadline: lead.FollowUpDate, Notes: notes, CreatedBy: currentUser(r).Name, CreatedAt: organizationToday(r), PreDeparture: []ChecklistItem{}})
 				state.leads[i].ConvertedStudentID = studentID
 			}
 			application := Case{RecordScope: lead.RecordScope, ID: newID("case"), ClientID: contact.ID, ClientName: contact.Name, StudentID: studentID, ServiceCategory: lead.InterestedService, DestinationCountry: lead.InterestedCountry, AssignedOfficer: lead.AssignedTo, DateOpened: organizationToday(r), CurrentStage: "Assessment", Priority: "Medium", NextAction: leadNextAction(lead.NextAction), NextDeadline: lead.FollowUpDate, Notes: notes, CreatedBy: currentUser(r).Name, CreatedAt: organizationToday(r)}
 			if application.ServiceCategory == "" {
 				application.ServiceCategory = "Consultation"
 			}
-			application.CaseNumber = fmt.Sprintf("ECC-%s", application.ID)
+			application.CaseNumber = automaticReference("", "CASE", application.ID)
 			state.cases = append(state.cases, application)
 			state.leads[i].ConvertedCaseID = application.ID
 			for j, doc := range state.documents {

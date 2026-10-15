@@ -44,16 +44,37 @@ async function mount(options={}){
    if(options.teamSelectable===false){data.teamSelectable=false;data.teams=data.teams.slice(0,1);data.teamName='General'}
    return{status:200,ok:true,json:async()=>data};
   }
-  if(url.startsWith('/api/my-work')){const params=new URL(url,'http://crm.test').searchParams;return{status:200,ok:true,json:async()=>Object.assign({},work,{category:params.get('category')||'',teamId:params.get('team')||'',teamName:params.get('team')?'North branch':''})}};
+  if(url.startsWith('/api/my-work')){const params=new URL(url,'http://crm.test').searchParams;return{status:200,ok:true,json:async()=>Object.assign({},work,options.emptyWork?{items:[],total:0}:{},{scope:params.get('scope')||'mine',category:params.get('category')||'',teamId:params.get('team')||'',teamName:params.get('team')?'North branch':''})}};
   return{status:200,ok:true,json:async()=>({status:'ok'})};
  };
+ window.HTMLElement.prototype.focus=()=>{};
+ Object.defineProperty(window.HTMLElement.prototype,'onclick',{configurable:true,get(){return ()=>this.dispatchEvent(new window.Event('click',{bubbles:true}))}});
+ Object.defineProperty(window.HTMLElement.prototype,'onchange',{configurable:true,get(){return ()=>this.dispatchEvent(new window.Event('input',{bubbles:true}))}});
+ window.innerWidth=1280;window.innerHeight=900;window.pageXOffset=0;window.pageYOffset=0;
+ sandbox.XMLHttpRequest=class {
+  constructor(){this.listeners={};this.upload={addEventListener(){}};this.status=0;this.response='';}
+  addEventListener(name,callback){this.listeners[name]=callback;}
+  open(method,url){this.method=method;this.url=url;}
+  setRequestHeader(){}
+  getAllResponseHeaders(){return 'content-type: application/json';}
+  abort(){this.aborted=true;}
+  async send(){try{const response=await sandbox.fetch(this.url,{method:this.method});if(this.aborted)return;this.status=response.status;this.statusText=response.ok?'OK':'Error';this.responseURL=new URL(this.url,'http://crm.test').href;this.response=JSON.stringify(await response.json());this.listeners.load?.();}catch{this.listeners.error?.();}}
+ };
  const context=vm.createContext(sandbox);
- for(const file of ['pickers.js','everyday.js','consolidation.js','workspace-secondary.js','center.js','components.js','dashboard-overview.js'])vm.runInContext(fs.readFileSync(path.join(__dirname,'../public',file),'utf8'),context,{filename:file});
- const dashboard=document.createElement('crm-dashboard-overview');
- const myWork=document.createElement('crm-my-work');
- document.getElementById('app').append(dashboard,myWork);
- await new Promise(resolve=>setTimeout(resolve,40));
- return{window,document,dashboard,myWork,calls,cleanup(){dashboard.remove();myWork.remove()}};
+ vm.runInContext(fs.readFileSync(path.join(__dirname,'../public/work-dashboard-elm.js'),'utf8'),context,{filename:'work-dashboard-elm.js'});
+ context.Elm.WorkDashboard.init({node:document.getElementById('app'),flags:{userId:'unit-owner'}});
+ await new Promise(resolve=>setTimeout(resolve,100));
+ const dashboard={shadowRoot:document.querySelector('.dashboard-overview')};
+ const myWork={shadowRoot:document.querySelector('.daily-work')};
+ const revealCategory=async(category,stage='',filters={})=>{
+  const scope=dashboard.shadowRoot.querySelector('[name=scope]');scope.value=filters.scope||'mine';scope.onchange();await new Promise(r=>setTimeout(r,40));
+  const team=dashboard.shadowRoot.querySelector('[name=team]');team.value=filters.team||'';team.onchange();await new Promise(r=>setTimeout(r,40));
+  if(category==='caseStages'){
+   const button=[...dashboard.shadowRoot.querySelectorAll('.stage-list button')].find(button=>button.getAttribute('aria-label')?.startsWith(stage+':'));button.onclick();
+  }else dashboard.shadowRoot.querySelector('.kpi[data-category="'+category+'"]').onclick();
+ };
+ myWork.revealCategory=revealCategory;
+ return{window,document,dashboard,myWork,calls,cleanup(){document.body.replaceChildren()}};
 }
 
 test('dashboard overview renders real figures from the server response',async()=>{
@@ -86,7 +107,7 @@ test('dashboard KPI cards open the matching filtered records',async()=>{
   await new Promise(resolve=>setTimeout(resolve,40));
   const request=app.calls.filter(c=>c.url.startsWith('/api/my-work')).pop();
   assert.ok(request.url.includes('category=caseStages'),request.url);
-  assert.ok(request.url.includes('stage=Ready+for+Submission'),request.url);
+  assert.ok(new URL(request.url,'http://crm.test').searchParams.get('stage')==='Ready for Submission',request.url);
   assert.ok(text(app.myWork).includes('Applications by stage · Ready for Submission'));
   assert.ok(text(app.myWork).includes('ECC-READY'));
 
@@ -167,7 +188,7 @@ test('every dashboard category opens once and preserves assignment and branch fi
 
 test('My work shows the selected branch and clears it without changing the category',async()=>{
  const app=await mount();try{
-  app.myWork.revealCategory('applications','',{scope:'all',team:'team_north',teamName:'North branch'});
+  await app.myWork.revealCategory('applications','',{scope:'all',team:'team_north',teamName:'North branch'});
   await new Promise(resolve=>setTimeout(resolve,40));
   const branch=app.myWork.shadowRoot.querySelector('[data-work-branch]');
   const clear=app.myWork.shadowRoot.querySelector('[data-clear-work-branch]');
@@ -176,14 +197,14 @@ test('My work shows the selected branch and clears it without changing the categ
   clear.onclick();await new Promise(resolve=>setTimeout(resolve,40));
   const params=new URL(app.calls.filter(c=>c.url.startsWith('/api/my-work')).at(-1).url,'http://crm.test').searchParams;
   assert.equal(params.get('team'),null);assert.equal(params.get('category'),'applications');
-  assert.equal(branch.textContent,'Branch: All accessible branches');assert.equal(clear.hidden,true);
+  assert.equal(branch.textContent,'Branch: All accessible branches');assert.equal(app.myWork.shadowRoot.querySelector('[data-clear-work-branch]'),null);
  }finally{app.cleanup()}
 });
 
 
 test('changing assignment preserves the selected stage and branch',async()=>{
  const app=await mount();try{
-  app.myWork.revealCategory('caseStages','Closed',{scope:'all',team:'team_north',teamName:'North branch'});
+  await app.myWork.revealCategory('caseStages','Closed',{scope:'all',team:'team_north',teamName:'North branch'});
   await new Promise(resolve=>setTimeout(resolve,40));
   const scope=app.myWork.shadowRoot.querySelector('[name=scope]');scope.value='unassigned';scope.onchange();
   await new Promise(resolve=>setTimeout(resolve,40));
@@ -204,5 +225,17 @@ test('attention filters and overview breakdowns start collapsed while work stays
   assert.ok(app.myWork.shadowRoot.querySelector('.work-item a[href="/cases/case_ready"]'));
   assert.equal(app.myWork.shadowRoot.querySelector('.work-item__details').tagName,'SECTION');
   assert.ok(text(app.myWork).includes('Needs verification: Passport'));
+ }finally{app.cleanup()}
+});
+
+
+test('empty Elm daily work offers assignment recovery and workflow links',async()=>{
+ const app=await mount({emptyWork:true});try{
+  const root=app.myWork.shadowRoot;
+  assert.equal(root.querySelector('a[href="/leads"]').textContent,'Create your first lead');
+  assert.ok(root.querySelector('a[href="/invoices"]'));
+  [...root.querySelectorAll('button')].find(button=>button.textContent==='Check all accessible work').onclick();
+  await new Promise(resolve=>setTimeout(resolve,40));
+  assert.ok(app.calls.some(call=>call.url.startsWith('/api/my-work?')&&new URL(call.url,'http://crm.test').searchParams.get('scope')==='all'));
  }finally{app.cleanup()}
 });

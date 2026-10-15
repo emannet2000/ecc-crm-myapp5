@@ -1,13 +1,17 @@
 FROM node:24-bookworm-slim AS frontend
 WORKDIR /app
-RUN npm install -g elm@0.19.1-6
+RUN npm install -g elm@0.19.2-0
 COPY elm.json ./
 COPY src ./src
 RUN elm make src/Main.elm --optimize --output=elm.js
+RUN mkdir -p public
+RUN elm make src/Account.elm --optimize --output=public/account-elm.js
+RUN elm make src/RecordBrowser.elm --optimize --output=public/record-browser-elm.js
+RUN elm make src/WorkDashboard.elm --optimize --output=public/work-dashboard-elm.js
 
 FROM golang:1.26-bookworm AS backend
 WORKDIR /app/golang-backend
-COPY golang-backend/go.mod ./
+COPY golang-backend/go.mod golang-backend/go.sum ./
 RUN go mod download
 COPY golang-backend ./
 RUN CGO_ENABLED=1 go build -trimpath -o /app/ecc-crm .
@@ -20,6 +24,9 @@ COPY --from=frontend /app/elm.js /app/elm.js
 COPY index.html ./
 COPY manifest.webmanifest ./
 COPY public ./public
+COPY --from=frontend /app/public/account-elm.js /app/public/account-elm.js
+COPY --from=frontend /app/public/record-browser-elm.js /app/public/record-browser-elm.js
+COPY --from=frontend /app/public/work-dashboard-elm.js /app/public/work-dashboard-elm.js
 COPY scripts ./scripts
 RUN mkdir /app/data && chown crm:crm /app/data
 USER crm

@@ -1,4 +1,4 @@
-port module Ports exposing (downloadFile, storeTheme, storeToken, recordChanged)
+port module Ports exposing (workReady, printResult, printElement, downloadFile, storeTheme, storeToken, recordChanged, protectUnsaved)
 
 {-| JavaScript interop.
 -}
@@ -13,4 +13,16 @@ port downloadFile : { filename : String, content : String, mime : String } -> Cm
 port storeTheme : String -> Cmd msg
 
 
+port protectUnsaved : Bool -> Cmd msg
+
+
 port recordChanged : (String -> msg) -> Sub msg
+
+
+port printElement : String -> Cmd msg
+
+
+port printResult : (Bool -> msg) -> Sub msg
+
+
+port workReady : () -> Cmd msg

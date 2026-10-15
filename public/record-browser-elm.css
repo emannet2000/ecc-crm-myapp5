@@ -1,0 +1,16 @@
+.record-browser-elm{font:inherit;color:var(--text,#202b3c)}
+.record-browser-elm *{box-sizing:border-box}
+.record-browser-elm .toolbar{display:flex;flex-wrap:wrap;align-items:flex-end;gap:12px;margin:16px 0}
+.record-browser-elm label{display:grid;gap:6px;font-size:13px}
+.record-browser-elm input,.record-browser-elm select,.record-browser-elm button{font:inherit;min-height:44px;color:inherit;background:var(--surface,#fff);border:1px solid var(--border,#cbd5e1);border-radius:8px;padding:9px 12px;max-width:100%}
+.record-browser-elm button{cursor:pointer}.record-browser-elm button:disabled{opacity:.5;cursor:default}
+.record-browser-elm :is(button,input,select,a):focus-visible{outline:3px solid var(--primary,#2454a3);outline-offset:3px}
+.record-browser-elm .column-options{display:flex;flex-wrap:wrap;gap:12px;margin:12px 0}
+.record-browser-elm .column-options label{display:flex;align-items:center}.record-browser-elm .column-options input{min-height:22px;width:22px}
+.record-browser-elm .table-wrap{overflow:auto;max-width:100%;margin-top:16px}
+.record-browser-elm table{width:100%;border-collapse:collapse;font-size:13px}
+.record-browser-elm :is(th,td){padding:10px;border-bottom:1px solid var(--border,#cbd5e1);text-align:left;vertical-align:top;overflow-wrap:anywhere}
+.record-browser-elm td a{display:inline-block;margin:8px;min-height:28px}
+.record-browser-elm summary{cursor:pointer;min-height:44px;padding:10px 0}
+.record-browser-elm [role=alert]{color:var(--danger,#a72a2a)}
+@media(max-width:600px){.record-browser-elm .toolbar label{flex:1;min-width:130px}.record-browser-elm .toolbar input,.record-browser-elm .toolbar select{width:100%}}

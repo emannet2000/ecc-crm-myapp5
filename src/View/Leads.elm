@@ -519,7 +519,11 @@ leadFormView model lf isEdit =
                 text ""
         , div [ class "form-grid" ]
             [ leadRichField lf "name" "Lead full name" "text"
-            , leadRichField lf "leadNumber" "Lead number" "text"
+            , div [ class "ecc-field" ]
+                [ input [ id "lf-leadNumber", type_ "text", Attr.readonly True, value (if lf.leadNumber == "" then "Assigned on save" else lf.leadNumber), placeholder " " ] []
+                , label [ for "lf-leadNumber" ] [ text "Lead number" ]
+                , p [ class "ecc-field__message" ] [ text "Generated automatically when you save. Existing references are kept." ]
+                ]
             , leadRichField lf "email" "Email" "email"
             , leadRichField lf "phone" "Phone" "tel"
             , leadRichField lf "nationality" "Nationality (e.g. PH)" "text"

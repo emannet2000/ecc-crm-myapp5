@@ -43389,6 +43389,7 @@ var $elm$html$Html$Events$onCheck = function (tagger) {
 		'change',
 		A2($elm$json$Json$Decode$map, tagger, $elm$html$Html$Events$targetChecked));
 };
+var $elm$html$Html$Attributes$readonly = $elm$html$Html$Attributes$boolProperty('readOnly');
 var $author$project$View$Leads$leadFormView = F3(
 	function (model, lf, isEdit) {
 		var submitLabel = lf.gn ? 'Saving…' : (isEdit ? 'Save changes' : 'Save lead');
@@ -43429,7 +43430,47 @@ var $author$project$View$Leads$leadFormView = F3(
 					_List_fromArray(
 						[
 							A4($author$project$View$Leads$leadRichField, lf, 'name', 'Lead full name', 'text'),
-							A4($author$project$View$Leads$leadRichField, lf, 'leadNumber', 'Lead number', 'text'),
+							A2(
+							$elm$html$Html$div,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$class('ecc-field')
+								]),
+							_List_fromArray(
+								[
+									A2(
+									$elm$html$Html$input,
+									_List_fromArray(
+										[
+											$elm$html$Html$Attributes$id('lf-leadNumber'),
+											$elm$html$Html$Attributes$type_('text'),
+											$elm$html$Html$Attributes$readonly(true),
+											$elm$html$Html$Attributes$value(
+											(lf.fb === '') ? 'Assigned on save' : lf.fb),
+											$elm$html$Html$Attributes$placeholder(' ')
+										]),
+									_List_Nil),
+									A2(
+									$elm$html$Html$label,
+									_List_fromArray(
+										[
+											$elm$html$Html$Attributes$for('lf-leadNumber')
+										]),
+									_List_fromArray(
+										[
+											$elm$html$Html$text('Lead number')
+										])),
+									A2(
+									$elm$html$Html$p,
+									_List_fromArray(
+										[
+											$elm$html$Html$Attributes$class('ecc-field__message')
+										]),
+									_List_fromArray(
+										[
+											$elm$html$Html$text('Generated automatically when you save. Existing references are kept.')
+										]))
+								])),
 							A4($author$project$View$Leads$leadRichField, lf, 'email', 'Email', 'email'),
 							A4($author$project$View$Leads$leadRichField, lf, 'phone', 'Phone', 'tel'),
 							A4($author$project$View$Leads$leadRichField, lf, 'nationality', 'Nationality (e.g. PH)', 'text'),
@@ -52970,7 +53011,6 @@ var $author$project$Administration$content = F2(
 				return _List_Nil;
 		}
 	});
-var $elm$html$Html$Attributes$readonly = $elm$html$Html$Attributes$boolProperty('readOnly');
 var $elm$html$Html$Attributes$rel = _VirtualDom_attribute('rel');
 var $author$project$Administration$view = function (model) {
 	return A2(

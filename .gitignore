@@ -73,3 +73,46 @@ node_modules/
 golang-backend/backend.test
 # Generated standalone Elm frontend bundles
 public/*-elm.js
+
+# Dependencies and caches
+node_modules/
+elm-stuff/
+
+# Local databases and runtime data
+/data/
+*.sqlite
+*.sqlite3
+*.db
+*.sqlite-*
+*.sqlite3-*
+*.db-*
+
+# Secrets and local environment
+.env
+.env.*
+!.env.example
+!.env.sample
+*.pem
+*.key
+
+# Generated build output
+/build/
+/dist/
+/golang-backend/backend
+/golang-backend/main
+/golang-backend/server
+
+# Logs and test output
+*.log
+coverage/
+coverage.out
+*.test
+*.prof
+
+# Editor and OS files
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db

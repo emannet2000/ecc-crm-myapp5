@@ -171,10 +171,15 @@ func (state *runtimeStore) createLeadHandler(w http.ResponseWriter, r *http.Requ
 	}
 
 	now := time.Now().Format("2006-01-02")
+	reference, err := leadReference(r, req.LeadNumber, "")
+	if err != nil {
+		writeError(w, http.StatusServiceUnavailable, "Could not assign a lead number; retry saving")
+		return
+	}
 	newLead := Lead{
 		RecordScope:       newRecordScope(r),
 		ID:                newID("l"),
-		LeadNumber:        strings.TrimSpace(req.LeadNumber),
+		LeadNumber:        reference,
 		NextAction:        leadNextAction(req.NextAction),
 		CreatedAtTime:     utcNow(),
 		Referrer:          strings.TrimSpace(req.Referrer),
@@ -252,7 +257,12 @@ func (state *runtimeStore) updateLeadHandler(w http.ResponseWriter, r *http.Requ
 		}
 	}
 	updated := state.leads[idx]
-	updated.LeadNumber = strings.TrimSpace(req.LeadNumber)
+	reference, err := leadReference(r, req.LeadNumber, old.LeadNumber)
+	if err != nil {
+		writeError(w, http.StatusServiceUnavailable, "Could not assign a lead number; retry saving")
+		return
+	}
+	updated.LeadNumber = reference
 	updated.Referrer = strings.TrimSpace(req.Referrer)
 	updated.NextAction = leadNextAction(req.NextAction)
 	updated.Name = strings.TrimSpace(req.Name)

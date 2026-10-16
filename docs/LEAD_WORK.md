@@ -1,5 +1,15 @@
 # Lead follow-up, history and application requirements
 
+## Automatic lead numbers
+
+The Lead number field is read-only. Saving a new inquiry assigns a reference such
+as `ECC-LD-2026-00006`; staff do not fill it in. The year follows the workspace's
+timezone, with a separate sequence for each workspace and year. Existing
+references are retained on edits, and older blank references are assigned when
+saved. The database counter prevents reuse after deletion or restart and keeps
+simultaneous saves distinct. Existing random internal record IDs are unchanged.
+Imports may still supply an existing reference when creating a record.
+
 ## Next action and overdue inquiries
 
 Open a lead's **Next action and activity** panel. **Follow-up plan** saves the next

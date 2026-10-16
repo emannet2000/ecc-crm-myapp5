@@ -3,6 +3,7 @@ on:
   push:
   pull_request:
   workflow_dispatch:
+  merge_group:
   schedule:
     - cron: '0 21 * * *'
 permissions:
@@ -25,8 +26,9 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
-      - run: npm install -g elm@0.19.2-0
-      - run: npm install
+      - run: npm ci
+      - name: Formatting and JavaScript syntax
+        run: bash scripts/check-source.sh
       - name: QR and PDF test dependencies
         run: |
           sudo apt-get update
@@ -39,9 +41,40 @@ jobs:
           name: test-artifacts
           path: tests/artifacts
           retention-days: 14
+  security:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: golang-backend/go.mod
+          cache: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: npm ci --ignore-scripts
+      - name: JavaScript dependency vulnerabilities (including test tools)
+        run: npm audit --audit-level=high
+      - name: Verify Go module checksums
+        working-directory: golang-backend
+        run: go mod verify
+      - name: Install Go vulnerability scanner
+        run: go install golang.org/x/vuln/cmd/govulncheck@v1.1.4
+      - name: Reachable Go vulnerabilities
+        working-directory: golang-backend
+        run: |
+          mkdir -p ../tests/artifacts/security
+          set -o pipefail
+          govulncheck ./... 2>&1 | tee ../tests/artifacts/security/govulncheck.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: security-artifacts
+          path: tests/artifacts/security
+          retention-days: 14
   container:
-    needs: verify
-    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v'))
+    needs: [verify, security]
     runs-on: ubuntu-latest
     timeout-minutes: 30
     permissions:
@@ -58,6 +91,7 @@ jobs:
           REPOSITORY: ${{ github.repository }}
         run: echo "name=ghcr.io/${REPOSITORY,,}" >> "$GITHUB_OUTPUT"
       - name: Authenticate to GitHub Container Registry
+        if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v'))
         uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
         with:
           registry: ghcr.io
@@ -85,6 +119,7 @@ jobs:
           CRM_IMAGE: ${{ steps.image.outputs.name }}:sha-${{ github.sha }}
         run: ./scripts/test-container.sh
       - name: Publish the tested image
+        if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v'))
         id: publish
         env:
           CRM_IMAGE: ${{ steps.image.outputs.name }}:sha-${{ github.sha }}
@@ -96,3 +131,21 @@ jobs:
           digest="$(docker inspect --format='{{index .RepoDigests 0}}' "$CRM_IMAGE")"
           echo "digest=${digest#*@}" >> "$GITHUB_OUTPUT"
           printf 'Published `%s`\n\nDigest: `%s`\n' "$CRM_IMAGE" "$digest" >> "$GITHUB_STEP_SUMMARY"
+  quality-gate:
+    name: Quality gate
+    needs: [verify, security, container]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Require every verification job to pass
+        env:
+          RESULTS: ${{ toJSON(needs) }}
+        run: |
+          python3 - <<'PYTHON'
+          import json, os, sys
+          results = json.loads(os.environ["RESULTS"])
+          for name, job in results.items():
+              print(f"{name}: {job['result']}")
+          sys.exit(0 if all(job["result"] == "success" for job in results.values()) else 1)
+          PYTHON

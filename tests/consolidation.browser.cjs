@@ -32,11 +32,12 @@ test('live consolidated communication, calendar, bulk selection, fixed navigatio
       await new Promise(resolve => setTimeout(resolve, 100));
     }
     const local = path.join(os.homedir(), '.cache/ms-playwright/chromium-1234/chrome-linux64/chrome');
-    browser = await puppeteer.launch({executablePath: process.env.CHROME_PATH || (fs.existsSync(local) ? local : puppeteer.executablePath()), headless: true, pipe: true, args: ['--no-sandbox', '--disable-dev-shm-usage']});
+    browser = await puppeteer.launch({executablePath: process.env.CHROME_PATH || (fs.existsSync(local) ? local : await puppeteer.executablePath()), headless: true, pipe: true, args: ['--no-sandbox', '--disable-dev-shm-usage']});
     const page = await browser.newPage(), errors = [];
     await page.setViewport({width:1280,height:900});
     page.on('pageerror', error => errors.push(error.message));
     await page.goto(base, {waitUntil: 'networkidle2'});
+    await page.waitForSelector('input[type=email]');
     await page.type('input[type=email]', 'demo@northwind.dev');
     await page.type('input[type=password]', 'Demo1234');
     await page.click('button[type=submit]');

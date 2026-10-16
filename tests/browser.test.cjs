@@ -254,11 +254,12 @@ test('live app login, native record workflows, reporting and mobile layout', {sk
  const directory=fs.mkdtempSync(path.join(os.tmpdir(),'ecc-crm-browser-')),port='17001';
  const server=spawn(path.join(__dirname,'../build/ecc-crm'),[],{cwd:path.join(__dirname,'..'),env:{...process.env,SEED_DEMO_DATA:'true',PORT:port,DATABASE_PATH:path.join(directory,'crm.sqlite3'),JWT_SECRET:'browser-test-secret-only',APP_URL:'http://localhost:'+port,ALLOW_SIGNUP:'false',GRAPH_ORG_ID:'',WHATSAPP_ORG_ID:''},stdio:'pipe'});
  const page=await browser.newPage();let output='';server.stderr.on('data',data=>output+=data);server.stdout.on('data',data=>output+=data);
+ await page.bringToFront();
  await page.setRequestInterception(true);page.on('request',request=>{if(new URL(request.url()).origin==='http://localhost:'+port)request.continue();else request.abort()});
  try{
   for(let i=0;i<100;i++){try{const response=await fetch('http://localhost:'+port+'/api/health');if(response.ok)break}catch{}await new Promise(resolve=>setTimeout(resolve,100))}
   await page.goto('http://localhost:'+port,{waitUntil:'networkidle2'});
-  await page.waitForSelector('input[type=email]');await page.type('input[type=email]','demo@northwind.dev');await page.type('input[type=password]','Demo1234');await page.click('button[type=submit]');
+  await page.waitForSelector('input[type=email]');await page.type('input[type=email]','demo@northwind.dev');await page.type('input[type=password]','Demo1234');await page.locator('button[type=submit]').click();
   await page.waitForSelector('.app-shell');
   await page.goto('http://localhost:'+port+'/contacts/c_1',{waitUntil:'networkidle2'});
   await page.waitForFunction(()=>document.querySelector('crm-record-tools').shadowRoot.querySelector('form'));
@@ -270,11 +271,12 @@ test('live app login, native record workflows, reporting and mobile layout', {sk
     assert.ok(await page.$eval('body',el=>el.scrollWidth<=window.innerWidth+2), 'contacts overflow at '+width);
     assert.equal(await page.$eval('.mobile-nav',el=>getComputedStyle(el).display),'grid');
     if(width<=600) assert.equal(await page.$eval('table.data-table',el=>getComputedStyle(el).minWidth),'0px');
-    await page.click('.topbar__menu-btn');
+    await page.locator('.topbar__menu-btn').click();
     await page.waitForSelector('.sidebar.is-open');
+    await page.waitForFunction(()=>Math.abs(document.querySelector('.sidebar').getBoundingClientRect().left)<0.5);
     await page.waitForFunction(()=>document.querySelector('.app-main').inert);
     assert.equal(await page.$eval('.app-main',el=>el.inert),true);
-    await page.waitForFunction(()=>document.activeElement?.classList.contains('sidebar__close'));await page.click('.sidebar__close');
+    await page.waitForFunction(()=>document.activeElement?.classList.contains('sidebar__close'));await page.locator('.sidebar__close').click();
     await page.waitForFunction(()=>document.querySelector('.sidebar').inert);
     await page.evaluate(()=>[...document.querySelectorAll('.mobile-nav button')].find(b=>b.textContent.trim()==='Tasks').click());
     await page.waitForFunction(()=>location.pathname==='/tasks');
@@ -286,10 +288,11 @@ test('live app login, native record workflows, reporting and mobile layout', {sk
   await page.waitForSelector('.modal');
   assert.ok(await page.$eval('.modal',el=>el.getBoundingClientRect().width<=window.innerWidth));
   assert.equal(await page.$eval('.modal input',el=>getComputedStyle(el).fontSize),'16px');
-  await page.click('.modal__close');
+  await page.locator('.modal__close').click();
   await page.goto('http://localhost:'+port+'/administration',{waitUntil:'networkidle2'});
   await page.waitForFunction(()=>document.querySelector('.administration-elm table'));
   await page.evaluate(()=>[...document.querySelector('.administration-elm').querySelectorAll('button')].find(b=>b.textContent==='Add user').click());
+  await page.waitForSelector('.administration-elm [name=email]');
   await page.evaluate(()=>{const root=document.querySelector('.administration-elm');for(const [name,value] of Object.entries({name:'Browser Viewer',email:'browser-viewer@example.com',role:'viewer',password:'BrowserViewerPassword!'})){const field=root.querySelector('[name='+name+']');field.value=value;field.dispatchEvent(new Event('input',{bubbles:true}));}root.querySelector('form').requestSubmit()});
   await page.waitForFunction(()=>document.querySelector('.administration-elm').textContent.includes('browser-viewer@example.com'));
   await page.evaluate(()=>[...document.querySelector('.administration-elm').querySelectorAll('nav button')].find(b=>b.textContent==='Access levels').click());
@@ -307,7 +310,7 @@ test('live app login, native record workflows, reporting and mobile layout', {sk
   await page.waitForSelector('#lf-referrer');
   for(const [field,value]of Object.entries({name:'Flor CV Browser Client',email:'flor-cv-browser@example.com',referrer:'Flor',assignedTo:'u_1',followUpDate:'2026-10-20'}))await page.$eval('#lf-'+field,(e,value)=>{e.value=value;e.dispatchEvent(new Event('input',{bubbles:true}))},value);
   await page.evaluate(()=>[...document.querySelectorAll('.modal button')].find(b=>b.textContent.trim()==='Referral').click());
-  await page.click('.modal button[type=submit]');
+  await page.locator('.modal button[type=submit]').click();
   await page.waitForFunction(()=>!document.querySelector('.modal'));
   const lead=await page.evaluate(async()=>{const out=await(await fetch('/api/leads?q=flor-cv-browser@example.com')).json();return out.leads[0]});
   assert.equal(lead.referrer,'Flor');assert.equal(lead.source,'Referral');
@@ -349,10 +352,10 @@ test('live app login, native record workflows, reporting and mobile layout', {sk
   await page.waitForSelector('#lf-email');
   await page.$eval('#lf-name',e=>{e.value='Separate reviewed inquiry';e.dispatchEvent(new Event('input',{bubbles:true}))});await page.$eval('#lf-email',e=>{e.value='flor-cv-browser@example.com';e.dispatchEvent(new Event('input',{bubbles:true}))});
   await page.waitForFunction(()=>document.querySelector('crm-form-quality')?.shadowRoot.querySelector('a'));
-  await page.click('.modal button[type=submit]');
+  await page.locator('.modal button[type=submit]').click();
   await page.waitForFunction(()=>document.querySelector('.modal input[type=checkbox]'));
   await page.$eval('.modal input[type=checkbox]',e=>{e.checked=true;e.dispatchEvent(new Event('change',{bubbles:true}))});
-  await page.click('.modal button[type=submit]');
+  await page.locator('.modal button[type=submit]').click();
   await page.waitForFunction(()=>!document.querySelector('.modal'));
 
  }catch(error){fs.mkdirSync(path.join(__dirname,'artifacts'),{recursive:true});await page.screenshot({path:path.join(__dirname,'artifacts/live-failure.png'),fullPage:true});throw new Error(error.message+'\nUI: '+await page.evaluate(()=>JSON.stringify({url:location.pathname,width:innerWidth,mobile:matchMedia('(max-width: 900px)').matches,mainInert:document.querySelector('.app-main')?.inert,mainAttr:document.querySelector('.app-main')?.hasAttribute('inert'),sideInert:document.querySelector('.sidebar')?.inert,work:document.querySelector('.daily-work')?.textContent,active:document.activeElement?.outerHTML?.slice(0,200)}))+'\n'+output)}finally{await page.close();server.kill('SIGTERM');await new Promise(resolve=>{if(server.exitCode!==null)return resolve();server.once('exit',resolve)});fs.rmSync(directory,{recursive:true,force:true})}
@@ -1093,6 +1096,7 @@ test('recovered workspace drafts survive a rejected save and clear after confirm
   await page.$eval('crm-work-plan >>> textarea',e=>{e.value='Recovered action draft';e.dispatchEvent(new Event('input',{bubbles:true}))});
   await page.evaluate(()=>{window.CRMSessionDrafts.capture('u_manager');const old=document.querySelector('crm-work-plan'),next=old.cloneNode();old.replaceWith(next)});
   await page.waitForSelector('crm-work-plan >>> [data-session-recovery]');
+  await page.waitForFunction(()=>!document.querySelector('crm-work-plan').shadowRoot.querySelector('button[type=submit]').disabled);
   await page.$eval('crm-work-plan >>> [data-session-recovery] button',e=>e.click());
   await page.$eval('crm-work-plan >>> [data-session-recovery] input[type=checkbox]',e=>{e.checked=true;e.dispatchEvent(new Event('change',{bubbles:true}))});
   await page.$eval('crm-work-plan >>> form',e=>e.requestSubmit());
